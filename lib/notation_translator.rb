@@ -1,29 +1,42 @@
 module NotationTranslator
   def notation_to_coordinates(input)
-    # K is king
-    # Q is queen
-    # R is rook
-    # B is bishop
-    # N is knight 
-    # output in form ['piece', [x,y]] meaning move piece to x,y
+    [decode_piece(input), decode_coords(input)]
   end
 
   def decode_piece(input)
+    letter = input[0]
+    Pawn if ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].include?(letter)
+    decode_non_pawns(input)
+  end
+
+  def decode_non_pawns(input)
     first = input[0]
-    piece = pawn if ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].include?(letter)
 
     case first
     when 'K'
-      piece = 'king'
+      piece = King
     when 'Q'
-      piece = 'queen'
+      piece = Queen
     when 'R'
-      piece = 'rook'
+      piece = Rook
     when 'B'
-      piece = 'bishop'
+      piece = Bishop
     when 'N'
-      piece = 'knight'
+      piece = Knight
     end
     piece
+  end
+
+  def decode_coords(input)
+    input.slice!(0) if input.length == 3
+    x = 0
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+
+    letters.each_with_index do |letter, index|
+      x = index if letter == input[0]
+    end
+
+    y = input[-1].to_i - 1
+    [x, y]
   end
 end
