@@ -1,12 +1,15 @@
 require_relative '../lib/player'
 require_relative '../lib/board'
+require_relative '../lib/notation_translator'
 
 class Game
+  include NotationTranslator
+  include MoveValidator
+
   def initialize
     @player1 = Player.new('white')
     @player2 = Player.new('black')
     @board = Board.new
-    @record = nil
     @current_player = @player1
   end
 
@@ -15,12 +18,10 @@ class Game
   end
 
   def turn
-    puts 'Please enter a move in chess notation: '
-    input_move
+
   end
 
-  def input_move
-    # asks user to input move in chess notation
+  def solicit_move
     # loops until move is on the board and available
     # send message to update record
     loop do
@@ -29,6 +30,25 @@ class Game
 
       puts 'Invalid input. Please enter a move in chess notation: '
     end
+  end
+
+  def solicit_piece_name
+    puts 'Which piece would you like to move? Enter the piece (e.g. rook): '
+
+    loop do
+      name = gets.chomp
+      return name if valid_name?(name)
+
+      puts 'Invalid piece name. Please enter a piece name: '
+    end
+  end
+
+  def solicit_coordinates
+
+  end  
+
+  def verified_move
+    # check that move is in chess notation using MoveValidator
   end
 
   def update_board(piece, move)
