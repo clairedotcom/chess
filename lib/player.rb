@@ -4,12 +4,14 @@ require_relative '../lib/bishop'
 require_relative '../lib/knight'
 require_relative '../lib/rook'
 require_relative '../lib/pawn'
+require_relative '../lib/notation_translator'
 
 class Player
   attr_reader :id, :set
+  include NotationTranslator
 
   def initialize(id)
-    @id = id # black or white
+    @id = id
     @set = generate_set
   end
 
@@ -50,10 +52,17 @@ class Player
   def update_set(piece, move)
     @set.each do |p|
       if p.instance_of?(piece) && p.moves.include?(move)
-        # find the one that has move in its available moves
-        # update its position
         p.position = move
       end
     end
+  end
+
+  def move_possible?(piece, move)
+    @set.each do |p|
+      if p.instance_of?(piece) && p.moves.include?(move)
+        return true
+      end
+    end
+    false
   end
 end

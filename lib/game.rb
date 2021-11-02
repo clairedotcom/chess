@@ -27,10 +27,15 @@ class Game
 
   def solicit_move
     piece = name_to_class(solicit_piece_name)
-    square = solicit_square(piece)
-    move = decode_coords(square)
 
-    [piece, move]
+    loop do
+      square = solicit_square(piece)
+      move = decode_coords(square)
+
+      return [piece, move] if valid_move_for_piece?(piece, move)
+
+      puts "That move is not valid for the #{piece}. Please try again."
+    end
   end
 
   def solicit_piece_name
@@ -61,11 +66,13 @@ class Game
   end
 
   def switch_player
-    @current_player == @player1 ? @current_player = @player2 : @current_player = @player1
+    @current_player = @current_player == @player1 ? @player2 : @player1
   end
 
-  def on_board?
-    # checks if move is on the chess board
+  def valid_move_for_piece?(piece, move)
+    return true if @current_player.move_possible?(piece, move)
+
+    false
   end
 
   def is_free?
@@ -79,10 +86,6 @@ class Game
   def check?
     # is either player in check?
     # if so, send message to force player in check to protect king
-  end
-
-  def translate
-    # takes chess notation and outputs as xy coordinates
   end
 
   private
