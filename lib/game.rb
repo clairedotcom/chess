@@ -22,14 +22,8 @@ class Game
   end
 
   def solicit_move
-    # loops until move is on the board and available
-    # send message to update record
-    loop do
-      move = gets.chomp
-      return move if on_board? && is_free?
-
-      puts 'Invalid input. Please enter a move in chess notation: '
-    end
+    piece = solicit_piece_name
+    solicit_coordinates(piece)
   end
 
   def solicit_piece_name
@@ -43,9 +37,16 @@ class Game
     end
   end
 
-  def solicit_coordinates
+  def solicit_coordinates(piece)
+    puts "Please enter the square you want to move the #{piece} to (e.g. a4): "
 
-  end  
+    loop do
+      coords = gets.chomp
+      return coords if valid_coords?(coords)
+
+      puts 'Invalid input. Please enter the square number and letter (e.g. f5): '
+    end
+  end
 
   def verified_move
     # check that move is in chess notation using MoveValidator
