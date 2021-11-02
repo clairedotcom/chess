@@ -18,12 +18,19 @@ class Game
   end
 
   def turn
-
+    loop do
+      move = solicit_move
+      update_board(move[0], move[1])
+      switch_player
+    end
   end
 
   def solicit_move
-    piece = solicit_piece_name
-    solicit_coordinates(piece)
+    piece = name_to_class(solicit_piece_name)
+    square = solicit_square(piece)
+    move = decode_coords(square)
+
+    [piece, move]
   end
 
   def solicit_piece_name
@@ -37,33 +44,24 @@ class Game
     end
   end
 
-  def solicit_coordinates(piece)
-    puts "Please enter the square you want to move the #{piece} to (e.g. a4): "
+  def solicit_square(piece)
+    puts "Which square do you want to move the #{piece} to? (e.g. a4): "
 
     loop do
-      coords = gets.chomp
-      return coords if valid_coords?(coords)
+      square = gets.chomp
+      return square if valid_coords?(square)
 
       puts 'Invalid input. Please enter the square number and letter (e.g. f5): '
     end
   end
 
-  def verified_move
-    # check that move is in chess notation using MoveValidator
-  end
-
   def update_board(piece, move)
-    # piece is a string with the name of the piece, move is the coordinates
     @current_player.update_set(piece, move)
-    @board.create_display
+    @board.create_display(@player1.set, @player2.set)
   end
 
   def switch_player
     @current_player == @player1 ? @current_player = @player2 : @current_player = @player1
-  end
-
-  def update_record
-    # add the user's move to the record
   end
 
   def on_board?
@@ -91,9 +89,5 @@ class Game
 
   def intro_dialogue
     puts 'Welcome to chess!'
-  end
-
-  def chess_notation
-    # guide to chess notation
   end
 end
