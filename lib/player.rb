@@ -8,6 +8,7 @@ require_relative '../lib/notation_translator'
 
 class Player
   attr_reader :id, :set
+
   include NotationTranslator
 
   def initialize(id)
@@ -53,6 +54,14 @@ class Player
     @set.each do |p|
       if p.instance_of?(piece) && p.moves.include?(move)
         p.position = move
+      end
+    end
+  end
+
+  def get_piece_location(piece, move)
+    @set.each do |p|
+      if p.instance_of?(piece) && p.moves.include?(move)
+        return p.position
       end
     end
   end

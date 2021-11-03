@@ -32,9 +32,9 @@ class Game
       square = solicit_square(piece)
       move = decode_coords(square)
 
-      return [piece, move] if valid_move_for_piece?(piece, move)
+      return [piece, move] if valid_move_for_piece?(piece, move) && free?(move)
 
-      puts "That move is not valid for the #{piece}. Please try again."
+      puts "That square is not valid for the #{piece} or already has a piece in it. Please try again."
     end
   end
 
@@ -75,17 +75,24 @@ class Game
     false
   end
 
-  def is_free?
-    # checks if move has no other piece in it
+  def free?(square)
+    @player1.set.each do |piece|
+      return false if piece.position == square
+    end
+
+    @player2.set.each do |piece|
+      return false if piece.position == square
+    end
+    true
   end
 
-  def game_over?
-    # if check mate, game over
-  end
-
-  def check?
-    # is either player in check?
-    # if so, send message to force player in check to protect king
+  def blocked?(piece, move)
+    # look at the current position of the piece
+    # square = @current_player.get_piece_location(piece, move)
+    # find the squares between the current position and destination
+    # if there's a piece in the way, return true
+    # else, false
+    # if it's a knight, disregard
   end
 
   private
