@@ -20,4 +20,12 @@ class Rook
 
     possible_moves.delete_if { |move| off_board?(move) }
   end
+
+  def adjacents
+    x = @position[0]
+    y = @position[1]
+
+    squares = [[x + 1, y], [x, y + 1], [x - 1, y], [x, y - 1]]
+    squares.delete_if { |square| off_board?(square) }
+  end
 end

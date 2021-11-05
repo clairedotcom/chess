@@ -15,6 +15,11 @@ class Pawn
     return black_pawn if @color == 'black'
   end
 
+  def adjacents
+    return [@position[0], @position[1] + 1] if @color == 'white'
+    return possible_moves << [@position[0], @position[1] - 1] if @color == 'black'
+  end  
+
   def white_pawn
     possible_moves = []
 

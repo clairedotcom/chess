@@ -24,4 +24,8 @@ class King
 
     possible_moves.delete_if { |move| off_board?(move) }
   end
+
+  def adjacents
+    moves
+  end
 end
