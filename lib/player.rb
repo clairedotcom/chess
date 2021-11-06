@@ -74,4 +74,15 @@ class Player
     end
     false
   end
+
+  def get_moves_for_piece(piece, move)
+    possibilities = []
+
+    @set.each do |p|
+      if p.instance_of?(piece) && p.moves.include?(move)
+        possibilities = p.moves
+      end
+    end
+    possibilities
+  end
 end
