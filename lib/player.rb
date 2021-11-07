@@ -50,14 +50,6 @@ class Player
     pawns
   end
 
-  # def update_set(piece, move)
-  #   @set.each do |p|
-  #     if p.instance_of?(piece) && p.moves.include?(move)
-  #       p.position = move
-  #     end
-  #   end
-  # end
-
   def update_set(start, finish)
     @set.each do |piece|
       if piece.position == start
@@ -83,22 +75,24 @@ class Player
     false
   end
 
-  def get_moves_for_piece(piece, move)
-    possibilities = []
+  # def get_moves_for_piece(piece, move)
+  #   possibilities = []
 
-    @set.each do |p|
-      if p.instance_of?(piece) && p.moves.include?(move)
-        possibilities = p.moves
-      end
-    end
-    possibilities
+  #   @set.each do |p|
+  #     if p.instance_of?(piece) && p.moves.include?(move)
+  #       possibilities = p.moves
+  #     end
+  #   end
+  #   possibilities
+  # end
+
+  def get_moves_for_piece(start)
+    get_piece_at(start).moves
   end
 
   def get_piece_at(square)
-    @set.each do |p|
-      if p.position == square
-        return p.class.name.downcase
-      end
+    @set.each do |piece|
+      return piece if piece.position == square
     end
   end
 end
