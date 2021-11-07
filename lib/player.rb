@@ -50,10 +50,18 @@ class Player
     pawns
   end
 
-  def update_set(piece, move)
-    @set.each do |p|
-      if p.instance_of?(piece) && p.moves.include?(move)
-        p.position = move
+  # def update_set(piece, move)
+  #   @set.each do |p|
+  #     if p.instance_of?(piece) && p.moves.include?(move)
+  #       p.position = move
+  #     end
+  #   end
+  # end
+
+  def update_set(start, finish)
+    @set.each do |piece|
+      if piece.position == start
+        piece.position = finish
       end
     end
   end

@@ -34,7 +34,7 @@ class Game
       piece_name = @current_player.get_piece_at(start)
       piece = name_to_class(piece_name)
 
-      return [piece, finish] if valid_move_for_piece?(piece, finish)
+      return [start, finish] if valid_move_for_piece?(piece, finish)
 
       puts "Invalid move for that #{piece}. Please try again."
     end
@@ -45,7 +45,7 @@ class Game
 
     loop do
       square = gets.chomp
-      return square if valid_coords?(square)
+      return square if valid_coords?(square) && piece_at?(decode_coords(square))
 
       puts 'Invalid input. Please enter the square number and letter (e.g. f5): '
     end
@@ -62,8 +62,14 @@ class Game
     end
   end
 
-  def update_board(piece, move)
-    @current_player.update_set(piece, move)
+  def piece_at?(square)
+    return true if @current_player.set.any? { |piece| piece.position == square }
+
+    false
+  end
+
+  def update_board(start, finish)
+    @current_player.update_set(start, finish)
     @board.create_display(@player1.set, @player2.set)
   end
 
@@ -77,21 +83,21 @@ class Game
     false
   end
 
-  def occupied_by_same_color?(square)
-    @current_player.set.each do |piece|
-      return true if piece.position == square
-    end
-    false
-  end
+  # def occupied_by_same_color?(square)
+  #   @current_player.set.each do |piece|
+  #     return true if piece.position == square
+  #   end
+  #   false
+  # end
 
-  def occupied_by_opposite_color?(square)
-    player = @current_player == @player1 ? @player2 : @player1
+  # def occupied_by_opposite_color?(square)
+  #   player = @current_player == @player1 ? @player2 : @player1
 
-    player.set.each do |piece|
-      return true if piece.position == square
-    end
-    false
-  end
+  #   player.set.each do |piece|
+  #     return true if piece.position == square
+  #   end
+  #   false
+  # end
 
   private
 

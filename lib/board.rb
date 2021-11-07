@@ -1,4 +1,6 @@
 class Board
+  attr_accessor :display
+
   def initialize
     @display = Array.new(8) { Array.new(8, ' ') }
   end
