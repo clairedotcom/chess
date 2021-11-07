@@ -85,4 +85,12 @@ class Player
     end
     possibilities
   end
+
+  def get_piece_at(square)
+    @set.each do |p|
+      if p.position == square
+        return p.class.name.downcase
+      end
+    end
+  end
 end

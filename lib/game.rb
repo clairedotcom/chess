@@ -18,6 +18,7 @@ class Game
   end
 
   def turn
+    @board.create_display(@player1.set, @player2.set)
     loop do
       move = solicit_move
       update_board(move[0], move[1])
@@ -26,31 +27,32 @@ class Game
   end
 
   def solicit_move
-    piece = name_to_class(solicit_piece_name)
-
     loop do
-      square = solicit_square(piece)
-      move = decode_coords(square)
+      start = decode_coords(solicit_start_square)
+      finish = decode_coords(solicit_finish_square)
 
-      return [piece, move] if valid_move_for_piece?(piece, move) && free?(move)
+      piece_name = @current_player.get_piece_at(start)
+      piece = name_to_class(piece_name)
 
-      puts "That square is not valid for the #{piece} or already has a piece in it. Please try again."
+      return [piece, finish] if valid_move_for_piece?(piece, finish)
+
+      puts "Invalid move for that #{piece}. Please try again."
     end
   end
 
-  def solicit_piece_name
-    puts 'Which piece would you like to move? Enter the piece (e.g. rook): '
+  def solicit_start_square
+    puts "Enter the location of the piece you'd like to move (e.g. a4): "
 
     loop do
-      name = gets.chomp
-      return name if valid_name?(name)
+      square = gets.chomp
+      return square if valid_coords?(square)
 
-      puts 'Invalid piece name. Please enter a piece name: '
+      puts 'Invalid input. Please enter the square number and letter (e.g. f5): '
     end
   end
 
-  def solicit_square(piece)
-    puts "Which square do you want to move the #{piece} to? (e.g. a4): "
+  def solicit_finish_square
+    puts 'Which square would you like to move to (e.g. a4): '
 
     loop do
       square = gets.chomp
@@ -75,24 +77,20 @@ class Game
     false
   end
 
-  def free?(square)
-    @player1.set.each do |piece|
-      return false if piece.position == square
+  def occupied_by_same_color?(square)
+    @current_player.set.each do |piece|
+      return true if piece.position == square
     end
-
-    @player2.set.each do |piece|
-      return false if piece.position == square
-    end
-    true
+    false
   end
 
-  def blocked?(piece, move)
-    # look at the current position of the piece
-    # square = @current_player.get_piece_location(piece, move)
-    # find the squares between the current position and destination
-    # if there's a piece in the way, return true
-    # else, false
-    # if it's a knight, disregard
+  def occupied_by_opposite_color?(square)
+    player = @current_player == @player1 ? @player2 : @player1
+
+    player.set.each do |piece|
+      return true if piece.position == square
+    end
+    false
   end
 
   private
