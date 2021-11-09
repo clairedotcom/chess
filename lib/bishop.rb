@@ -9,23 +9,38 @@ class Bishop
   end
 
   def moves
+    [line1, line2, line3, line4].flatten(1)
+  end
+
+  def line1
     possible_moves = []
     x = @position[0]
     y = @position[1]
-
-    (7).downto(1) { |num| possible_moves << [x + num, y + num] }
-    (7).downto(1) { |num| possible_moves << [x - num, y + num] }
-    (7).downto(1) { |num| possible_moves << [x - num, y - num] }
-    (7).downto(1) { |num| possible_moves << [x + num, y - num] }
-
+    (1).upto(7) { |num| possible_moves << [x + num, y + num] }
     possible_moves.delete_if { |move| off_board?(move) }
   end
 
-  def adjacents
+  def line2
+    possible_moves = []
     x = @position[0]
     y = @position[1]
+    (1).upto(7) { |num| possible_moves << [x - num, y + num] }
+    possible_moves.delete_if { |move| off_board?(move) }
+  end
 
-    squares = [[x + 1, y + 1], [x - 1, y + 1], [x - 1, y - 1], [x + 1, y - 1]]
-    squares.delete_if { |square| off_board?(square) }
+  def line3
+    possible_moves = []
+    x = @position[0]
+    y = @position[1]
+    (1).upto(7) { |num| possible_moves << [x - num, y - num] }
+    possible_moves.delete_if { |move| off_board?(move) }
+  end
+
+  def line4
+    possible_moves = []
+    x = @position[0]
+    y = @position[1]
+    (1).upto(7) { |num| possible_moves << [x + num, y - num] }
+    possible_moves.delete_if { |move| off_board?(move) }
   end
 end
