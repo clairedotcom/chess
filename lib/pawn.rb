@@ -10,15 +10,24 @@ class Pawn
     @color = color
   end
 
+  def left_diagonal
+    result = [@position[0] - 1, @position[1] + 1]
+
+    return nil if off_board?(result)
+    result
+  end
+
+  def right_diagonal
+    result = [@position[0] + 1, @position[1] - 1]
+
+    return nil if off_board?(result)
+    result
+  end
+
   def moves
     return white_pawn if @color == 'white'
     return black_pawn if @color == 'black'
   end
-
-  def adjacents
-    return [@position[0], @position[1] + 1] if @color == 'white'
-    return possible_moves << [@position[0], @position[1] - 1] if @color == 'black'
-  end  
 
   def white_pawn
     possible_moves = []
