@@ -58,34 +58,6 @@ class Player
     end
   end
 
-  def get_piece_location(piece, move)
-    @set.each do |p|
-      if p.instance_of?(piece) && p.moves.include?(move)
-        return p.position
-      end
-    end
-  end
-
-  def move_possible?(piece, move)
-    @set.each do |p|
-      if p.instance_of?(piece) && p.moves.include?(move)
-        return true
-      end
-    end
-    false
-  end
-
-  # def get_moves_for_piece(piece, move)
-  #   possibilities = []
-
-  #   @set.each do |p|
-  #     if p.instance_of?(piece) && p.moves.include?(move)
-  #       possibilities = p.moves
-  #     end
-  #   end
-  #   possibilities
-  # end
-
   def get_moves_for_piece(start)
     get_piece_at(start).moves
   end
