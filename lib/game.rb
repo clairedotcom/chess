@@ -90,7 +90,7 @@ class Game
     false
   end
 
-  def remove_blocked_squares(possibilities, start, finish)
+  def remove_blocked_squares(possibilities, start)
     piece = @current_player.get_piece_at(start)
     piece_name = piece.class.name
 
@@ -100,77 +100,40 @@ class Game
     when 'Knight'
       possibilities
     when 'Rook'
-      rook_move_iterator(piece)
+      rook_bishop_move_iterator(piece)
     when 'Bishop'
-      bishop_move_iterator(possibilities, start, finish)
+      rook_bishop_move_iterator(piece)
     when 'Queen'
-      queen_move_iterator(possibilities, start, finish)
+      queen_move_iterator(piece)
     when 'Pawn'
       possibilities.delete_if { |square| occupied_by_opposite_color?(square)}
     end
   end
 
-  def rook_move_iterator(piece)
+  def rook_bishop_move_iterator(piece)
     result = []
-    result << rook_line1_iterator(piece)
-    result << rook_line2_iterator(piece)
-    result << rook_line3_iterator(piece)
-    result << rook_line4_iterator(piece)
-    result.flatten(1)
-  end
+    lines = [piece.line1, piece.line2, piece.line3, piece.line4]
 
-  def rook_line1_iterator(piece)
-    result = []
-    path = piece.line1
+    lines.each do |line|
+      line.each do |square|
+        break if occupied_by_any_piece?(square)
 
-    path.each do |square|
-      if occupied_by_any_piece?(square)
-        break
-      else
         result << square
       end
     end
     result
   end
 
-  def rook_line2_iterator(piece)
+  def queen_move_iterator(piece)
     result = []
-    path = piece.line2
+    lines = [piece.line1, piece.line2, piece.line3, piece.line4, piece.line5, piece.line6, piece.line7, piece.line8]
 
-    path.each do |square|
-      if occupied_by_any_piece?(square)
-        break
-      else
+    lines.each do |line|
+      line.each do |square|
+        break if occupied_by_any_piece?(square)
+
         result << square
-      end  
-    end
-    result
-  end
-
-  def rook_line3_iterator(piece)
-    result = []
-    path = piece.line3
-
-    path.each do |square|
-      if occupied_by_any_piece?(square)
-        break
-      else
-        result << square
-      end  
-    end
-    result
-  end
-
-  def rook_line4_iterator(piece)
-    result = []
-    path = piece.line4
-
-    path.each do |square|
-      if occupied_by_any_piece?(square)
-        break
-      else
-        result << square
-      end  
+      end
     end
     result
   end
@@ -183,14 +146,6 @@ class Game
     else
       false
     end
-  end
-
-  def bishop_move_iterator(possible_moves, start, finish)
-    # add lines to Bishop class first
-  end
-
-  def queen_move_iterator(possible_moves, start, finish)
-    # combine bishop & rook iterators?
   end
 
   def occupied_by_opposite_color?(square)
