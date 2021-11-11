@@ -67,4 +67,12 @@ class Player
       return piece if piece.position == square
     end
   end
+
+  def delete_piece(square)
+    @set.each do |piece|
+      if piece.position == square
+        @set.delete(piece)
+      end
+    end
+  end
 end

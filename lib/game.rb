@@ -21,6 +21,7 @@ class Game
     @board.create_display(@player1.set, @player2.set)
     loop do
       move = solicit_move
+      capture(move[1])
       update_board(move[0], move[1])
       switch_player
     end
@@ -62,9 +63,16 @@ class Game
   def valid_move_for_piece?(start, finish)
     possibilities = @current_player.get_moves_for_piece(start)
     possibilities.delete_if { |square| occupied_by_same_color?(square) }
-    return true if remove_blocked_squares(possibilities, start, finish).include?(finish)
+    return true if remove_blocked_squares(possibilities, start).include?(finish)
 
     false
+  end
+
+  def capture(finish)
+    if occupied_by_opposite_color?(finish)
+      @player1.delete_piece(finish) if @current_player == @player2
+      @player2.delete_piece(finish) if @current_player == @player1
+    end
   end
 
   # user input error handling: is there a piece in that square?
@@ -106,7 +114,10 @@ class Game
     when 'Queen'
       queen_move_iterator(piece)
     when 'Pawn'
-      possibilities.delete_if { |square| occupied_by_opposite_color?(square)}
+      possibilities.delete_if { |square| occupied_by_opposite_color?(square) }
+      possibilities << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
+      possibilities << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
+      possibilities
     end
   end
 
@@ -116,9 +127,11 @@ class Game
 
     lines.each do |line|
       line.each do |square|
-        break if occupied_by_any_piece?(square)
+        break if occupied_by_same_color?(square)
 
         result << square
+
+        break if occupied_by_opposite_color?(square)
       end
     end
     result
