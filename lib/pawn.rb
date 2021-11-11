@@ -11,16 +11,20 @@ class Pawn
   end
 
   def left_diagonal
-    result = [@position[0] - 1, @position[1] + 1]
+    result = [@position[0] - 1, @position[1] + 1] if @color == 'white'
+    result = [@position[0] + 1, @position[1] - 1] if @color == 'black'
 
     return nil if off_board?(result)
+
     result
   end
 
   def right_diagonal
-    result = [@position[0] + 1, @position[1] - 1]
+    result = [@position[0] + 1, @position[1] + 1] if @color == 'white'
+    result = [@position[0] - 1, @position[1] - 1] if @color == 'black'
 
     return nil if off_board?(result)
+
     result
   end
 
