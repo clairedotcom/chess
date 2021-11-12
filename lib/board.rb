@@ -8,7 +8,7 @@ class Board
   def create_display(white_set, black_set)
     @display.each_with_index do |row, x|
       row.each_with_index do |_col, y|
-        @display[x][y] = (x + y).even? ? colorize('white') : colorize('black')
+        @display[x][y] = (x + y).even? ? colorize('black') : colorize('white')
       end
     end
     place_white_pieces(white_set)
@@ -21,7 +21,7 @@ class Board
       x = piece.position[0]
       y = piece.position[1]
       name = piece.class.name.downcase
-      @display[x][y] = (x + y).even? ? white_bg(white_pieces(name)) : black_bg(white_pieces(name))
+      @display[y][x] = (x + y).even? ? black_bg(white_pieces(name)) : white_bg(white_pieces(name))
     end
   end
 
@@ -30,18 +30,21 @@ class Board
       x = piece.position[0]
       y = piece.position[1]
       name = piece.class.name.downcase
-      @display[x][y] = (x + y).even? ? white_bg(black_pieces(name)) : black_bg(black_pieces(name))
+      @display[y][x] = (x + y).even? ? black_bg(black_pieces(name)) : white_bg(black_pieces(name))
     end
   end
 
   def print_board
-    @display.unshift(['1 ', '2 ', '3 ', '4 ', '5 ', '6 ', '7 ', '8 '])
-    @display.push([' 1 ', '2 ', '3 ', '4 ', '5 ', '6 ', '7 ', '8 '])
-    letters = [' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+    letters = ['  a ', 'b', ' c', ' d', ' e', ' f', ' g', ' h']
+    numbers = [' ', '8 ', '7 ', '6 ', '5 ', '4 ', '3 ', '2 ', '1 ']
 
-    @display.each_with_index do |row, i|
-      puts "#{letters[i]} #{row.join('')} #{letters[i]}"
+    @display.unshift(letters)
+    @display.push([' a ', 'b ', 'c ', 'd ', 'e ', 'f ', 'g ', 'h'])
+
+    @display.reverse.each_with_index do |row, i|
+      puts "#{numbers[i]} #{row.join('')} #{numbers[i]}"
     end
+
     @display.pop(2)
   end
 
