@@ -15,11 +15,14 @@ class Game
 
   def play_chess
     intro_dialogue
+    turn
   end
 
   def turn
     @board.create_display(@player1.set, @player2.set)
+
     loop do
+      puts announce_current_player
       move = solicit_move
       capture(move[1])
       update_board(move[0], move[1])
@@ -34,7 +37,7 @@ class Game
 
       return [start, finish] if valid_move_for_piece?(start, finish)
 
-      puts 'Invalid move for that piece. Please try again.'
+      puts illegal_move
     end
   end
 
@@ -45,7 +48,7 @@ class Game
       square = gets.chomp
       return square if valid_coords?(square) && piece_at?(decode_coords(square))
 
-      puts 'Invalid input. Please enter the square number and letter (e.g. f5): '
+      puts invalid_input
     end
   end
 
@@ -56,7 +59,7 @@ class Game
       square = gets.chomp
       return square if valid_coords?(square)
 
-      puts 'Invalid input. Please try again.'
+      puts invalid_input
     end
   end
 
@@ -68,11 +71,17 @@ class Game
     false
   end
 
+  def check?
+
+  end
+
+  def game_over?
+
+  end
+
   def capture(finish)
-    if occupied_by_opposite_color?(finish)
-      @player1.delete_piece(finish) if @current_player == @player2
-      @player2.delete_piece(finish) if @current_player == @player1
-    end
+    @player1.delete_piece(finish) if occupied_by_opposite_color?(finish) && @current_player == @player2
+    @player2.delete_piece(finish) if occupied_by_opposite_color?(finish) && @current_player == @player1
   end
 
   # user input error handling: is there a piece in that square?
@@ -114,11 +123,15 @@ class Game
     when 'Queen'
       queen_move_iterator(piece)
     when 'Pawn'
-      possibilities.delete_if { |square| occupied_by_opposite_color?(square) }
-      possibilities << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
-      possibilities << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
-      possibilities
+      add_diagonal_pawn_moves(possibilities, piece)
     end
+  end
+
+  def add_diagonal_pawn_moves(possibilities, piece)
+    possibilities.delete_if { |square| occupied_by_opposite_color?(square) }
+    possibilities << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
+    possibilities << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
+    possibilities
   end
 
   def rook_bishop_move_iterator(piece)
@@ -172,7 +185,20 @@ class Game
 
   private
 
+  def announce_current_player
+    "#{@current_player.id.capitalize}, it's your turn."
+  end
+
+  def illegal_move
+    'Illegal move for that piece. Please try again.'
+  end
+
+  def invalid_input
+    'Invalid input. Please enter the square number and letter (e.g. f5): '
+  end
+
   def intro_dialogue
     puts 'Welcome to chess!'
+    puts 'To save the state of your game, please enter "save" at any time.'
   end
 end
