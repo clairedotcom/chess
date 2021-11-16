@@ -7,13 +7,14 @@ require_relative '../lib/pawn'
 require_relative '../lib/notation_translator'
 
 class Player
-  attr_reader :id, :set
+  attr_reader :id, :set, :loser
 
   include NotationTranslator
 
   def initialize(id)
     @id = id
     @set = generate_set
+    @loser = false
   end
 
   def generate_set
@@ -72,6 +73,7 @@ class Player
     @set.each do |piece|
       if piece.position == square
         @set.delete(piece)
+        @loser = true if piece.instance_of? King
       end
     end
   end

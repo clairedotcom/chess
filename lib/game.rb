@@ -26,6 +26,8 @@ class Game
       move = solicit_move
       capture(move[1])
       update_board(move[0], move[1])
+      break if game_over?
+
       switch_player
     end
   end
@@ -72,11 +74,13 @@ class Game
   end
 
   def check?
-
+    # do any of the opposite player's possible moves contain current player's king?
   end
 
   def game_over?
+    return true if @player1.loser == true || @player2.loser == true
 
+    false
   end
 
   def capture(finish)
@@ -156,9 +160,11 @@ class Game
 
     lines.each do |line|
       line.each do |square|
-        break if occupied_by_any_piece?(square)
+        break if occupied_by_same_color?(square)
 
         result << square
+
+        break if occupied_by_opposite_color?(square)
       end
     end
     result
