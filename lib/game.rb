@@ -24,6 +24,8 @@ class Game
     loop do
       puts announce_current_player
       move = solicit_move
+      @current_player.king_side_castle if king_side_castle?(move)
+      @current_player.queen_side_castle if queen_side_castle?(move)
       capture(move[1])
       update_board(move[0], move[1])
       break if game_over?
@@ -34,8 +36,8 @@ class Game
 
   def solicit_move
     loop do
-      start = decode_coords(solicit_start_square)
-      finish = decode_coords(solicit_finish_square)
+      start = solicit_start_square
+      finish = solicit_finish_square
 
       return [start, finish] if valid_move_for_piece?(start, finish)
 
@@ -48,7 +50,7 @@ class Game
 
     loop do
       square = gets.chomp
-      return square if valid_coords?(square) && piece_at?(decode_coords(square))
+      return decode_coords(square) if valid_coords?(square) && piece_at?(decode_coords(square))
 
       puts invalid_input
     end
@@ -59,7 +61,7 @@ class Game
 
     loop do
       square = gets.chomp
-      return square if valid_coords?(square)
+      return decode_coords(square) if valid_coords?(square)
 
       puts invalid_input
     end
@@ -117,6 +119,8 @@ class Game
 
     case piece_name
     when 'King'
+      possibilities << king_side_castle
+      possibilities << queen_side_castle
       possibilities
     when 'Knight'
       possibilities
@@ -168,6 +172,50 @@ class Game
       end
     end
     result
+  end
+
+  def king_side_castle?(move)
+    if @current_player == @player1 && move[1] == [6, 0]
+      true
+    elsif @current_player == @player2 && move[1] == [6, 7]
+      true
+    end
+  end
+
+  def queen_side_castle?(move)
+    if @current_player == @player1 && move[1] == [2, 0]
+      true
+    elsif @current_player == @player2 && move[1] == [2, 7]
+      true
+    end
+  end
+
+  def king_side_castle
+    if @current_player == @player1
+      if !piece_at?([5, 0]) && !piece_at?([6, 0])
+        [6, 0]
+      end
+    end
+
+    if @curent_player == @player2
+      if !piece_at?([5, 7]) && !piece_at?([6, 7])
+        [6, 7]
+      end
+    end  
+  end
+
+  def queen_side_castle
+    if @current_player == @player1
+      if !piece_at?([1, 0]) && !piece_at?([2, 0]) && !piece_at?([3, 0])
+        [2, 0]
+      end
+    end
+
+    if @current_player == @player2
+      if !piece_at?([1, 7]) && !piece_at?([2, 7]) && !piece_at?([3, 7])
+        [2, 7]
+      end
+    end
   end
 
   def occupied_by_any_piece?(square)

@@ -51,6 +51,34 @@ class Player
     pawns
   end
 
+  def king_side_castle
+    @set.each do |piece|
+      if piece.position == [7, 0] && @id == 'white'
+        piece.position = [5, 0]
+      elsif piece.position == [4, 0] && @id == 'white'
+        piece.position = [6, 0]
+      elsif piece.position == [7, 7] && @id == 'black'
+        piece.position = [5, 7]
+      elsif piece.position == [4, 7] && @id == 'black'
+        piece.position = [6, 7]
+      end
+    end
+  end
+
+  def queen_side_castle
+    @set.each do |piece|
+      if piece.position == [0, 0] && @id == 'white'
+        piece.position = [3, 0]
+      elsif piece.position == [4, 0] && @id == 'white'
+        piece.position = [2, 0]
+      elsif piece.position == [0, 7] && @id == 'black'
+        piece.position = [3, 7]
+      elsif piece.position == [4, 7] && @id == 'black'
+        piece.position = [2, 7]
+      end
+    end
+  end
+
   def update_set(start, finish)
     @set.each do |piece|
       if piece.position == start
