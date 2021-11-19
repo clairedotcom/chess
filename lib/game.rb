@@ -1,10 +1,12 @@
 require_relative '../lib/player'
 require_relative '../lib/board'
 require_relative '../lib/notation_translator'
+require_relative '../lib/dialogue'
 
 class Game
   include NotationTranslator
   include MoveValidator
+  include Dialogue
 
   def initialize
     @player1 = Player.new('white')
@@ -241,18 +243,5 @@ class Game
 
   def announce_current_player
     "#{@current_player.id.capitalize}, it's your turn."
-  end
-
-  def illegal_move
-    'Illegal move for that piece. Please try again.'
-  end
-
-  def invalid_input
-    'Invalid input. Please enter the square number and letter (e.g. f5): '
-  end
-
-  def intro_dialogue
-    puts 'Welcome to chess!'
-    puts 'To save the state of your game, please enter "save" at any time.'
   end
 end
