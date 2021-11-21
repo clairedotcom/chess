@@ -2,11 +2,13 @@ require_relative '../lib/player'
 require_relative '../lib/board'
 require_relative '../lib/notation_translator'
 require_relative '../lib/dialogue'
+require_relative '../lib/game_serializer'
 
 class Game
   include NotationTranslator
   include MoveValidator
   include Dialogue
+  include GameSerializer
 
   def initialize
     @player1 = Player.new('white')
@@ -52,7 +54,7 @@ class Game
 
     loop do
       square = gets.chomp
-      return decode_coords(square) if valid_coords?(square) && piece_at?(decode_coords(square))
+      return decode_coords(square) if valid_coords?(square) && occupied_by_same_color?(decode_coords(square))
 
       puts invalid_input
     end
@@ -93,7 +95,7 @@ class Game
   end
 
   # user input error handling: is there a piece in that square?
-  def piece_at?(square)
+  def occupied_by_same_color?(square)
     return true if @current_player.set.any? { |piece| piece.position == square }
 
     false
@@ -106,13 +108,6 @@ class Game
 
   def switch_player
     @current_player = @current_player == @player1 ? @player2 : @player1
-  end
-
-  def occupied_by_same_color?(square)
-    @current_player.set.each do |piece|
-      return true if piece.position == square
-    end
-    false
   end
 
   def remove_blocked_squares(possibilities, start)
@@ -194,54 +189,44 @@ class Game
 
   def king_side_castle
     if @current_player == @player1
-      if !piece_at?([5, 0]) && !piece_at?([6, 0])
+      if !occupied_by_any_piece?([5, 0]) && !occupied_by_any_piece?([6, 0])
         [6, 0]
       end
     end
 
     if @curent_player == @player2
-      if !piece_at?([5, 7]) && !piece_at?([6, 7])
+      if !occupied_by_any_piece?([5, 7]) && !occupied_by_any_piece?([6, 7])
         [6, 7]
       end
-    end  
+    end
   end
 
   def queen_side_castle
     if @current_player == @player1
-      if !piece_at?([1, 0]) && !piece_at?([2, 0]) && !piece_at?([3, 0])
+      if !occupied_by_any_piece?([1, 0]) && !occupied_by_any_piece?([2, 0]) && !occupied_by_any_piece?([3, 0])
         [2, 0]
       end
     end
 
     if @current_player == @player2
-      if !piece_at?([1, 7]) && !piece_at?([2, 7]) && !piece_at?([3, 7])
+      if !occupied_by_any_piece?([1, 7]) && !occupied_by_any_piece?([2, 7]) && !occupied_by_any_piece?([3, 7])
         [2, 7]
       end
     end
   end
 
   def occupied_by_any_piece?(square)
-    if @player1.set.any? { |piece| piece.position == square }
-      true
-    elsif @player2.set.any? { |piece| piece.position == square }
-      true
-    else
-      false
-    end
+    return true if @player1.set.any? { |piece| piece.position == square }
+    return true if @player2.set.any? { |piece| piece.position == square }
+
+    false
   end
 
   def occupied_by_opposite_color?(square)
     player = @current_player == @player1 ? @player2 : @player1
 
-    player.set.each do |piece|
-      return true if piece.position == square
-    end
+    return true if player.set.any? { |piece| piece.position == square }
+    
     false
-  end
-
-  private
-
-  def announce_current_player
-    "#{@current_player.id.capitalize}, it's your turn."
   end
 end
