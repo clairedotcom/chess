@@ -40,6 +40,8 @@ class Game
 
   def solicit_move
     loop do
+      puts "Enter the location of the piece you'd like to move (e.g. a4): "
+
       start = solicit_start_square
       finish = solicit_finish_square
 
@@ -50,8 +52,6 @@ class Game
   end
 
   def solicit_start_square
-    puts "Enter the location of the piece you'd like to move (e.g. a4): "
-
     loop do
       square = gets.chomp
       return decode_coords(square) if valid_coords?(square) && occupied_by_same_color?(decode_coords(square))
@@ -226,7 +226,7 @@ class Game
     player = @current_player == @player1 ? @player2 : @player1
 
     return true if player.set.any? { |piece| piece.position == square }
-    
+
     false
   end
 end
