@@ -71,14 +71,6 @@ class Game
     end
   end
 
-  def valid_move_for_piece?(start, finish)
-    possibilities = @current_player.get_moves_for_piece(start)
-    possibilities.delete_if { |square| occupied_by_same_color?(square) }
-    return true if remove_blocked_squares(possibilities, start).include?(finish)
-
-    false
-  end
-
   def check?
     # do any of the opposite player's possible moves contain current player's king?
   end
@@ -137,38 +129,6 @@ class Game
     possibilities << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
     possibilities << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
     possibilities
-  end
-
-  def rook_bishop_move_iterator(piece)
-    result = []
-    lines = [piece.line1, piece.line2, piece.line3, piece.line4]
-
-    lines.each do |line|
-      line.each do |square|
-        break if occupied_by_same_color?(square)
-
-        result << square
-
-        break if occupied_by_opposite_color?(square)
-      end
-    end
-    result
-  end
-
-  def queen_move_iterator(piece)
-    result = []
-    lines = [piece.line1, piece.line2, piece.line3, piece.line4, piece.line5, piece.line6, piece.line7, piece.line8]
-
-    lines.each do |line|
-      line.each do |square|
-        break if occupied_by_same_color?(square)
-
-        result << square
-
-        break if occupied_by_opposite_color?(square)
-      end
-    end
-    result
   end
 
   def king_side_castle?(move)
