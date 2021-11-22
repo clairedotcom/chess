@@ -18,24 +18,33 @@ class Player
   end
 
   def generate_set
-    set = []
-
     case @id
     when 'white'
-      set << generate_white_pawns
-      set << [Rook.new([0, 0]), Rook.new([7, 0])]
-      set << [Knight.new([1, 0]), Knight.new([6, 0])]
-      set << [Bishop.new([2, 0]), Bishop.new([5, 0])]
-      set << [Queen.new([3, 0])]
-      set << [King.new([4, 0])]
+      generate_white_set
     when 'black'
-      set << generate_black_pawns
-      set << [Rook.new([0, 7]), Rook.new([7, 7])]
-      set << [Knight.new([1, 7]), Knight.new([6, 7])]
-      set << [Bishop.new([2, 7]), Bishop.new([5, 7])]
-      set << [Queen.new([3, 7])]
-      set << [King.new([4, 7])]
+      generate_black_set
     end
+  end
+
+  def generate_white_set
+    set = []
+    set << generate_white_pawns
+    set << [Rook.new([0, 0]), Rook.new([7, 0])]
+    set << [Knight.new([1, 0]), Knight.new([6, 0])]
+    set << [Bishop.new([2, 0]), Bishop.new([5, 0])]
+    set << [Queen.new([3, 0])]
+    set << [King.new([4, 0])]
+    set.flatten
+  end
+
+  def generate_black_set
+    set = []
+    set << generate_black_pawns
+    set << [Rook.new([0, 7]), Rook.new([7, 7])]
+    set << [Knight.new([1, 7]), Knight.new([6, 7])]
+    set << [Bishop.new([2, 7]), Bishop.new([5, 7])]
+    set << [Queen.new([3, 7])]
+    set << [King.new([4, 7])]
     set.flatten
   end
 
@@ -51,39 +60,9 @@ class Player
     pawns
   end
 
-  def king_side_castle_move
-    @set.each do |piece|
-      if piece.position == [7, 0] && @id == 'white'
-        piece.position = [5, 0]
-      elsif piece.position == [4, 0] && @id == 'white'
-        piece.position = [6, 0]
-      elsif piece.position == [7, 7] && @id == 'black'
-        piece.position = [5, 7]
-      elsif piece.position == [4, 7] && @id == 'black'
-        piece.position = [6, 7]
-      end
-    end
-  end
-
-  def queen_side_castle_move
-    @set.each do |piece|
-      if piece.position == [0, 0] && @id == 'white'
-        piece.position = [3, 0]
-      elsif piece.position == [4, 0] && @id == 'white'
-        piece.position = [2, 0]
-      elsif piece.position == [0, 7] && @id == 'black'
-        piece.position = [3, 7]
-      elsif piece.position == [4, 7] && @id == 'black'
-        piece.position = [2, 7]
-      end
-    end
-  end
-
   def update_set(start, finish)
     @set.each do |piece|
-      if piece.position == start
-        piece.position = finish
-      end
+      piece.position = finish if piece.position == start
     end
   end
 
@@ -103,6 +82,54 @@ class Player
         @set.delete(piece)
         @loser = true if piece.instance_of? King
       end
+    end
+  end
+
+  # Castling methods
+
+  def king_side_castle_move
+    case @id
+    when 'white'
+      make_white_kingside_move
+    when 'black'
+      make_black_kingside_move
+    end
+  end
+
+  def queen_side_castle_move
+    case @id
+    when 'white'
+      make_white_queenside_move
+    when 'black'
+      make_black_queenside_move
+    end
+  end
+
+  def make_white_kingside_move
+    @set.each do |piece|
+      piece.position = [5, 0] if piece.position == [7, 0]
+      piece.position = [6, 0] if piece.position == [4, 0]
+    end
+  end
+
+  def make_white_queenside_move
+    @set.each do |piece|
+      piece.position = [3, 0] if piece.position == [0, 0]
+      piece.position = [2, 0] if piece.position == [4, 0]
+    end
+  end
+
+  def make_black_kingside_move
+    @set.each do |piece|
+      piece.position = [5, 7] if piece.position == [7, 7]
+      piece.position = [6, 7] if piece.position == [4, 7]
+    end
+  end
+
+  def make_black_queenside_move
+    @set.each do |piece|
+      piece.position = [3, 7] if piece.position == [0, 7]
+      piece.position = [2, 7] if piece.position == [4, 7]
     end
   end
 end
