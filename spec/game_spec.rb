@@ -1,9 +1,9 @@
 require_relative '../lib/game'
 
 describe Game do
-  describe '#solicit_start_square' do
-    subject(:test_game) { described_class.new }
+  subject(:test_game) { described_class.new }
 
+  describe '#solicit_start_square' do
     context 'when the user inputs a2' do
       before do
         allow(test_game).to receive(:gets).and_return('a2')
@@ -19,7 +19,7 @@ describe Game do
       before do
         letters = 'abcd'
         valid_input = 'e2'
-        allow(test_game).to receive(:gets).and_return(letters, valid_input) 
+        allow(test_game).to receive(:gets).and_return(letters, valid_input)
       end
 
       it 'prints an error message' do
@@ -31,27 +31,108 @@ describe Game do
   end
 
   describe '#ocupied_by_any_piece?' do
-    subject(:new_game) { described_class.new }
-
     context 'when given an unocupied square a4' do
       it 'returns false' do
         square = [0, 3]
-        expect(new_game.occupied_by_any_piece?(square)).to be false
+        expect(test_game.occupied_by_any_piece?(square)).to be false
       end
     end
 
     context 'when given a square occupied by black e8' do
       it 'returns true' do
         square = [4, 7]
-        expect(new_game.occupied_by_any_piece?(square)).to be true
+        expect(test_game.occupied_by_any_piece?(square)).to be true
       end
     end
 
     context 'when given a square occupied by white f1' do
       it 'returns true' do
         square = [6, 0]
-        expect(new_game.occupied_by_any_piece?(square)).to be true
+        expect(test_game.occupied_by_any_piece?(square)).to be true
       end
-    end    
+    end
+  end
+
+  describe '#occupied_by_same_color?' do
+    context 'when @current_player is white and the square has a white piece' do
+      it 'returns true' do
+        square = [0, 0]
+        expect(test_game.occupied_by_same_color?(square)).to be true
+      end
+    end
+
+    context 'when @current_player is white and the square has a black piece' do
+      it 'returns false' do
+        square = [7, 7]
+        expect(test_game.occupied_by_same_color?(square)).to be false
+      end
+    end
+  end
+
+  describe '#save_game' do
+    context 'when game_archive directory does not exist' do
+      before do
+        allow(Dir).to receive(:exist?).and_return(false)
+        allow(Dir).to receive(:mkdir)
+        allow(File).to receive(:open)
+      end
+
+      it 'checks if the directory exists' do
+        expect(Dir).to receive(:exist?).with('game_archive').once
+        test_game.save_game
+      end
+
+      it 'creates a new directory if directory does not exist' do
+        expect(Dir).to receive(:mkdir).once
+        test_game.save_game
+      end
+
+      it 'creates a new file' do
+        expect(File).to receive(:open).once
+        test_game.save_game
+      end
+    end
+  end
+
+  context 'when the directory exists' do
+    before do
+      allow(Dir).to receive(:exist?).and_return(true)
+      allow(File).to receive(:open)
+    end
+
+    it 'checks if the directory exists' do
+      expect(Dir).to receive(:exist?).with('game_archive').once
+      test_game.save_game
+    end
+
+    it 'does not create a new directory' do
+      expect(Dir).not_to receive(:mkdir)
+      test_game.save_game
+    end
+
+    it 'creates a new file' do
+      expect(File).to receive(:open).once
+      test_game.save_game
+    end
+  end
+
+  describe '#count_files' do
+    context 'when the directory does not exist' do
+      it 'returns zero' do
+        expect(test_game.count_files).to eq(0)
+      end
+    end
+
+    context 'when the directory exists with 2 files' do
+      before do
+        files = %w[game_1 game_2]
+        allow(Dir).to receive(:entries).and_return(files)
+      end
+
+      it 'returns 3' do
+        number = 3
+        expect(test_game.count_files).to eq(number)
+      end
+    end
   end
 end
