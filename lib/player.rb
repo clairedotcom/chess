@@ -51,7 +51,7 @@ class Player
     pawns
   end
 
-  def king_side_castle
+  def king_side_castle_move
     @set.each do |piece|
       if piece.position == [7, 0] && @id == 'white'
         piece.position = [5, 0]
@@ -65,7 +65,7 @@ class Player
     end
   end
 
-  def queen_side_castle
+  def queen_side_castle_move
     @set.each do |piece|
       if piece.position == [0, 0] && @id == 'white'
         piece.position = [3, 0]

@@ -28,8 +28,8 @@ class Game
     loop do
       puts announce_current_player
       move = solicit_move
-      @current_player.king_side_castle if king_side_castle?(move)
-      @current_player.queen_side_castle if queen_side_castle?(move)
+      @current_player.king_side_castle_move if king_side_castle?(move)
+      @current_player.queen_side_castle_move if queen_side_castle?(move)
       capture(move[1])
       update_board(move[0], move[1])
       break if game_over?
@@ -86,13 +86,6 @@ class Game
     @player2.delete_piece(finish) if occupied_by_opposite_color?(finish) && @current_player == @player1
   end
 
-  # user input error handling: is there a piece in that square?
-  def occupied_by_same_color?(square)
-    return true if @current_player.set.any? { |piece| piece.position == square }
-
-    false
-  end
-
   def update_board(start, finish)
     @current_player.update_set(start, finish)
     @board.create_display(@player1.set, @player2.set)
@@ -131,6 +124,29 @@ class Game
     possibilities
   end
 
+  # Methods to check squares for pieces
+
+  def occupied_by_any_piece?(square)
+    return true if occupied_by_same_color?(square) || occupied_by_opposite_color?(square)
+
+    false
+  end
+
+  def occupied_by_opposite_color?(square)
+    player = @current_player == @player1 ? @player2 : @player1
+    return true if player.set.any? { |piece| piece.position == square }
+
+    false
+  end
+
+  def occupied_by_same_color?(square)
+    return true if @current_player.set.any? { |piece| piece.position == square }
+
+    false
+  end
+
+  # Castling methods
+
   def king_side_castle?(move)
     if @current_player == @player1 && move[1] == [6, 0]
       true
@@ -148,45 +164,36 @@ class Game
   end
 
   def king_side_castle
-    if @current_player == @player1
-      if !occupied_by_any_piece?([5, 0]) && !occupied_by_any_piece?([6, 0])
-        [6, 0]
-      end
-    end
-
-    if @curent_player == @player2
-      if !occupied_by_any_piece?([5, 7]) && !occupied_by_any_piece?([6, 7])
-        [6, 7]
-      end
-    end
+    return [6, 0] if white_king_side_free? && @current_player == @player1
+    return [6, 7] if black_king_side_free? && @current_player == @player2
   end
 
   def queen_side_castle
-    if @current_player == @player1
-      if !occupied_by_any_piece?([1, 0]) && !occupied_by_any_piece?([2, 0]) && !occupied_by_any_piece?([3, 0])
-        [2, 0]
-      end
-    end
-
-    if @current_player == @player2
-      if !occupied_by_any_piece?([1, 7]) && !occupied_by_any_piece?([2, 7]) && !occupied_by_any_piece?([3, 7])
-        [2, 7]
-      end
-    end
+    return [2, 0] if white_queen_side_free? && @current_player == @player1
+    return [2, 7] if black_queen_side_free? && @current_player == @player2
   end
 
-  def occupied_by_any_piece?(square)
-    return true if @player1.set.any? { |piece| piece.position == square }
-    return true if @player2.set.any? { |piece| piece.position == square }
+  def white_king_side_free?
+    return false if occupied_by_any_piece?([5, 0]) && occupied_by_any_piece?([6, 0])
 
-    false
+    true
   end
 
-  def occupied_by_opposite_color?(square)
-    player = @current_player == @player1 ? @player2 : @player1
+  def black_king_side_free?
+    return false if occupied_by_any_piece?([5, 7]) && occupied_by_any_piece?([6, 7])
 
-    return true if player.set.any? { |piece| piece.position == square }
+    true
+  end
 
-    false
+  def white_queen_side_free?
+    return false if occupied_by_any_piece?([1, 0]) && occupied_by_any_piece?([2, 0]) && occupied_by_any_piece?([3, 0])
+
+    true
+  end
+
+  def black_queen_side_free?
+    return false if occupied_by_any_piece?([1, 7]) && occupied_by_any_piece?([2, 7]) && occupied_by_any_piece?([3, 7])
+
+    true
   end
 end
