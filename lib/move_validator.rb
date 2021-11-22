@@ -20,14 +20,6 @@ module MoveValidator
     false
   end
 
-  def valid_move_for_piece?(start, finish)
-    possibilities = @current_player.get_moves_for_piece(start)
-    possibilities.delete_if { |square| occupied_by_same_color?(square) }
-    return true if remove_blocked_squares(possibilities, start).include?(finish)
-
-    false
-  end
-
   def rook_bishop_move_iterator(piece)
     result = []
     lines = [piece.line1, piece.line2, piece.line3, piece.line4]

@@ -40,34 +40,35 @@ class Game
 
   def solicit_move
     loop do
-      puts "Enter the location of the piece you'd like to move (e.g. a4): "
+      puts start_square_dialogue
 
       start = solicit_start_square
       finish = solicit_finish_square
 
       return [start, finish] if valid_move_for_piece?(start, finish)
 
-      puts illegal_move
+      puts illegal_move_message
     end
   end
 
   def solicit_start_square
     loop do
-      square = gets.chomp
-      return decode_coords(square) if valid_coords?(square) && occupied_by_same_color?(decode_coords(square))
+      user_input = gets.chomp
+      square = decode_coords(user_input)
+      return square if valid_coords?(user_input) && occupied_by_same_color?(square)
 
-      puts invalid_input
+      puts invalid_input_message
     end
   end
 
   def solicit_finish_square
-    puts 'Which square would you like to move to? (e.g. a4): '
+    puts finish_square_dialogue
 
     loop do
       square = gets.chomp
       return decode_coords(square) if valid_coords?(square)
 
-      puts invalid_input
+      puts invalid_input_message
     end
   end
 
@@ -95,32 +96,39 @@ class Game
     @current_player = @current_player == @player1 ? @player2 : @player1
   end
 
-  def remove_blocked_squares(possibilities, start)
+  # Methods to check if moves are legal
+
+  def valid_move_for_piece?(start, finish)
     piece = @current_player.get_piece_at(start)
+    possible_moves = piece.moves
+    possible_moves.delete_if { |square| occupied_by_same_color?(square) }
+
+    return true if legal_moves(possible_moves, piece).include?(finish)
+
+    false
+  end
+
+  def legal_moves(possibilities, piece)
     piece_name = piece.class.name
 
-    case piece_name
-    when 'King'
-      possibilities << king_side_castle
-      possibilities << queen_side_castle
-      possibilities
-    when 'Knight'
-      possibilities
-    when 'Rook'
-      rook_bishop_move_iterator(piece)
-    when 'Bishop'
-      rook_bishop_move_iterator(piece)
-    when 'Queen'
-      queen_move_iterator(piece)
-    when 'Pawn'
-      add_diagonal_pawn_moves(possibilities, piece)
-    end
+    return add_king_castle_moves(possibilities) if piece_name == 'King'
+    return possibilities if piece_name == 'Knight'
+    return rook_bishop_move_iterator(piece) if piece_name == 'Rook'
+    return rook_bishop_move_iterator(piece) if piece_name == 'Bishop'
+    return queen_move_iterator(piece) if piece_name == 'Queen'
+    return add_diagonal_pawn_moves(possibilities, piece) if piece_name == 'Pawn'
   end
 
   def add_diagonal_pawn_moves(possibilities, piece)
     possibilities.delete_if { |square| occupied_by_opposite_color?(square) }
     possibilities << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
     possibilities << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
+    possibilities
+  end
+
+  def add_king_castle_moves(possibilities)
+    possibilities << king_side_castle
+    possibilities << queen_side_castle
     possibilities
   end
 
