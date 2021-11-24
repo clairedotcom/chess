@@ -23,4 +23,10 @@ module GameSerializer
   rescue Errno::ENOENT
     0
   end
+
+  def print_existing_filenames
+    Dir.entries('game_archive').each do |filename|
+      puts filename
+    end
+  end
 end

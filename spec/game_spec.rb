@@ -135,4 +135,36 @@ describe Game do
       end
     end
   end
+
+  describe '#print_existing_filenames' do
+    context 'when there is one file in game_arhive' do
+      before do
+        file = %w[game_1]
+        allow(Dir).to receive(:entries).and_return(file)
+      end
+
+      it 'returns the file names' do
+        file = 'game_1'
+        expect(test_game).to receive(:puts).with(file).once
+        test_game.print_existing_filenames
+      end
+    end
+
+    context 'when there are 3 files in game_archive' do
+      before do
+        files = %w[game_1 game_2 game_3]
+        allow(Dir).to receive(:entries).and_return(files)
+      end
+
+      it 'returns the file names' do
+        name1 = 'game_1'
+        name2 = 'game_2'
+        name3 = 'game_3'
+        expect(test_game).to receive(:puts).with(name1)
+        expect(test_game).to receive(:puts).with(name2)
+        expect(test_game).to receive(:puts).with(name3)
+        test_game.print_existing_filenames
+      end
+    end
+  end
 end
