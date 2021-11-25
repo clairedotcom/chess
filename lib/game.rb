@@ -27,15 +27,20 @@ class Game
 
     loop do
       puts announce_current_player
-      move = solicit_move
-      @current_player.king_side_castle_move if king_side_castle?(move)
-      @current_player.queen_side_castle_move if queen_side_castle?(move)
-      capture(move[1])
+      move = review_move
       update_board(move[0], move[1])
       break if game_over?
 
       switch_player
     end
+  end
+
+  def review_move
+    move = solicit_move
+    @current_player.king_side_castle_move if king_side_castle?(move)
+    @current_player.queen_side_castle_move if queen_side_castle?(move)
+    capture(move[1])
+    move
   end
 
   def solicit_move
@@ -108,28 +113,28 @@ class Game
     false
   end
 
-  def legal_moves(possibilities, piece)
+  def legal_moves(possible_moves, piece)
     piece_name = piece.class.name
 
-    return add_king_castle_moves(possibilities) if piece_name == 'King'
-    return possibilities if piece_name == 'Knight'
+    return add_king_castle_moves(possible_moves) if piece_name == 'King'
+    return possible_moves if piece_name == 'Knight'
     return rook_bishop_move_iterator(piece) if piece_name == 'Rook'
     return rook_bishop_move_iterator(piece) if piece_name == 'Bishop'
     return queen_move_iterator(piece) if piece_name == 'Queen'
-    return add_diagonal_pawn_moves(possibilities, piece) if piece_name == 'Pawn'
+    return add_diagonal_pawn_moves(possible_moves, piece) if piece_name == 'Pawn'
   end
 
-  def add_diagonal_pawn_moves(possibilities, piece)
-    possibilities.delete_if { |square| occupied_by_opposite_color?(square) }
-    possibilities << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
-    possibilities << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
-    possibilities
+  def add_diagonal_pawn_moves(possible_moves, piece)
+    possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
+    possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
+    possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
+    possible_moves
   end
 
-  def add_king_castle_moves(possibilities)
-    possibilities << king_side_castle
-    possibilities << queen_side_castle
-    possibilities
+  def add_king_castle_moves(possible_moves)
+    possible_moves << king_side_castle
+    possible_moves << queen_side_castle
+    possible_moves
   end
 
   # Methods to check squares for pieces

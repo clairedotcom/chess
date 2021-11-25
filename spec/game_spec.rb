@@ -69,6 +69,22 @@ describe Game do
     end
   end
 
+  describe '#occupied_by_opposite_color?' do
+    context 'when white is @current_player and the square has a black piece' do
+      it 'returns true' do
+        square = [7, 7]
+        expect(test_game.occupied_by_opposite_color?(square)).to be true
+      end
+    end
+
+    context 'when white is @current_player and the square has a white piece' do
+      it 'returns false' do
+        square = [6, 1]
+        expect(test_game.occupied_by_opposite_color?(square)).to be false
+      end
+    end
+  end
+
   describe '#save_game' do
     context 'when game_archive directory does not exist' do
       before do
@@ -92,27 +108,27 @@ describe Game do
         test_game.save_game
       end
     end
-  end
 
-  context 'when the directory exists' do
-    before do
-      allow(Dir).to receive(:exist?).and_return(true)
-      allow(File).to receive(:open)
-    end
+    context 'when the directory exists' do
+      before do
+        allow(Dir).to receive(:exist?).and_return(true)
+        allow(File).to receive(:open)
+      end
 
-    it 'checks if the directory exists' do
-      expect(Dir).to receive(:exist?).with('game_archive').once
-      test_game.save_game
-    end
+      it 'checks if the directory exists' do
+        expect(Dir).to receive(:exist?).with('game_archive').once
+        test_game.save_game
+      end
 
-    it 'does not create a new directory' do
-      expect(Dir).not_to receive(:mkdir)
-      test_game.save_game
-    end
+      it 'does not create a new directory' do
+        expect(Dir).not_to receive(:mkdir)
+        test_game.save_game
+      end
 
-    it 'creates a new file' do
-      expect(File).to receive(:open).once
-      test_game.save_game
+      it 'creates a new file' do
+        expect(File).to receive(:open).once
+        test_game.save_game
+      end
     end
   end
 
