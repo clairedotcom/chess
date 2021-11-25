@@ -11,8 +11,8 @@ class Pawn
   end
 
   def left_diagonal
-    result = [@position[0] - 1, @position[1] + 1] if @color == 'white'
-    result = [@position[0] + 1, @position[1] - 1] if @color == 'black'
+    result = [@position[0] - 1, @position[1] + 1] if @color == :white
+    result = [@position[0] + 1, @position[1] - 1] if @color == :black
 
     return nil if off_board?(result)
 
@@ -20,8 +20,8 @@ class Pawn
   end
 
   def right_diagonal
-    result = [@position[0] + 1, @position[1] + 1] if @color == 'white'
-    result = [@position[0] - 1, @position[1] - 1] if @color == 'black'
+    result = [@position[0] + 1, @position[1] + 1] if @color == :white
+    result = [@position[0] - 1, @position[1] - 1] if @color == :black
 
     return nil if off_board?(result)
 
@@ -29,8 +29,8 @@ class Pawn
   end
 
   def moves
-    return white_pawn if @color == 'white'
-    return black_pawn if @color == 'black'
+    return white_pawn if @color == :white
+    return black_pawn if @color == :black
   end
 
   def white_pawn

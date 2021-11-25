@@ -11,8 +11,8 @@ class Game
   include GameSerializer
 
   def initialize
-    @player1 = Player.new('white')
-    @player2 = Player.new('black')
+    @player1 = Player.new(:white)
+    @player2 = Player.new(:black)
     @board = Board.new
     @current_player = @player1
   end

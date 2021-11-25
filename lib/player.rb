@@ -19,9 +19,9 @@ class Player
 
   def generate_set
     case @id
-    when 'white'
+    when :white
       generate_white_set
-    when 'black'
+    when :black
       generate_black_set
     end
   end
@@ -50,13 +50,13 @@ class Player
 
   def generate_white_pawns
     pawns = []
-    (0).upto(7) { |x| pawns << Pawn.new([x, 1], 'white') }
+    (0).upto(7) { |x| pawns << Pawn.new([x, 1], :white) }
     pawns
   end
 
   def generate_black_pawns
     pawns = []
-    (0).upto(7) { |x| pawns << Pawn.new([x, 6], 'black') }
+    (0).upto(7) { |x| pawns << Pawn.new([x, 6], :black) }
     pawns
   end
 
@@ -89,18 +89,18 @@ class Player
 
   def king_side_castle_move
     case @id
-    when 'white'
+    when :white
       make_white_kingside_move
-    when 'black'
+    when :black
       make_black_kingside_move
     end
   end
 
   def queen_side_castle_move
     case @id
-    when 'white'
+    when :white
       make_white_queenside_move
-    when 'black'
+    when :black
       make_black_queenside_move
     end
   end
