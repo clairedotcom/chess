@@ -32,7 +32,7 @@ module GameSerializer
 
   def load_file_contents
     filename = solicit_user_selection
-    contents = YAML.safe_load(File.read("game_archive/#{filename}"))
+    contents = YAML.load_file("game_archive/#{filename}")
     @player1 = contents['player1']
     @player2 = contents['player2']
     @board = contents['board']
@@ -51,7 +51,7 @@ module GameSerializer
     puts load_game_dialogue
 
     loop do
-      valid_inputs = Dir.entries('game_archive')
+      valid_inputs = Dir.entries('game_archive/')
       user_input = gets.chomp
       return user_input if valid_inputs.include?(user_input)
 

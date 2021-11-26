@@ -11,7 +11,15 @@ require_relative '../lib/notation_translator'
 require_relative '../lib/game_serializer'
 require 'yaml'
 
-game = Game.new
+puts 'Enter 1 for new game or 2 to load saved game: '
+game_mode = gets.chomp
+
+if game_mode == '1'
+  game = Game.new
+elsif game_mode == '2'
+  game = Game.new
+  game.load_game
+end
 
 until game.game_over?
   if game.save

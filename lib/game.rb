@@ -10,7 +10,7 @@ class Game
   include Dialogue
   include GameSerializer
 
-  attr_reader :save
+  attr_accessor :save, :player1, :player2, :board, :current_player
 
   def initialize
     @player1 = Player.new(:white)
