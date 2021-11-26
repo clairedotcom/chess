@@ -91,6 +91,7 @@ describe Game do
         allow(Dir).to receive(:exist?).and_return(false)
         allow(Dir).to receive(:mkdir)
         allow(File).to receive(:open)
+        allow(test_game).to receive(:puts)
       end
 
       it 'checks if the directory exists' do
@@ -104,7 +105,7 @@ describe Game do
       end
 
       it 'creates a new file' do
-        expect(File).to receive(:open).once
+        expect(File).to receive(:open)
         test_game.save_game
       end
     end
@@ -113,6 +114,7 @@ describe Game do
       before do
         allow(Dir).to receive(:exist?).and_return(true)
         allow(File).to receive(:open)
+        allow(test_game).to receive(:puts)
       end
 
       it 'checks if the directory exists' do
@@ -134,14 +136,18 @@ describe Game do
 
   describe '#count_files' do
     context 'when the directory does not exist' do
-      it 'returns zero' do
-        expect(test_game.count_files).to eq(0)
+      before do
+        allow(Dir).to receive(:entries).and_raise(Errno::ENOENT)
+      end
+
+      it 'returns one' do
+        expect(test_game.count_files).to eq(1)
       end
     end
 
     context 'when the directory exists with 2 files' do
       before do
-        files = %w[game_1 game_2]
+        files = %w[. .. game_1 game_2]
         allow(Dir).to receive(:entries).and_return(files)
       end
 

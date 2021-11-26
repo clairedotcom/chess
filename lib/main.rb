@@ -8,6 +8,17 @@ require_relative '../lib/knight'
 require_relative '../lib/rook'
 require_relative '../lib/pawn'
 require_relative '../lib/notation_translator'
+require_relative '../lib/game_serializer'
+require 'yaml'
 
 game = Game.new
-game.turn
+
+until game.game_over?
+  if game.save
+    game.save_game
+    break
+  end
+
+  game.turn
+
+end

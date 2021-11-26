@@ -10,11 +10,14 @@ class Game
   include Dialogue
   include GameSerializer
 
+  attr_reader :save
+
   def initialize
     @player1 = Player.new(:white)
     @player2 = Player.new(:black)
     @board = Board.new
     @current_player = @player1
+    @save = false
   end
 
   def play_chess
@@ -28,6 +31,8 @@ class Game
     loop do
       puts announce_current_player
       move = review_move
+      break if @save
+
       update_board(move[0], move[1])
       break if game_over?
 
@@ -37,6 +42,8 @@ class Game
 
   def review_move
     move = solicit_move
+    return if @save
+
     @current_player.king_side_castle_move if king_side_castle?(move)
     @current_player.queen_side_castle_move if queen_side_castle?(move)
     capture(move[1])
@@ -48,6 +55,8 @@ class Game
       puts start_square_dialogue
 
       start = solicit_start_square
+      break if @save
+
       finish = solicit_finish_square
 
       return [start, finish] if valid_move_for_piece?(start, finish)
@@ -59,6 +68,12 @@ class Game
   def solicit_start_square
     loop do
       user_input = gets.chomp
+
+      if user_input == 'save'
+        @save = true
+        return
+      end
+
       square = decode_coords(user_input)
       return square if valid_coords?(user_input) && occupied_by_same_color?(square)
 
