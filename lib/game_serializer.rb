@@ -26,6 +26,9 @@ module GameSerializer
   end
 
   def load_game
+    return no_saved_games_dialogue if no_saved_games?
+
+    puts saved_game_list_dialogue
     print_existing_filenames
     load_file_contents
   end
@@ -39,12 +42,22 @@ module GameSerializer
     @current_player = contents['current_player']
   end
 
+  def pull_saved_files
+    files = Dir.entries('game_archive')
+    files.delete_if { |name| name == '.' }
+    files.delete_if { |name| name == '..' }
+    files
+  end
+
+  def no_saved_games?
+    return true if pull_saved_files.empty?
+  end
+
   def print_existing_filenames
-    Dir.entries('game_archive').each do |filename|
+    files = pull_saved_files
+    files.each do |filename|
       puts filename
     end
-  rescue Errno::ENOENT
-    puts 'There are no saved files'
   end
 
   def solicit_user_selection
@@ -63,7 +76,15 @@ module GameSerializer
     'Please enter the name of the game you would like to load: '
   end
 
+  def saved_game_list_dialogue
+    'Here are the saved games to choose from: '
+  end
+
   def game_saved_dialogue
     'Game saved'
+  end
+
+  def no_saved_games_dialogue
+    puts 'There are no saved games. Start a new game: '
   end
 end
