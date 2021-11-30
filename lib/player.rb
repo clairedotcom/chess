@@ -1,10 +1,10 @@
-require_relative '../lib/king'
-require_relative '../lib/queen'
-require_relative '../lib/bishop'
-require_relative '../lib/knight'
-require_relative '../lib/rook'
-require_relative '../lib/pawn'
-require_relative '../lib/notation_translator'
+require_relative './king'
+require_relative './queen'
+require_relative './bishop'
+require_relative './knight'
+require_relative './rook'
+require_relative './pawn'
+require_relative './notation_translator'
 
 class Player
   attr_reader :id, :set, :loser
@@ -73,6 +73,12 @@ class Player
   def get_piece_at(square)
     @set.each do |piece|
       return piece if piece.position == square
+    end
+  end
+
+  def find_king_location
+    @set.each do |piece|
+      return piece.position if piece.instance_of? King
     end
   end
 
