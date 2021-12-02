@@ -3,7 +3,7 @@ require_relative '../lib/king'
 describe King do
   describe 'moves' do
     context 'when given an initial position of [4, 0]' do
-      subject(:test_king) { described_class.new([4, 0]) }
+      subject(:test_king) { described_class.new([4, 0], :white) }
 
       it 'generates a diagonal move one square away' do
         right_diagonal = [5, 1]
@@ -32,7 +32,7 @@ describe King do
       it 'does not return a move more than two squares away' do
         two_squares = [6, 0]
         result = test_king.moves
-        expect(result).not_to include two_squares  
+        expect(result).not_to include two_squares
       end
     end
   end

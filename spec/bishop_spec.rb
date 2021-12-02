@@ -1,9 +1,9 @@
 require_relative '../lib/bishop'
 
 describe Bishop do
+  subject(:bishop_c1) { described_class.new([2, 0], :white) }
+  
   describe '#line1' do
-    subject(:bishop_c1) { described_class.new([2, 0]) }
-
     context 'when the bishop is at an initial position of c1' do
       it 'returns the correct array of moves' do
         result = [[3, 1], [4, 2], [5, 3], [6, 4], [7, 5]]
@@ -13,8 +13,6 @@ describe Bishop do
   end
 
   describe '#line2' do
-    subject(:bishop_c1) { described_class.new([2, 0]) }
-
     context 'when the bishop is at c1' do
       it 'returns the correct array of moves' do
         result = [[1, 1], [0, 2]]
@@ -24,8 +22,6 @@ describe Bishop do
   end
 
   describe '#line3' do
-    subject(:bishop_c1) { described_class.new([2, 0]) }
-
     context 'when the bishop is at c1' do
       it 'returns the correct array of moves' do
         result = []
@@ -35,8 +31,6 @@ describe Bishop do
   end
 
   describe '#line4' do
-    subject(:bishop_c1) { described_class.new([2, 0]) }
-
     context 'when the bishop is at c1' do
       it 'returns the correct array of moves' do
         result = []
