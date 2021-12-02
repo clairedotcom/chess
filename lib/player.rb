@@ -29,22 +29,22 @@ class Player
   def generate_white_set
     set = []
     set << generate_white_pawns
-    set << [Rook.new([0, 0]), Rook.new([7, 0])]
-    set << [Knight.new([1, 0]), Knight.new([6, 0])]
-    set << [Bishop.new([2, 0]), Bishop.new([5, 0])]
-    set << [Queen.new([3, 0])]
-    set << [King.new([4, 0])]
+    set << [Rook.new([0, 0], :white), Rook.new([7, 0], :white)]
+    set << [Knight.new([1, 0], :white), Knight.new([6, 0], :white)]
+    set << [Bishop.new([2, 0], :white), Bishop.new([5, 0], :white)]
+    set << [Queen.new([3, 0], :white)]
+    set << [King.new([4, 0], :white)]
     set.flatten
   end
 
   def generate_black_set
     set = []
     set << generate_black_pawns
-    set << [Rook.new([0, 7]), Rook.new([7, 7])]
-    set << [Knight.new([1, 7]), Knight.new([6, 7])]
-    set << [Bishop.new([2, 7]), Bishop.new([5, 7])]
-    set << [Queen.new([3, 7])]
-    set << [King.new([4, 7])]
+    set << [Rook.new([0, 7], :black), Rook.new([7, 7], :black)]
+    set << [Knight.new([1, 7], :black), Knight.new([6, 7], :black)]
+    set << [Bishop.new([2, 7], :black), Bishop.new([5, 7], :black)]
+    set << [Queen.new([3, 7], :black)]
+    set << [King.new([4, 7], :black)]
     set.flatten
   end
 

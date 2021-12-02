@@ -2,7 +2,7 @@ require_relative '../lib/move_validator'
 
 class Pawn
   include MoveValidator
-  attr_accessor :position
+  attr_accessor :position, :color
 
   def initialize(position, color)
     @initial = position

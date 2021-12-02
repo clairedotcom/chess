@@ -2,10 +2,11 @@ require_relative '../lib/move_validator'
 
 class Knight
   include MoveValidator
-  attr_accessor :position
+  attr_accessor :position, :color
 
-  def initialize(position)
+  def initialize(position, color)
     @position = position
+    @color = color
   end
 
   def moves
