@@ -42,11 +42,17 @@ module MoveValidator
 
     lines.each do |line|
       line.each do |square|
-        break if occupied_by_same_color?(square)
+        # break if occupied_by_same_color?(square)
+        break if piece.color == color_of_piece_in_square(square)
 
         result << square
 
-        break if occupied_by_opposite_color?(square)
+        # break if occupied_by_opposite_color?(square)
+        if piece.color == :black && color_of_piece_in_square(square) == :white
+          break
+        elsif piece.color == :white && color_of_piece_in_square(square) == :black
+          break
+        end
       end
     end
     result

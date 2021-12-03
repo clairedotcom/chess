@@ -53,6 +53,7 @@ class Game
   def solicit_move
     loop do
       puts start_square_dialogue
+      p 'check' if check?
 
       start = solicit_start_square
       break if @save
@@ -93,7 +94,20 @@ class Game
   end
 
   def check?
-    # do any of the opposite player's possible moves contain current player's king?
+    king_location = @current_player.find_king_location
+    all_moves = find_all_moves(opposite_player)
+
+    return true if all_moves.include?(king_location)
+  end
+
+  def find_all_moves(player)
+    all_moves = []
+    player.set.each do |piece|
+      all_moves << legal_moves(piece.moves, piece)
+    end
+    all_moves.flatten!(1)
+    all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
+    all_moves
   end
 
   def game_over?
@@ -114,6 +128,10 @@ class Game
 
   def switch_player
     @current_player = @current_player == @player1 ? @player2 : @player1
+  end
+
+  def opposite_player
+    @current_player == @player1 ? @player2 : @player1
   end
 
   # Methods to check if moves are legal
@@ -169,6 +187,13 @@ class Game
 
   def occupied_by_same_color?(square)
     return true if @current_player.set.any? { |piece| piece.position == square }
+
+    false
+  end
+
+  def color_of_piece_in_square(square)
+    return :white if @player1.set.any? { |piece| piece.position == square }
+    return :black if @player2.set.any? { |piece| piece.position == square }
 
     false
   end
