@@ -85,6 +85,32 @@ describe Game do
     end
   end
 
+  describe '#king_side_castle' do
+    context 'when player1 is the current player' do
+      before do
+        allow(test_game).to receive(:white_king_side_free?).and_return(true)
+      end
+
+      it 'returns [6, 0]' do
+        result = [6, 0]
+        expect(test_game.king_side_castle).to eq(result)
+      end
+    end
+
+    context 'when player2 is the current player' do
+      before do
+        player2 = test_game.instance_variable_get(:@player2)
+        test_game.instance_variable_set(:@current_player, player2)
+        allow(test_game).to receive(:black_king_side_free?).and_return(true)
+      end
+
+      it 'returns [6, 7]' do
+        result = [6, 7]
+        expect(test_game.king_side_castle).to eq(result)
+      end
+    end
+  end
+
   describe '#save_game' do
     context 'when game_archive directory does not exist' do
       before do
