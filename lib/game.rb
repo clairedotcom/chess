@@ -1,8 +1,8 @@
-require_relative '../lib/player'
-require_relative '../lib/board'
-require_relative '../lib/notation_translator'
-require_relative '../lib/dialogue'
-require_relative '../lib/game_serializer'
+require_relative 'player'
+require_relative 'board'
+require_relative 'notation_translator'
+require_relative 'dialogue'
+require_relative 'game_serializer'
 
 class Game
   include NotationTranslator
@@ -20,9 +20,16 @@ class Game
     @save = false
   end
 
-  def play_chess
-    intro_dialogue
-    turn
+  def select_game_mode
+    puts 'Enter 1 for new game or 2 to load saved game: '
+
+    loop do
+      user_input = gets.chomp.to_i
+      load_game if user_input == 2
+      break if user_input == 1 || user_input == 2
+
+      puts 'Invalid input. Please enter 1 or 2.'
+    end
   end
 
   def turn
@@ -53,7 +60,7 @@ class Game
   def solicit_move
     loop do
       puts start_square_dialogue
-      p 'check' if check?
+      puts 'check' if check?
 
       start = solicit_start_square
       break if @save
