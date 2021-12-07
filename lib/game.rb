@@ -26,7 +26,7 @@ class Game
     loop do
       user_input = gets.chomp.to_i
       load_game if user_input == 2
-      break if user_input == 1 || user_input == 2
+      break if [1, 2].include?(user_input)
 
       puts 'Invalid input. Please enter 1 or 2.'
     end
@@ -141,7 +141,7 @@ class Game
     @current_player == @player1 ? @player2 : @player1
   end
 
-  # Methods to check if moves are legal
+  # Methods to check if moves are legal and generate legal moves
 
   def valid_move_for_piece?(start, finish)
     piece = @current_player.get_piece_at(start)
@@ -154,14 +154,12 @@ class Game
   end
 
   def legal_moves(possible_moves, piece)
-    piece_name = piece.class.name
-
-    return add_king_castle_moves(possible_moves) if piece_name == 'King'
-    return possible_moves if piece_name == 'Knight'
-    return rook_bishop_move_iterator(piece) if piece_name == 'Rook'
-    return rook_bishop_move_iterator(piece) if piece_name == 'Bishop'
-    return queen_move_iterator(piece) if piece_name == 'Queen'
-    return add_diagonal_pawn_moves(possible_moves, piece) if piece_name == 'Pawn'
+    return add_king_castle_moves(possible_moves) if piece.is_a? King
+    return possible_moves if piece.is_a? Knight
+    return rook_bishop_move_iterator(piece) if piece.is_a? Rook
+    return rook_bishop_move_iterator(piece) if piece.is_a? Bishop
+    return queen_move_iterator(piece) if piece.is_a? Queen
+    return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
   end
 
   def add_diagonal_pawn_moves(possible_moves, piece)
@@ -172,8 +170,8 @@ class Game
   end
 
   def add_king_castle_moves(possible_moves)
-    possible_moves << king_side_castle
-    possible_moves << queen_side_castle
+    possible_moves << king_side_castle unless king_side_castle.nil?
+    possible_moves << queen_side_castle unless queen_side_castle.nil?
     possible_moves
   end
 

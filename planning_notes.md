@@ -1,4 +1,6 @@
 # Remaining to-do
+Fix issue where pawn can hop if it's pawn's first move
+
 Castling
 En passant
 Pawn promotion

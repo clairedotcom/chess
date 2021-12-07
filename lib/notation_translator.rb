@@ -10,15 +10,4 @@ module NotationTranslator
     y = input[-1].to_i - 1
     [x, y]
   end
-
-  def name_to_class(input)
-    {
-      'pawn' => Pawn,
-      'rook' => Rook,
-      'knight' => Knight,
-      'bishop' => Bishop,
-      'queen' => Queen,
-      'king' => King
-    }[input]
-  end
 end
