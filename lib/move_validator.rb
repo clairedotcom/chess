@@ -5,13 +5,6 @@ module MoveValidator
     false
   end
 
-  def valid_name?(input)
-    pieces = %w[pawn rook knight bishop queen king castle]
-    return true if pieces.include?(input)
-
-    false
-  end
-
   def valid_coords?(input)
     letters = %w[a b c d e f g h]
     numbers = %w[1 2 3 4 5 6 7 8]
@@ -42,17 +35,13 @@ module MoveValidator
 
     lines.each do |line|
       line.each do |square|
-        # break if occupied_by_same_color?(square)
         break if piece.color == color_of_piece_in_square(square)
 
         result << square
 
-        # break if occupied_by_opposite_color?(square)
-        if piece.color == :black && color_of_piece_in_square(square) == :white
-          break
-        elsif piece.color == :white && color_of_piece_in_square(square) == :black
-          break
-        end
+        break if piece.color == :black && color_of_piece_in_square(square) == :white
+        break if piece.color == :white && color_of_piece_in_square(square) == :black
+
       end
     end
     result
