@@ -1,4 +1,12 @@
 module Dialogue
+  def select_mode_message
+    'Enter 1 for new game or 2 to load saved game: '
+  end
+
+  def invalid_mode_input_message
+    'Invalid input. Please enter 1 or 2.'
+  end
+
   def illegal_move_message
     'Illegal move for that piece. Please try again.'
   end

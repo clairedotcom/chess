@@ -21,14 +21,14 @@ class Game
   end
 
   def select_game_mode
-    puts 'Enter 1 for new game or 2 to load saved game: '
+    puts select_mode_message
 
     loop do
       user_input = gets.chomp.to_i
       load_game if user_input == 2
       break if [1, 2].include?(user_input)
 
-      puts 'Invalid input. Please enter 1 or 2.'
+      puts invalid_mode_input_message
     end
   end
 
@@ -164,6 +164,7 @@ class Game
 
   def add_diagonal_pawn_moves(possible_moves, piece)
     possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
+    possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
     possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
     possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
     possible_moves
