@@ -1,10 +1,10 @@
-require_relative './king'
-require_relative './queen'
-require_relative './bishop'
-require_relative './knight'
-require_relative './rook'
-require_relative './pawn'
-require_relative './notation_translator'
+require_relative 'king'
+require_relative 'queen'
+require_relative 'bishop'
+require_relative 'knight'
+require_relative 'rook'
+require_relative 'pawn'
+require_relative 'notation_translator'
 
 class Player
   attr_reader :id, :set, :loser
@@ -88,6 +88,40 @@ class Player
         @set.delete(piece)
         @loser = true if piece.instance_of? King
       end
+    end
+  end
+
+  # promotion can be any rook, bishop, queen, knight
+  def promote_pawn(pawn)
+    square = pawn.position
+    color = pawn.color
+    delete_piece(square)
+    @set << select_promotion_piece.new(square, color)
+  end
+
+  def solicit_promotion_piece
+    options = %w[queen rook bishop knight]
+    puts 'Pawn promotion! Enter queen, rook, bishop, or knight'
+
+    loop do
+      user_input = gets.chomp
+
+      return user_input if options.include?(user_input)
+
+      puts 'Invalid input. Please try again.'
+    end
+  end
+
+  def select_promotion_piece
+    case solicit_promotion_piece
+    when 'queen'
+      Queen
+    when 'knight'
+      Knight
+    when 'bishop'
+      Bishop
+    when 'rook'
+      Rook
     end
   end
 
