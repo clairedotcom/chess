@@ -193,6 +193,7 @@ class Game
 
   def occupied_by_same_color?(square)
     return true if @current_player.set.any? { |piece| piece.position == square }
+    # return true if @board.color_in_square(square) == @current_player.id
 
     false
   end

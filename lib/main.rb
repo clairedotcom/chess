@@ -12,6 +12,7 @@ require_relative 'game_serializer'
 require 'yaml'
 
 game = Game.new
+game.intro_dialogue
 game.select_game_mode
 
 until game.game_over?
