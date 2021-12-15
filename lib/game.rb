@@ -80,14 +80,7 @@ class Game
   end
 
   def solicit_finish_square
-    puts finish_square_dialogue
-
-    loop do
-      square = gets.chomp
-      return decode_coords(square) if valid_coords?(square)
-
-      puts invalid_input_message
-    end
+    @current_player.input_finish_square
   end
 
   def check?

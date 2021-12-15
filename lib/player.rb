@@ -77,6 +77,17 @@ class Player
     end
   end
 
+  def input_finish_square
+    puts finish_square_dialogue
+
+    loop do
+      square = gets.chomp
+      return decode_coords(square) if valid_coords?(square)
+
+      puts invalid_input_message
+    end
+  end
+
   def same_color?(square)
     return true if @set.any? { |piece| piece.position == square }
 
@@ -84,9 +95,7 @@ class Player
   end
 
   def update_set(start, finish)
-    @set.each do |piece|
-      piece.position = finish if piece.position == start
-    end
+    get_piece_at(start).position = finish
   end
 
   def get_moves_for_piece(start)
@@ -94,9 +103,8 @@ class Player
   end
 
   def get_piece_at(square)
-    @set.each do |piece|
-      return piece if piece.position == square
-    end
+    array = @set.select { |piece| piece.position == square }
+    array[0]
   end
 
   def find_king_location
