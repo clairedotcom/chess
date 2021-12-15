@@ -65,9 +65,9 @@ class Game
       start = solicit_start_square
       break if @save
 
-      finish = solicit_finish_square
+      finish = @current_player.validate_finish_square
 
-      return [start, finish] if valid_move_for_piece?(start, finish)
+      return [start, finish] if legal_move_for_piece?(start, finish)
 
       puts illegal_move_message
     end
@@ -77,10 +77,6 @@ class Game
     user_input = @current_player.input_start_square
     @save = true if user_input == :save
     user_input
-  end
-
-  def solicit_finish_square
-    @current_player.input_finish_square
   end
 
   def check?
@@ -126,10 +122,10 @@ class Game
 
   # Methods to check if moves are legal and generate legal moves
 
-  def valid_move_for_piece?(start, finish)
+  def legal_move_for_piece?(start, finish)
     piece = @current_player.get_piece_at(start)
     possible_moves = piece.moves
-    possible_moves.delete_if { |square| occupied_by_same_color?(square) }
+    # possible_moves.delete_if { |square| occupied_by_same_color?(square) }
 
     return true if legal_moves(possible_moves, piece).include?(finish)
 
@@ -176,7 +172,6 @@ class Game
 
   def occupied_by_same_color?(square)
     return true if @current_player.set.any? { |piece| piece.position == square }
-    # return true if @board.color_in_square(square) == @current_player.id
 
     false
   end

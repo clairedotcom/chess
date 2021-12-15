@@ -18,6 +18,7 @@ class Player
   def initialize(id)
     @id = id
     @set = generate_set
+    @active_piece = nil
     @loser = false
   end
 
@@ -71,9 +72,24 @@ class Player
       return :save if user_input == 'save'
 
       square = decode_coords(user_input)
+      update_active_piece(square)
       return square if valid_coords?(user_input) && same_color?(square)
 
       puts invalid_input_message
+    end
+  end
+
+  def update_active_piece(square)
+    @active_piece = get_piece_at(square)
+  end
+
+  def validate_finish_square
+    loop do
+      finish_square = input_finish_square
+
+      return finish_square if valid_move_for_piece?(finish_square)
+
+      puts illegal_move_message
     end
   end
 
@@ -86,6 +102,12 @@ class Player
 
       puts invalid_input_message
     end
+  end
+
+  def valid_move_for_piece?(square)
+    return true if @active_piece.moves.include?(square)
+
+    false
   end
 
   def same_color?(square)
