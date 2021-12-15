@@ -5,11 +5,15 @@ require_relative 'knight'
 require_relative 'rook'
 require_relative 'pawn'
 require_relative 'notation_translator'
+require_relative 'move_validator'
+require_relative 'dialogue'
 
 class Player
   attr_reader :id, :set, :loser
 
   include NotationTranslator
+  include MoveValidator
+  include Dialogue
 
   def initialize(id)
     @id = id
@@ -58,6 +62,25 @@ class Player
     pawns = []
     (0).upto(7) { |x| pawns << Pawn.new([x, 6], :black) }
     pawns
+  end
+
+  def input_start_square
+    loop do
+      user_input = gets.chomp
+
+      return :save if user_input == 'save'
+
+      square = decode_coords(user_input)
+      return square if valid_coords?(user_input) && same_color?(square)
+
+      puts invalid_input_message
+    end
+  end
+
+  def same_color?(square)
+    return true if @set.any? { |piece| piece.position == square }
+
+    false
   end
 
   def update_set(start, finish)

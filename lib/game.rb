@@ -74,19 +74,9 @@ class Game
   end
 
   def solicit_start_square
-    loop do
-      user_input = gets.chomp
-
-      if user_input == 'save'
-        @save = true
-        return
-      end
-
-      square = decode_coords(user_input)
-      return square if valid_coords?(user_input) && occupied_by_same_color?(square)
-
-      puts invalid_input_message
-    end
+    user_input = @current_player.input_start_square
+    @save = true if user_input == :save
+    user_input
   end
 
   def solicit_finish_square
