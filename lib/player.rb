@@ -7,6 +7,7 @@ require_relative 'pawn'
 require_relative 'notation_translator'
 require_relative 'move_validator'
 require_relative 'dialogue'
+require_relative 'castling'
 
 class Player
   attr_reader :id, :set, :loser
@@ -14,11 +15,11 @@ class Player
   include NotationTranslator
   include MoveValidator
   include Dialogue
+  include Castling
 
   def initialize(id)
     @id = id
     @set = generate_set
-    @active_piece = nil
     @loser = false
   end
 
@@ -72,24 +73,9 @@ class Player
       return :save if user_input == 'save'
 
       square = decode_coords(user_input)
-      update_active_piece(square)
       return square if valid_coords?(user_input) && same_color?(square)
 
       puts invalid_input_message
-    end
-  end
-
-  def update_active_piece(square)
-    @active_piece = get_piece_at(square)
-  end
-
-  def validate_finish_square
-    loop do
-      finish_square = input_finish_square
-
-      return finish_square if valid_move_for_piece?(finish_square)
-
-      puts illegal_move_message
     end
   end
 
@@ -175,54 +161,6 @@ class Player
       Bishop
     when 'rook'
       Rook
-    end
-  end
-
-  # Castling methods
-
-  def king_side_castle_move
-    case @id
-    when :white
-      make_white_kingside_move
-    when :black
-      make_black_kingside_move
-    end
-  end
-
-  def queen_side_castle_move
-    case @id
-    when :white
-      make_white_queenside_move
-    when :black
-      make_black_queenside_move
-    end
-  end
-
-  def make_white_kingside_move
-    @set.each do |piece|
-      piece.position = [5, 0] if piece.position == [7, 0]
-      piece.position = [6, 0] if piece.position == [4, 0]
-    end
-  end
-
-  def make_white_queenside_move
-    @set.each do |piece|
-      piece.position = [3, 0] if piece.position == [0, 0]
-      piece.position = [2, 0] if piece.position == [4, 0]
-    end
-  end
-
-  def make_black_kingside_move
-    @set.each do |piece|
-      piece.position = [5, 7] if piece.position == [7, 7]
-      piece.position = [6, 7] if piece.position == [4, 7]
-    end
-  end
-
-  def make_black_queenside_move
-    @set.each do |piece|
-      piece.position = [3, 7] if piece.position == [0, 7]
-      piece.position = [2, 7] if piece.position == [4, 7]
     end
   end
 end

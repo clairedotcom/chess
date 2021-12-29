@@ -39,9 +39,7 @@ module MoveValidator
 
         result << square
 
-        break if piece.color == :black && color_of_piece_in_square(square) == :white
-        break if piece.color == :white && color_of_piece_in_square(square) == :black
-
+        break if occupied_by_opposite_color?(square)
       end
     end
     result

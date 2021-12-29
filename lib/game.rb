@@ -65,7 +65,7 @@ class Game
       start = solicit_start_square
       break if @save
 
-      finish = @current_player.validate_finish_square
+      finish = @current_player.input_finish_square
 
       return [start, finish] if legal_move_for_piece?(start, finish)
 
@@ -125,7 +125,7 @@ class Game
   def legal_move_for_piece?(start, finish)
     piece = @current_player.get_piece_at(start)
     possible_moves = piece.moves
-    # possible_moves.delete_if { |square| occupied_by_same_color?(square) }
+    possible_moves.delete_if { |square| occupied_by_same_color?(square) }
 
     return true if legal_moves(possible_moves, piece).include?(finish)
 
