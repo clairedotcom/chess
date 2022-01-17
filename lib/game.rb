@@ -97,9 +97,7 @@ class Game
   end
 
   def game_over?
-    return true if @player1.loser == true || @player2.loser == true
-
-    false
+    @player1.loser == true || @player2.loser
   end
 
   def capture(finish)
@@ -158,22 +156,16 @@ class Game
   # Methods to check squares for pieces
 
   def occupied_by_any_piece?(square)
-    return true if occupied_by_same_color?(square) || occupied_by_opposite_color?(square)
-
-    false
+    occupied_by_same_color?(square) || occupied_by_opposite_color?(square)
   end
 
   def occupied_by_opposite_color?(square)
     player = @current_player == @player1 ? @player2 : @player1
-    return true if player.set.any? { |piece| piece.position == square }
-
-    false
+    player.set.any? { |piece| piece.position == square }
   end
 
   def occupied_by_same_color?(square)
-    return true if @current_player.set.any? { |piece| piece.position == square }
-
-    false
+    @current_player.set.any? { |piece| piece.position == square }
   end
 
   def color_of_piece_in_square(square)
@@ -212,26 +204,18 @@ class Game
   end
 
   def white_king_side_free?
-    return false if occupied_by_any_piece?([5, 0]) && occupied_by_any_piece?([6, 0])
-
-    true
+    !occupied_by_any_piece?([5, 0]) && !occupied_by_any_piece?([6, 0])
   end
 
   def black_king_side_free?
-    return false if occupied_by_any_piece?([5, 7]) && occupied_by_any_piece?([6, 7])
-
-    true
+    !occupied_by_any_piece?([5, 7]) && !occupied_by_any_piece?([6, 7])
   end
 
   def white_queen_side_free?
-    return false if occupied_by_any_piece?([1, 0]) && occupied_by_any_piece?([2, 0]) && occupied_by_any_piece?([3, 0])
-
-    true
+    !occupied_by_any_piece?([1, 0]) && !occupied_by_any_piece?([2, 0]) && !occupied_by_any_piece?([3, 0])
   end
 
   def black_queen_side_free?
-    return false if occupied_by_any_piece?([1, 7]) && occupied_by_any_piece?([2, 7]) && occupied_by_any_piece?([3, 7])
-
-    true
+    !occupied_by_any_piece?([1, 7]) && !occupied_by_any_piece?([2, 7]) && !occupied_by_any_piece?([3, 7])
   end
 end
