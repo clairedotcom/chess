@@ -12,14 +12,18 @@ require_relative 'game_serializer'
 require 'yaml'
 
 game = Game.new
-game.intro_dialogue
-game.select_game_mode
 
-until game.game_over?
-  if game.save
-    game.save_game
-    break
-  end
+p game.board.data
 
-  game.turn
-end
+
+# game.intro_dialogue
+# game.select_game_mode
+
+# until game.game_over?
+#   if game.save
+#     game.save_game
+#     break
+#   end
+
+#   game.turn
+# end

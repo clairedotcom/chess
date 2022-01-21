@@ -1,14 +1,15 @@
 require_relative 'display_generator'
+require_relative 'square'
 
 class Board
   include DisplayGenerator
 
   attr_accessor :display
-  # attr_reader :data
+  attr_reader :data
 
   def initialize
     @display = Array.new(8) { Array.new(8, ' ') }
-    # @data = Array.new(8) { Array.new(8) }
+    @data = initialize_squares
   end
 
   def create_display(white_set, black_set)
@@ -22,6 +23,18 @@ class Board
     print_board
   end
 
+  def initialize_squares
+    @data = (0).upto(7).map do |row|
+      (0).upto(7).map do |col|
+        Square.new([row, col])
+      end
+    end
+  end
+
+  def generate_display
+    display = []
+  end
+  
   # def set_initial_data
   #   initialize_pawns(1, :white)
   #   initialize_pawns(6, :black)

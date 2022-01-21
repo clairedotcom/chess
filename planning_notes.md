@@ -7,7 +7,8 @@ Pawn promotion
 Check: make other player move to protect king
 testing for game class to make future refactoring easier
 
-Serialization: load saved game or save game at any time
+Make a square object that stores position and color, and use color to make display
+Movement classes instead of movement within the piece classes
 
 Continuous improvement:
 add turn counter to make sure castling happens only if neither piece has moved

@@ -8,4 +8,8 @@ class Square
   def determine_color
     (@coords[0] + @coords[1]).even? ? :black : :white
   end
+
+  def empty?
+    @value.nil?
+  end
 end
