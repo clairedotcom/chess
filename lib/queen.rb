@@ -4,10 +4,16 @@ require_relative '../lib/rook'
 
 class Queen
   attr_accessor :position, :color
+  attr_reader :icon
 
   def initialize(position, color)
     @position = position
     @color = color
+    @icon = set_icon
+  end
+
+  def set_icon
+    @color == :white ? "\e[37m\u265B \e[0m" : "\e[30m\u265B \e[0m"
   end
 
   def moves

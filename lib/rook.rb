@@ -3,10 +3,16 @@ require_relative '../lib/move_validator'
 class Rook
   include MoveValidator
   attr_accessor :position, :color
+  attr_reader :icon
 
   def initialize(position, color)
     @position = position
     @color = color
+    @icon = set_icon
+  end
+
+  def set_icon
+    @color == :white ? "\e[37m\u265C \e[0m" : "\e[30m\u265C \e[0m"
   end
 
   def moves

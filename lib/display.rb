@@ -7,26 +7,18 @@ class Display
 
   def set_display
     colorize_empty_board
-    place_white_pieces(@white_set)
-    place_black_pieces(@black_set)
+    place_pieces(@white_set)
+    place_pieces(@black_set)
     print_board
   end
 
-  def place_white_pieces(set)
-    set.each do |piece|
-      x = piece.position[0]
-      y = piece.position[1]
-      name = piece.class.name.downcase
-      @display[y][x] = (x + y).even? ? black_bg(white_pieces(name)) : white_bg(white_pieces(name))
-    end
-  end
+  private
 
-  def place_black_pieces(set)
+  def place_pieces(set)
     set.each do |piece|
       x = piece.position[0]
       y = piece.position[1]
-      name = piece.class.name.downcase
-      @display[y][x] = (x + y).even? ? black_bg(black_pieces(name)) : white_bg(black_pieces(name))
+      @display[y][x] = (x + y).even? ? black_background(piece.icon) : white_background(piece.icon)
     end
   end
 
@@ -52,34 +44,11 @@ class Display
     end
   end
 
-  def black_bg(piece)
+  def black_background(piece)
     "\e[44m#{piece}\e[0m"
   end
 
-  def white_bg(piece)
+  def white_background(piece)
     "\e[46m#{piece}\e[0m"
   end
-
-  def white_pieces(piece)
-    {
-      'king' => "\e[37m\u265A \e[0m",
-      'queen' => "\e[37m\u265B \e[0m",
-      'rook' => "\e[37m\u265C \e[0m",
-      'bishop' => "\e[37m\u265D \e[0m",
-      'knight' => "\e[37m\u265E \e[0m",
-      'pawn' => "\e[37m\u265F \e[0m"
-    }[piece]
-  end
-
-  def black_pieces(piece)
-    {
-      'king' => "\e[30m\u265A \e[0m",
-      'queen' => "\e[30m\u265B \e[0m",
-      'rook' => "\e[30m\u265C \e[0m",
-      'bishop' => "\e[30m\u265D \e[0m",
-      'knight' => "\e[30m\u265E \e[0m",
-      'pawn' => "\e[30m\u265F \e[0m"
-    }[piece]
-  end
 end
-
