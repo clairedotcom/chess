@@ -1,21 +1,19 @@
 class Display
-  def initialize(white_set, black_set)
-    @white_set = white_set
-    @black_set = black_set
+  def initialize(piece_positions)
+    @piece_positions = piece_positions
     @display = Array.new(8) { Array.new(8, ' ') }
   end
 
-  def set_display
+  def generate_display
     colorize_empty_board
-    place_pieces(@white_set)
-    place_pieces(@black_set)
+    place_pieces
     print_board
   end
 
   private
 
-  def place_pieces(set)
-    set.each do |piece|
+  def place_pieces
+    @piece_positions.each do |piece|
       x = piece.position[0]
       y = piece.position[1]
       @display[y][x] = (x + y).even? ? black_background(piece.icon) : white_background(piece.icon)
