@@ -1,5 +1,4 @@
 require_relative 'player'
-require_relative 'board'
 require_relative 'notation_translator'
 require_relative 'dialogue'
 require_relative 'game_serializer'
@@ -11,12 +10,12 @@ class Game
   include Dialogue
   include GameSerializer
 
-  attr_accessor :save, :player1, :player2, :board, :current_player
+  attr_accessor :save, :player1, :player2, :current_player
 
   def initialize
     @player1 = Player.new(:white)
     @player2 = Player.new(:black)
-    @board = Board.new
+    @game_state = [@player1.set, @player2.set].flatten
     @current_player = @player1
     @save = false
   end
@@ -34,7 +33,7 @@ class Game
   end
 
   def turn
-    @board.create_display(@player1.set, @player2.set)
+    Display.new(@game_state).generate_display
 
     loop do
       puts announce_current_player
@@ -69,11 +68,10 @@ class Game
       finish = @current_player.input_finish_square
 
       # return [start, finish] if legal_move_for_piece?(start, finish)
-       piece = @current_player.get_piece_at(start)
-       game_state = [@player1.set, @player2.set].flatten
-       move = [start, finish]
-       referee = MoveReferee.new(game_state, piece, move)
-       return move if referee.move_valid
+      piece = @current_player.get_piece_at(start)
+      move = [start, finish]
+      referee = MoveReferee.new(@game_state, piece, move)
+      return move if referee.move_valid
 
       puts illegal_move_message
     end
@@ -113,7 +111,8 @@ class Game
 
   def update_board(start, finish)
     @current_player.update_set(start, finish)
-    @board.create_display(@player1.set, @player2.set)
+    @game_state = [@player1.set, @player2.set].flatten
+    Display.new(@game_state).generate_display
   end
 
   def switch_player
@@ -145,13 +144,13 @@ class Game
   #   return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
   # end
 
-  def add_diagonal_pawn_moves(possible_moves, piece)
-    possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
-    possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
-    possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
-    possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
-    possible_moves
-  end
+  # def add_diagonal_pawn_moves(possible_moves, piece)
+  #   possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
+  #   possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
+  #   possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
+  #   possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
+  #   possible_moves
+  # end
 
   def add_king_castle_moves(possible_moves)
     possible_moves << king_side_castle unless king_side_castle.nil?
