@@ -3,6 +3,7 @@ require_relative 'notation_translator'
 require_relative 'dialogue'
 require_relative 'game_serializer'
 require_relative 'move_referee'
+require_relative 'display'
 
 class Game
   include NotationTranslator
@@ -110,7 +111,7 @@ class Game
   end
 
   def update_board(start, finish)
-    @current_player.update_set(start, finish)
+    @current_player.update_set(start, finish) unless king_side_castle?([start, finish]) || queen_side_castle?([start, finish])
     @game_state = [@player1.set, @player2.set].flatten
     Display.new(@game_state).generate_display
   end
@@ -122,43 +123,6 @@ class Game
   def opposite_player
     @current_player == @player1 ? @player2 : @player1
   end
-
-  # Methods to check if moves are legal and generate legal moves
-
-  # def legal_move_for_piece?(start, finish)
-  #   piece = @current_player.get_piece_at(start)
-  #   possible_moves = piece.moves
-  #   possible_moves.delete_if { |square| occupied_by_same_color?(square) }
-
-  #   return true if legal_moves(possible_moves, piece).include?(finish)
-
-  #   false
-  # end
-
-  # def legal_moves(possible_moves, piece)
-  #   return add_king_castle_moves(possible_moves) if piece.is_a? King
-  #   return possible_moves if piece.is_a? Knight
-  #   return rook_bishop_move_iterator(piece) if piece.is_a? Rook
-  #   return rook_bishop_move_iterator(piece) if piece.is_a? Bishop
-  #   return queen_move_iterator(piece) if piece.is_a? Queen
-  #   return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
-  # end
-
-  # def add_diagonal_pawn_moves(possible_moves, piece)
-  #   possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
-  #   possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
-  #   possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
-  #   possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
-  #   possible_moves
-  # end
-
-  def add_king_castle_moves(possible_moves)
-    possible_moves << king_side_castle unless king_side_castle.nil?
-    possible_moves << queen_side_castle unless queen_side_castle.nil?
-    possible_moves
-  end
-
-  # Methods to check squares for pieces
 
   def occupied_by_any_piece?(square)
     occupied_by_same_color?(square) || occupied_by_opposite_color?(square)
@@ -180,8 +144,6 @@ class Game
     false
   end
 
-  # Castling methods
-
   def king_side_castle?(move)
     if @current_player == @player1 && move[1] == [6, 0]
       true
@@ -196,31 +158,5 @@ class Game
     elsif @current_player == @player2 && move[1] == [2, 7]
       true
     end
-  end
-
-  def king_side_castle
-    return [6, 0] if white_king_side_free? && @current_player == @player1
-    return [6, 7] if black_king_side_free? && @current_player == @player2
-  end
-
-  def queen_side_castle
-    return [2, 0] if white_queen_side_free? && @current_player == @player1
-    return [2, 7] if black_queen_side_free? && @current_player == @player2
-  end
-
-  def white_king_side_free?
-    !occupied_by_any_piece?([5, 0]) && !occupied_by_any_piece?([6, 0])
-  end
-
-  def black_king_side_free?
-    !occupied_by_any_piece?([5, 7]) && !occupied_by_any_piece?([6, 7])
-  end
-
-  def white_queen_side_free?
-    !occupied_by_any_piece?([1, 0]) && !occupied_by_any_piece?([2, 0]) && !occupied_by_any_piece?([3, 0])
-  end
-
-  def black_queen_side_free?
-    !occupied_by_any_piece?([1, 7]) && !occupied_by_any_piece?([2, 7]) && !occupied_by_any_piece?([3, 7])
   end
 end
