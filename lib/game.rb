@@ -3,6 +3,7 @@ require_relative 'board'
 require_relative 'notation_translator'
 require_relative 'dialogue'
 require_relative 'game_serializer'
+require_relative 'move_referee'
 
 class Game
   include NotationTranslator
@@ -60,14 +61,19 @@ class Game
   def solicit_move
     loop do
       puts start_square_dialogue
-      puts 'check' if check?
+      # puts 'check' if check?
 
       start = solicit_start_square
       break if @save
 
       finish = @current_player.input_finish_square
 
-      return [start, finish] if legal_move_for_piece?(start, finish)
+      # return [start, finish] if legal_move_for_piece?(start, finish)
+       piece = @current_player.get_piece_at(start)
+       game_state = [@player1.set, @player2.set].flatten
+       move = [start, finish]
+       referee = MoveReferee.new(game_state, piece, move)
+       return move if referee.move_valid
 
       puts illegal_move_message
     end
@@ -79,22 +85,22 @@ class Game
     user_input
   end
 
-  def check?
-    king_location = @current_player.find_king_location
-    all_moves = find_all_moves(opposite_player)
+  # def check?
+  #   king_location = @current_player.find_king_location
+  #   all_moves = find_all_moves(opposite_player)
 
-    return true if all_moves.include?(king_location)
-  end
+  #   return true if all_moves.include?(king_location)
+  # end
 
-  def find_all_moves(player)
-    all_moves = []
-    player.set.each do |piece|
-      all_moves << legal_moves(piece.moves, piece)
-    end
-    all_moves.flatten!(1)
-    all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
-    all_moves
-  end
+  # def find_all_moves(player)
+  #   all_moves = []
+  #   player.set.each do |piece|
+  #     all_moves << legal_moves(piece.moves, piece)
+  #   end
+  #   all_moves.flatten!(1)
+  #   all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
+  #   all_moves
+  # end
 
   def game_over?
     @player1.loser == true || @player2.loser
@@ -120,24 +126,24 @@ class Game
 
   # Methods to check if moves are legal and generate legal moves
 
-  def legal_move_for_piece?(start, finish)
-    piece = @current_player.get_piece_at(start)
-    possible_moves = piece.moves
-    possible_moves.delete_if { |square| occupied_by_same_color?(square) }
+  # def legal_move_for_piece?(start, finish)
+  #   piece = @current_player.get_piece_at(start)
+  #   possible_moves = piece.moves
+  #   possible_moves.delete_if { |square| occupied_by_same_color?(square) }
 
-    return true if legal_moves(possible_moves, piece).include?(finish)
+  #   return true if legal_moves(possible_moves, piece).include?(finish)
 
-    false
-  end
+  #   false
+  # end
 
-  def legal_moves(possible_moves, piece)
-    return add_king_castle_moves(possible_moves) if piece.is_a? King
-    return possible_moves if piece.is_a? Knight
-    return rook_bishop_move_iterator(piece) if piece.is_a? Rook
-    return rook_bishop_move_iterator(piece) if piece.is_a? Bishop
-    return queen_move_iterator(piece) if piece.is_a? Queen
-    return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
-  end
+  # def legal_moves(possible_moves, piece)
+  #   return add_king_castle_moves(possible_moves) if piece.is_a? King
+  #   return possible_moves if piece.is_a? Knight
+  #   return rook_bishop_move_iterator(piece) if piece.is_a? Rook
+  #   return rook_bishop_move_iterator(piece) if piece.is_a? Bishop
+  #   return queen_move_iterator(piece) if piece.is_a? Queen
+  #   return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
+  # end
 
   def add_diagonal_pawn_moves(possible_moves, piece)
     possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
