@@ -4,12 +4,14 @@ require_relative 'dialogue'
 require_relative 'game_serializer'
 require_relative 'move_referee'
 require_relative 'display'
+require_relative 'errors'
 
 class Game
   include NotationTranslator
   include MoveValidator
   include Dialogue
   include GameSerializer
+  include Errors
 
   attr_accessor :save, :player1, :player2, :current_player
 
@@ -23,13 +25,17 @@ class Game
 
   def select_game_mode
     puts select_mode_message
+    user_input = validate_game_mode_input
+    load_game if user_input == 2
+  end
 
-    loop do
+  def validate_game_mode_input
+    begin
       user_input = gets.chomp.to_i
-      load_game if user_input == 2
-      break if [1, 2].include?(user_input)
-
-      puts invalid_mode_input_message
+      raise GameModeError unless [1, 2].include?(user_input)
+    rescue GameModeError => e
+      puts e.message
+      retry
     end
   end
 
@@ -129,8 +135,7 @@ class Game
   end
 
   def occupied_by_opposite_color?(square)
-    player = @current_player == @player1 ? @player2 : @player1
-    player.set.any? { |piece| piece.position == square }
+    opposite_player.set.any? { |piece| piece.position == square }
   end
 
   def occupied_by_same_color?(square)
