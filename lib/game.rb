@@ -30,19 +30,17 @@ class Game
   end
 
   def validate_game_mode_input
-    begin
+    loop do
       user_input = gets.chomp.to_i
-      raise GameModeError unless [1, 2].include?(user_input)
-    rescue GameModeError => e
-      puts e.message
-      retry
+      return user_input if [1, 2].include?(user_input)
+
+      puts invalid_mode_input_message
     end
   end
 
   def turn
-    Display.new(@game_state).generate_display
-
     loop do
+      Display.new(@game_state).generate_display
       puts announce_current_player
       move = review_move
       break if @save
@@ -66,7 +64,6 @@ class Game
 
   def solicit_move
     loop do
-      puts start_square_dialogue
       # puts 'check' if check?
 
       start = solicit_start_square
@@ -74,37 +71,36 @@ class Game
 
       finish = @current_player.input_finish_square
 
-      # return [start, finish] if legal_move_for_piece?(start, finish)
       piece = @current_player.get_piece_at(start)
-      move = [start, finish]
-      referee = MoveReferee.new(@game_state, piece, move)
-      return move if referee.move_valid
+      referee = MoveReferee.new(@game_state, piece, [start, finish])
+      return [start, finish] if referee.move_valid
 
       puts illegal_move_message
     end
   end
 
   def solicit_start_square
+    puts start_square_dialogue
     user_input = @current_player.input_start_square
     @save = true if user_input == :save
     user_input
   end
 
-  # def check?
-  #   king_location = @current_player.find_king_location
-  #   all_moves = find_all_moves(opposite_player)
+#  def check?
+#    king_location = @current_player.find_king_location
+#    all_moves = find_all_moves(opposite_player)
 
-  #   return true if all_moves.include?(king_location)
-  # end
+#    return true if all_moves.include?(king_location)
+#  end
 
   # def find_all_moves(player)
-  #   all_moves = []
-  #   player.set.each do |piece|
-  #     all_moves << legal_moves(piece.moves, piece)
-  #   end
-  #   all_moves.flatten!(1)
-  #   all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
-  #   all_moves
+    # all_moves = []
+    # player.set.each do |piece|
+    #   all_moves << legal_moves(piece.moves, piece)
+    # end
+    # all_moves.flatten!(1)
+    # all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
+    # all_moves
   # end
 
   def game_over?
@@ -119,7 +115,6 @@ class Game
   def update_board(start, finish)
     @current_player.update_set(start, finish) unless king_side_castle?([start, finish]) || queen_side_castle?([start, finish])
     @game_state = [@player1.set, @player2.set].flatten
-    Display.new(@game_state).generate_display
   end
 
   def switch_player
