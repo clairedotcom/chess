@@ -13,25 +13,25 @@ class MoveReferee
     possible_moves = @piece.moves
     possible_moves.delete_if { |square| occupied_by_same_color?(square) }
 
-    return true if legal_moves(possible_moves, @piece).include?(@move.last)
+    return true if legal_moves(possible_moves).include?(@move.last)
 
     false
   end
 
-  def legal_moves(possible_moves, piece)
-    return add_king_castle_moves(possible_moves) if piece.is_a? King
-    return possible_moves if piece.is_a? Knight
-    return rook_bishop_move_iterator(piece) if piece.is_a? Rook
-    return rook_bishop_move_iterator(piece) if piece.is_a? Bishop
-    return queen_move_iterator(piece) if piece.is_a? Queen
-    return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
+  def legal_moves(possible_moves)
+    return add_king_castle_moves(possible_moves) if @piece.is_a? King
+    return possible_moves if @piece.is_a? Knight
+    return rook_bishop_move_iterator(@piece) if @piece.is_a? Rook
+    return rook_bishop_move_iterator(@piece) if @piece.is_a? Bishop
+    return queen_move_iterator(@piece) if @piece.is_a? Queen
+    return add_diagonal_pawn_moves(possible_moves) if @piece.is_a? Pawn
   end
 
-  def add_diagonal_pawn_moves(possible_moves, piece)
+  def add_diagonal_pawn_moves(possible_moves)
     possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
     possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
-    possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
-    possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
+    possible_moves << @piece.left_diagonal if occupied_by_opposite_color?(@piece.left_diagonal)
+    possible_moves << @piece.right_diagonal if occupied_by_opposite_color?(@piece.right_diagonal)
     possible_moves
   end
 

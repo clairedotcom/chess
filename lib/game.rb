@@ -4,14 +4,12 @@ require_relative 'dialogue'
 require_relative 'game_serializer'
 require_relative 'move_referee'
 require_relative 'display'
-require_relative 'errors'
 
 class Game
   include NotationTranslator
   include MoveValidator
   include Dialogue
   include GameSerializer
-  include Errors
 
   attr_accessor :save, :player1, :player2, :current_player
 
@@ -64,7 +62,7 @@ class Game
 
   def solicit_move
     loop do
-      # puts 'check' if check?
+      puts 'check' if check?
 
       start = solicit_start_square
       break if @save
@@ -86,22 +84,25 @@ class Game
     user_input
   end
 
-#  def check?
-#    king_location = @current_player.find_king_location
-#    all_moves = find_all_moves(opposite_player)
+  def check?
+    king_location = @current_player.find_king_location
+    all_moves = find_all_moves(opposite_player)
 
-#    return true if all_moves.include?(king_location)
-#  end
+    return true if all_moves.include?(king_location)
+  end
 
-  # def find_all_moves(player)
-    # all_moves = []
-    # player.set.each do |piece|
-    #   all_moves << legal_moves(piece.moves, piece)
-    # end
-    # all_moves.flatten!(1)
-    # all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
-    # all_moves
-  # end
+  def find_all_moves(player)
+    all_moves = []
+
+    player.set.each do |piece|
+      referee = MoveReferee.new(@game_state, piece, [])
+      all_moves << referee.legal_moves(piece.moves)
+    end
+    
+    all_moves.flatten!(1)
+    all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
+    all_moves
+  end
 
   def game_over?
     @player1.loser == true || @player2.loser
@@ -135,13 +136,6 @@ class Game
 
   def occupied_by_same_color?(square)
     @current_player.set.any? { |piece| piece.position == square }
-  end
-
-  def color_of_piece_in_square(square)
-    return :white if @player1.set.any? { |piece| piece.position == square }
-    return :black if @player2.set.any? { |piece| piece.position == square }
-
-    false
   end
 
   def king_side_castle?(move)
