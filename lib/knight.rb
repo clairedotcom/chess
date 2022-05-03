@@ -1,4 +1,4 @@
-require_relative '../lib/move_validator'
+require_relative 'move_validator'
 
 class Knight
   include MoveValidator
@@ -16,7 +16,7 @@ class Knight
   end
 
   def moves
-    possible_moves = Array.new
+    possible_moves = []
     x = @position[0]
     y = @position[1]
 

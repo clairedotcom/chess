@@ -1,4 +1,4 @@
-require_relative '../lib/move_validator'
+require_relative 'move_validator'
 
 class Pawn
   include MoveValidator
