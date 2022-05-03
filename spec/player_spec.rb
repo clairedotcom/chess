@@ -132,7 +132,7 @@ describe Player do
       end
     end
 
-    context 'when the users inputs "save"' do
+    context 'when the user inputs "save"' do
       before do
         allow(test_white_player).to receive(:gets).and_return('save')
       end
@@ -144,6 +144,44 @@ describe Player do
     end
   end
 
+  describe '#input_finish_square' do
+  end
+
+  describe '#same_color?' do
+    context 'when white pieces are at the initial position' do
+      it 'returns true for square d2' do
+        d2 = [3, 1]
+        expect(test_white_player.same_color?(d2)).to be true
+      end
+
+      it 'returns false for square e4' do
+        e4 = [4, 3]
+        expect(test_white_player.same_color?(e4)).to be false
+      end
+    end
+
+    context 'when black pieces are at the initial position' do
+      it 'returns true for square f7' do
+        f7 = [7, 6]
+        expect(test_black_player.same_color?(f7)).to be true
+      end
+
+      it 'returns false for square e1' do
+        e1 = [4, 0]
+        expect(test_black_player.same_color?(e1)).to be false
+      end
+    end
+  end
+
+  describe '#update_set' do
+  end
+
+  describe '#get_moves_for_piece' do
+  end
+
+  describe '#get_piece_at' do
+  end
+
   describe '#find_king_location' do
     context 'when a white player set is initialized' do
       it 'returns [4, 0]' do
@@ -153,5 +191,6 @@ describe Player do
     end
   end
 
-
+  describe '#delete_piece' do
+  end
 end
