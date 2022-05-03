@@ -1,6 +1,6 @@
-require_relative '../lib/move_validator'
-require_relative '../lib/bishop'
-require_relative '../lib/rook'
+require_relative 'move_validator'
+require_relative 'bishop'
+require_relative 'rook'
 
 class Queen
   attr_accessor :position, :color
