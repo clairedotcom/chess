@@ -6,14 +6,109 @@ describe Player do
   subject(:test_black_player) { described_class.new(:black) }
 
   describe 'generate_set' do
-
   end
 
   describe 'generate_white_set' do
+    it 'creates a Rook at a1' do
+      a8 = [0, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Rook)
+    end
 
+    it 'creates a Rook at h1' do
+      a8 = [7, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Rook)
+    end
+
+    it 'creates a Knight at b1' do
+      a8 = [1, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Knight)
+    end
+
+    it 'creates a Knight at g1' do
+      a8 = [6, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Knight)
+    end
+
+    it 'creates a Bishop at c1' do
+      a8 = [2, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Bishop)
+    end
+
+    it 'creates a Bishop at f1' do
+      a8 = [5, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Bishop)
+    end
+
+    it 'creates a Queen at d1' do
+      a8 = [3, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Queen)
+    end
+
+    it 'creates a King at e1' do
+      a8 = [4, 0]
+      test_piece = test_white_player.generate_white_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(King)
+    end
   end
 
-  describe '#generate_black_set' do
+  describe 'generate_black_set' do
+    it 'creates a Rook at a8' do
+      a8 = [0, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Rook)
+    end
+
+    it 'creates a Rook at h8' do
+      a8 = [7, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Rook)
+    end
+
+    it 'creates a Knight at b8' do
+      a8 = [1, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Knight)
+    end
+
+    it 'creates a Knight at g8' do
+      a8 = [6, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Knight)
+    end
+
+    it 'creates a Bishop at c8' do
+      a8 = [2, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Bishop)
+    end
+
+    it 'creates a Bishop at f8' do
+      a8 = [5, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Bishop)
+    end
+
+    it 'creates a Queen at d8' do
+      a8 = [3, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(Queen)
+    end
+
+    it 'creates a King at e8' do
+      a8 = [4, 7]
+      test_piece = test_black_player.generate_black_set.select { |piece| piece.position == a8 }[0]
+      expect(test_piece).to be_a(King)
+    end
+  end
+
+  describe '#generate_black_pawns' do
     it 'generates pawn objects' do
       expect(test_black_player.generate_black_pawns.all? { |piece| piece.instance_of? Pawn }).to be true
     end
