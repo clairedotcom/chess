@@ -80,8 +80,6 @@ class Player
   end
 
   def input_finish_square
-    puts finish_square_dialogue
-
     loop do
       square = gets.chomp
       return decode_coords(square) if valid_coords?(square)
@@ -90,16 +88,8 @@ class Player
     end
   end
 
-  def valid_move_for_piece?(square)
-    return true if @active_piece.moves.include?(square)
-
-    false
-  end
-
   def same_color?(square)
-    return true if @set.any? { |piece| piece.position == square }
-
-    false
+    @set.any? { |piece| piece.position == square } ? true : false
   end
 
   def update_set(start, finish)
@@ -111,14 +101,11 @@ class Player
   end
 
   def get_piece_at(square)
-    array = @set.select { |piece| piece.position == square }
-    array[0]
+    @set.select { |piece| piece.position == square }.first
   end
 
   def find_king_location
-    @set.each do |piece|
-      return piece.position if piece.instance_of? King
-    end
+    @set.select { |piece| piece.instance_of? King }.first.position
   end
 
   def delete_piece(square)
@@ -153,14 +140,10 @@ class Player
 
   def select_promotion_piece
     case solicit_promotion_piece
-    when 'queen'
-      Queen
-    when 'knight'
-      Knight
-    when 'bishop'
-      Bishop
-    when 'rook'
-      Rook
+    when 'queen' then Queen
+    when 'knight' then Knight
+    when 'bishop' then Bishop
+    when 'rook' then Rook
     end
   end
 end
