@@ -240,6 +240,30 @@ describe Player do
   end
 
   describe '#input_finish_square' do
+    context 'when the user inputs e6' do
+      before do
+        allow(test_white_player).to receive(:gets).and_return('e6')
+      end
+
+      it 'returns [4, 5]' do
+        expect(test_white_player.input_finish_square).to eq([4, 5])
+      end
+    end
+
+    context 'when the user inputs an invalid input' do
+      before do
+        letters = 'abcd'
+        valid_input = 'e2'
+        allow(test_white_player).to receive(:gets).and_return(letters, valid_input)
+      end
+
+      it 'prints an error message' do
+        error_message = test_white_player.invalid_input_message
+        result = [4, 1]
+        expect(test_white_player).to receive(:puts).with(error_message).once
+        expect(test_white_player.input_finish_square).to eq(result)
+      end
+    end
   end
 
   describe '#same_color?' do
@@ -275,6 +299,17 @@ describe Player do
   end
 
   describe '#get_piece_at' do
+    context 'when the white pieces are at their initial positions' do
+      it 'returns a Rook object at a1' do
+        a1 = [0, 0]
+        expect(test_white_player.get_piece_at(a1)).to be_a(Rook)
+      end
+
+      it 'returns nil for an empty square' do
+        e5 = [4, 4]
+        expect(test_white_player.get_piece_at(e5)).to be nil
+      end
+    end
   end
 
   describe '#find_king_location' do
@@ -287,5 +322,13 @@ describe Player do
   end
 
   describe '#delete_piece' do
+    context 'when white pieces are at their initial position' do
+      it 'removes the rook at a1 from the set' do
+        piece = test_white_player.set[8]
+        a1 = [0, 0]
+        test_white_player.delete_piece(a1)
+        expect(test_white_player.set).not_to include(piece)
+      end
+    end
   end
 end
