@@ -3,6 +3,61 @@ require_relative '../lib/game'
 describe Game do
   subject(:test_game) { described_class.new }
 
+  describe '#select_game_mode' do
+  end
+
+  describe '#validate_game_mode_input' do
+  end
+
+  describe '#turn' do
+  end
+
+  describe '#review_move' do
+  end
+
+  describe '#solicit_move' do
+  end
+
+  describe '#soliit_start_square' do
+  end
+
+  describe '#check?' do
+  end
+
+  describe '#find_all_moves' do
+  end
+
+  describe '#game_over?' do
+  end
+
+  describe '#capture' do
+  end
+
+  describe '#update_board' do
+  end
+
+  describe '#switch_player' do
+    context 'when called on a game in its initial state' do
+      before do
+        test_game.switch_player
+      end
+
+      it 'changes current_player to player2' do
+        player2 = test_game.player2
+        expect(test_game.current_player).to eq(player2)
+      end
+    end 
+  end
+
+  describe '#opposite_player' do
+    context 'when initialized' do
+      it 'returns the black player' do
+        player2 = test_game.player2
+        expect(test_game.opposite_player).to eq(player2)
+      end
+    end
+  end
+
   describe '#ocupied_by_any_piece?' do
     context 'when given an unocupied square a4' do
       it 'returns false' do
@@ -26,22 +81,6 @@ describe Game do
     end
   end
 
-  describe '#occupied_by_same_color?' do
-    context 'when @current_player is white and the square has a white piece' do
-      it 'returns true' do
-        square = [0, 0]
-        expect(test_game.occupied_by_same_color?(square)).to be true
-      end
-    end
-
-    context 'when @current_player is white and the square has a black piece' do
-      it 'returns false' do
-        square = [7, 7]
-        expect(test_game.occupied_by_same_color?(square)).to be false
-      end
-    end
-  end
-
   describe '#occupied_by_opposite_color?' do
     context 'when white is @current_player and the square has a black piece' do
       it 'returns true' do
@@ -58,13 +97,29 @@ describe Game do
     end
   end
 
+  describe '#occupied_by_same_color?' do
+    context 'when @current_player is white and the square has a white piece' do
+      it 'returns true' do
+        square = [0, 0]
+        expect(test_game.occupied_by_same_color?(square)).to be true
+      end
+    end
+
+    context 'when @current_player is white and the square has a black piece' do
+      it 'returns false' do
+        square = [7, 7]
+        expect(test_game.occupied_by_same_color?(square)).to be false
+      end
+    end
+  end
+
   describe '#king_side_castle' do
     context 'when player1 is the current player' do
       before do
         allow(test_game).to receive(:white_king_side_free?).and_return(true)
       end
 
-      it 'returns [6, 0]' do
+      xit 'returns [6, 0]' do
         result = [6, 0]
         expect(test_game.king_side_castle).to eq(result)
       end
@@ -77,7 +132,7 @@ describe Game do
         allow(test_game).to receive(:black_king_side_free?).and_return(true)
       end
 
-      it 'returns [6, 7]' do
+      xit 'returns [6, 7]' do
         result = [6, 7]
         expect(test_game.king_side_castle).to eq(result)
       end
@@ -90,7 +145,7 @@ describe Game do
         allow(test_game).to receive(:white_queen_side_free?).and_return(true)
       end
 
-      it 'returns [2, 0]' do
+      xit 'returns [2, 0]' do
         result = [2, 0]
         expect(test_game.queen_side_castle).to eq(result)
       end
@@ -103,7 +158,7 @@ describe Game do
         allow(test_game).to receive(:black_queen_side_free?).and_return(true)
       end
 
-      it 'returns [2, 7]' do
+      xit 'returns [2, 7]' do
         result = [2, 7]
         expect(test_game.queen_side_castle).to eq(result)
       end
