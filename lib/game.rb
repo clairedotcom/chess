@@ -67,6 +67,7 @@ class Game
       start = solicit_start_square
       break if @save
 
+      puts finish_square_dialogue
       finish = @current_player.input_finish_square
 
       piece = @current_player.get_piece_at(start)
@@ -98,7 +99,7 @@ class Game
       referee = MoveReferee.new(@game_state, piece, [])
       all_moves << referee.legal_moves(piece.moves)
     end
-    
+
     all_moves.flatten!(1)
     all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
     all_moves
@@ -119,7 +120,7 @@ class Game
   end
 
   def switch_player
-    @current_player = @current_player == @player1 ? @player2 : @player1
+    @current_player = opposite_player
   end
 
   def opposite_player
