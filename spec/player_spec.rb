@@ -204,6 +204,7 @@ describe Player do
     context 'when the user inputs a2' do
       before do
         allow(test_white_player).to receive(:gets).and_return('a2')
+        allow($stdout).to receive(:puts)
       end
 
       it 'returns [0, 1]' do
@@ -221,15 +222,17 @@ describe Player do
 
       it 'prints an error message' do
         error_message = test_white_player.invalid_input_message
-        result = [4, 1]
-        expect(test_white_player).to receive(:puts).with(error_message).once
-        expect(test_white_player.input_start_square).to eq(result)
+        prompt_message = "White, it's your turn. Enter the location of the piece you'd like to move (e.g. a4): "
+        expect($stdout).to receive(:puts).with(prompt_message).twice
+        expect($stdout).to receive(:puts).with(error_message).once
+        test_white_player.input_start_square
       end
     end
 
     context 'when the user inputs "save"' do
       before do
         allow(test_white_player).to receive(:gets).and_return('save')
+        allow($stdout).to receive(:puts)
       end
 
       it 'returns :save' do

@@ -38,8 +38,8 @@ class Game
 
   def turn
     loop do
-      Display.new(@game_state).generate_display
-      puts announce_current_player
+      # print out board
+      Display.new(@game_state).print_display
       move = review_move
       break if @save
 
@@ -79,7 +79,7 @@ class Game
   end
 
   def solicit_start_square
-    puts start_square_dialogue
+    # puts start_square_dialogue
     user_input = @current_player.input_start_square
     @save = true if user_input == :save
     user_input

@@ -4,7 +4,7 @@ class Display
     @display = Array.new(8) { Array.new(8, ' ') }
   end
 
-  def generate_display
+  def print_display
     colorize_empty_board
     place_pieces
     print_board

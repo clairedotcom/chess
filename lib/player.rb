@@ -68,7 +68,7 @@ class Player
 
   def input_start_square
     loop do
-      user_input = gets.chomp
+      user_input = prompt_for_input
 
       return :save if user_input == 'save'
 
