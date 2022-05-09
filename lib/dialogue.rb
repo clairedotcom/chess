@@ -29,7 +29,8 @@ module Dialogue
     "Enter the location of the piece you'd like to move (e.g. a4): "
   end
 
-  def finish_square_dialogue
-    'Which square would you like to move to? (e.g. a4): '
+  def prompt_for_finish_square
+    puts 'Which square would you like to move to? (e.g. a4): '
+    gets.chomp
   end
 end

@@ -62,25 +62,26 @@ class Game
 
   def solicit_move
     loop do
-      puts 'check' if check?
-
-      start = solicit_start_square
+      # puts 'check' if check?
+      move = [user_input_start_sqare, user_input_finish_square]
       break if @save
 
-      puts finish_square_dialogue
-      finish = @current_player.input_finish_square
-
-      piece = @current_player.get_piece_at(start)
-      referee = MoveReferee.new(@game_state, piece, [start, finish])
-      return [start, finish] if referee.move_valid
+      piece = @current_player.get_piece_at(move.first)
+      referee = MoveReferee.new(@game_state, piece, move)
+      return move if referee.move_valid
 
       puts illegal_move_message
     end
   end
 
-  def solicit_start_square
-    # puts start_square_dialogue
+  def user_input_start_sqare
     user_input = @current_player.input_start_square
+    @save = true if user_input == :save
+    user_input
+  end
+
+  def user_input_finish_square
+    user_input = @current_player.input_finish_square
     @save = true if user_input == :save
     user_input
   end

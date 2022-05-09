@@ -81,8 +81,11 @@ class Player
 
   def input_finish_square
     loop do
-      square = gets.chomp
-      return decode_coords(square) if valid_coords?(square)
+      user_input = prompt_for_finish_square
+
+      return :save if user_input == 'save'
+
+      return decode_coords(user_input) if valid_coords?(user_input)
 
       puts invalid_input_message
     end
