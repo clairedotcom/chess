@@ -262,9 +262,10 @@ describe Player do
 
       it 'prints an error message' do
         error_message = test_white_player.invalid_input_message
-        result = [4, 1]
-        expect(test_white_player).to receive(:puts).with(error_message).once
-        expect(test_white_player.input_finish_square).to eq(result)
+        prompt_message = 'Which square would you like to move to? (e.g. a4): '
+        expect($stdout).to receive(:puts).with(error_message).once
+        expect($stdout).to receive(:puts).with(prompt_message).twice
+        test_white_player.input_finish_square
       end
     end
   end
