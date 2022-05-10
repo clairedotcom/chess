@@ -38,13 +38,9 @@ class Game
 
   def turn
     loop do
-      # print out board
       Display.new(@game_state).print_display
-      move = review_move
-      break if @save
-
-      update_board(move[0], move[1])
-      break if game_over?
+      review_move
+      break if @save || game_over?
 
       switch_player
     end
@@ -54,15 +50,21 @@ class Game
     move = solicit_move
     return if @save
 
-    @current_player.king_side_castle_move if king_side_castle?(move)
-    @current_player.queen_side_castle_move if queen_side_castle?(move)
-    capture(move[1])
-    move
+    if king_side_castle?(move)
+      @current_player.king_side_castle_move
+    elsif queen_side_castle?(move)
+      @current_player.queen_side_castle_move
+    elsif check?
+      # puts 'You're in check! You must move to protect your King.
+      # solicit_move
+    else
+      capture(move.last)
+      update_board(move.first, move.last)
+    end
   end
 
   def solicit_move
     loop do
-      # puts 'check' if check?
       move = [user_input_start_sqare, user_input_finish_square]
       break if @save
 
@@ -116,7 +118,7 @@ class Game
   end
 
   def update_board(start, finish)
-    @current_player.update_set(start, finish) unless king_side_castle?([start, finish]) || queen_side_castle?([start, finish])
+    @current_player.update_set(start, finish) # unless king_side_castle?([start, finish]) || queen_side_castle?([start, finish])
     @game_state = [@player1.set, @player2.set].flatten
   end
 
