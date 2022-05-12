@@ -113,54 +113,42 @@ describe Game do
     end
   end
 
-  describe '#king_side_castle' do
-    context 'when player1 is the current player' do
-      before do
-        allow(test_game).to receive(:white_king_side_free?).and_return(true)
-      end
-
-      xit 'returns [6, 0]' do
-        result = [6, 0]
-        expect(test_game.king_side_castle).to eq(result)
+  describe '#king_side_castle?' do
+    context 'when player1 selects [6, 0] as a move' do
+      it 'returns true' do
+        move = [[4, 0], [6, 0]]
+        expect(test_game.king_side_castle?(move)).to be true
       end
     end
 
-    context 'when player2 is the current player' do
+    context 'when player2 selects [6, 7] as a move' do
       before do
-        player2 = test_game.instance_variable_get(:@player2)
-        test_game.instance_variable_set(:@current_player, player2)
-        allow(test_game).to receive(:black_king_side_free?).and_return(true)
+        test_game.switch_player
       end
 
-      xit 'returns [6, 7]' do
-        result = [6, 7]
-        expect(test_game.king_side_castle).to eq(result)
+      it 'returns true' do
+        move = [[4, 7], [6, 7]]
+        expect(test_game.king_side_castle?(move)).to be true
       end
     end
   end
 
   describe '#queen_side_castle' do
     context 'when player1 is the current player' do
-      before do
-        allow(test_game).to receive(:white_queen_side_free?).and_return(true)
-      end
-
-      xit 'returns [2, 0]' do
-        result = [2, 0]
-        expect(test_game.queen_side_castle).to eq(result)
+      it 'returns true' do
+        move = [[4, 0], [2, 0]]
+        expect(test_game.queen_side_castle?(move)).to be true
       end
     end
 
     context 'when player2 is the current player' do
       before do
-        player2 = test_game.instance_variable_get(:@player2)
-        test_game.instance_variable_set(:@current_player, player2)
-        allow(test_game).to receive(:black_queen_side_free?).and_return(true)
+        test_game.switch_player
       end
 
-      xit 'returns [2, 7]' do
-        result = [2, 7]
-        expect(test_game.queen_side_castle).to eq(result)
+      it 'returns true' do
+        move = [[4, 7], [2, 7]]
+        expect(test_game.queen_side_castle?(move)).to be true
       end
     end
   end
