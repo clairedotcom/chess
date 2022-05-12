@@ -246,6 +246,7 @@ describe Player do
     context 'when the user inputs e6' do
       before do
         allow(test_white_player).to receive(:gets).and_return('e6')
+        allow($stdout).to receive(:puts)
       end
 
       it 'returns [4, 5]' do
