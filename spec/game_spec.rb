@@ -4,7 +4,15 @@ describe Game do
   subject(:test_game) { described_class.new }
 
   describe '#select_game_mode' do
-    # test #load_game, all other methods tested
+    context 'when the user inputs 2' do
+      before do
+        user_input = '2'
+        allow(test_game).to receive(:gets).and_return(user_input)
+      end
+
+      xit 'calls #load_game' do
+      end
+    end
   end
 
   describe '#validate_game_mode_input' do

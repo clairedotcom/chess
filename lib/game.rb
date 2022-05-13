@@ -68,9 +68,7 @@ class Game
       move = [user_input_start_sqare, user_input_finish_square]
       break if @save
 
-      piece = @current_player.get_piece_at(move.first)
-      referee = MoveReferee.new(@game_state, piece, move)
-      return move if referee.move_valid
+      return move if validate_move_with_referee(move)
 
       puts illegal_move_message
     end
@@ -86,6 +84,12 @@ class Game
     user_input = @current_player.input_finish_square
     @save = true if user_input == :save
     user_input
+  end
+
+  def validate_move_with_referee(move)
+    piece = @current_player.get_piece_at(move.first)
+    referee = MoveReferee.new(@game_state, piece, move)
+    return true if referee.move_valid
   end
 
   def check?
@@ -109,7 +113,7 @@ class Game
   end
 
   def game_over?
-    @player1.loser == true || @player2.loser
+    @player1.loser || @player2.loser
   end
 
   def capture(finish)
