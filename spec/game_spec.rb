@@ -4,9 +4,35 @@ describe Game do
   subject(:test_game) { described_class.new }
 
   describe '#select_game_mode' do
+    # test #load_game, all other methods tested
   end
 
   describe '#validate_game_mode_input' do
+    context 'when the user inputs 1 or 2' do
+      before do
+        user_input = '1'
+        allow(test_game).to receive(:gets).and_return(user_input)
+      end
+
+      it 'returns 1' do
+        result = 1
+        expect(test_game.validate_game_mode_input).to eq(result)
+      end
+    end
+
+    context 'when the user inputs something other than 1 or 2' do
+      before do
+        invalid_input = 'asdf'
+        valid_input = '2'
+        allow(test_game).to receive(:gets).and_return(invalid_input, valid_input)
+      end
+
+      it 'prints an error message' do
+        error_message = test_game.invalid_mode_input_message
+        expect($stdout).to receive(:puts).with(error_message).once
+        test_game.validate_game_mode_input
+      end
+    end
   end
 
   describe '#turn' do
@@ -34,6 +60,14 @@ describe Game do
   end
 
   describe '#update_board' do
+    context 'when passed a move' do
+      it 'sends a signal to the player to update the board' do
+        start = [0, 1]
+        finish = [0, 3]
+        expect(test_game.current_player).to receive(:update_set).with(start, finish)
+        test_game.update_board(start, finish)
+      end
+    end
   end
 
   describe '#switch_player' do
@@ -46,7 +80,7 @@ describe Game do
         player2 = test_game.player2
         expect(test_game.current_player).to eq(player2)
       end
-    end 
+    end
   end
 
   describe '#opposite_player' do
