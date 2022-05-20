@@ -56,6 +56,11 @@ describe Game do
   end
 
   describe '#check?' do
+    context 'when the game is initialized' do
+      it 'is nil' do
+        expect(test_game.check?).to be nil
+      end
+    end
   end
 
   describe '#find_all_moves' do
