@@ -1,9 +1,9 @@
 require_relative 'player'
-require_relative 'board'
 require_relative 'notation_translator'
 require_relative 'dialogue'
 require_relative 'game_serializer'
-require_relative 'set'
+require_relative 'move_referee'
+require_relative 'display'
 
 class Game
   include NotationTranslator
@@ -11,38 +11,36 @@ class Game
   include Dialogue
   include GameSerializer
 
-  attr_accessor :save, :player1, :player2, :board, :current_player
+  attr_accessor :save, :player1, :player2, :current_player
 
   def initialize
     @player1 = Player.new(:white)
     @player2 = Player.new(:black)
-    @board = Board.new
+    @game_state = [@player1.set, @player2.set].flatten
     @current_player = @player1
     @save = false
   end
 
   def select_game_mode
     puts select_mode_message
+    user_input = validate_game_mode_input
+    load_game if user_input == 2
+  end
 
+  def validate_game_mode_input
     loop do
       user_input = gets.chomp.to_i
-      load_game if user_input == 2
-      break if [1, 2].include?(user_input)
+      return user_input if [1, 2].include?(user_input)
 
       puts invalid_mode_input_message
     end
   end
 
   def turn
-    @board.create_display(@player1.set.pieces, @player2.set.pieces)
-
     loop do
-      puts announce_current_player
-      move = review_move
-      break if @save
-
-      update_board(move[0], move[1])
-      break if game_over?
+      Display.new(@game_state).print_display
+      review_move
+      break if @save || game_over?
 
       switch_player
     end
@@ -52,32 +50,46 @@ class Game
     move = solicit_move
     return if @save
 
-    @current_player.king_side_castle_move if king_side_castle?(move)
-    @current_player.queen_side_castle_move if queen_side_castle?(move)
-    capture(move[1])
-    move
+    if king_side_castle?(move)
+      @current_player.king_side_castle_move
+    elsif queen_side_castle?(move)
+      @current_player.queen_side_castle_move
+    elsif check?
+      # puts 'You're in check! You must move to protect your King.
+      # solicit_move
+    else
+      capture(move.last)
+      update_board(move.first, move.last)
+    end
   end
 
   def solicit_move
     loop do
-      puts start_square_dialogue
-      puts 'check' if check?
-
-      start = solicit_start_square
+      move = [user_input_start_sqare, user_input_finish_square]
       break if @save
 
-      finish = @current_player.input_finish_square
-
-      return [start, finish] if legal_move_for_piece?(start, finish)
+      return move if validate_move_with_referee(move)
 
       puts illegal_move_message
     end
   end
 
-  def solicit_start_square
+  def user_input_start_sqare
     user_input = @current_player.input_start_square
     @save = true if user_input == :save
     user_input
+  end
+
+  def user_input_finish_square
+    user_input = @current_player.input_finish_square
+    @save = true if user_input == :save
+    user_input
+  end
+
+  def validate_move_with_referee(move)
+    piece = @current_player.get_piece_at(move.first)
+    referee = MoveReferee.new(@game_state, piece, move)
+    return true if referee.move_valid
   end
 
   def check?
@@ -89,16 +101,19 @@ class Game
 
   def find_all_moves(player)
     all_moves = []
-    player.set.pieces.each do |piece|
-      all_moves << legal_moves(piece.moves, piece)
+
+    player.set.each do |piece|
+      referee = MoveReferee.new(@game_state, piece, [])
+      all_moves << referee.legal_moves(piece.moves)
     end
+
     all_moves.flatten!(1)
     all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
     all_moves
   end
 
   def game_over?
-    @player1.loser == true || @player2.loser
+    @player1.loser || @player2.loser
   end
 
   def capture(finish)
@@ -107,76 +122,29 @@ class Game
   end
 
   def update_board(start, finish)
-    @current_player.update_set(start, finish)
-    @board.create_display(@player1.set, @player2.set)
+    @current_player.update_set(start, finish) # unless king_side_castle?([start, finish]) || queen_side_castle?([start, finish])
+    @game_state = [@player1.set, @player2.set].flatten
   end
 
   def switch_player
-    @current_player = @current_player == @player1 ? @player2 : @player1
+    @current_player = opposite_player
   end
 
   def opposite_player
     @current_player == @player1 ? @player2 : @player1
   end
 
-  # Methods to check if moves are legal and generate legal moves
-
-  def legal_move_for_piece?(start, finish)
-    piece = @current_player.get_piece_at(start)
-    possible_moves = piece.moves
-    possible_moves.delete_if { |square| occupied_by_same_color?(square) }
-
-    return true if legal_moves(possible_moves, piece).include?(finish)
-
-    false
-  end
-
-  def legal_moves(possible_moves, piece)
-    return add_king_castle_moves(possible_moves) if piece.is_a? King
-    return possible_moves if piece.is_a? Knight
-    return rook_bishop_move_iterator(piece) if piece.is_a? Rook
-    return rook_bishop_move_iterator(piece) if piece.is_a? Bishop
-    return queen_move_iterator(piece) if piece.is_a? Queen
-    return add_diagonal_pawn_moves(possible_moves, piece) if piece.is_a? Pawn
-  end
-
-  def add_diagonal_pawn_moves(possible_moves, piece)
-    possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
-    possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
-    possible_moves << piece.left_diagonal if occupied_by_opposite_color?(piece.left_diagonal)
-    possible_moves << piece.right_diagonal if occupied_by_opposite_color?(piece.right_diagonal)
-    possible_moves
-  end
-
-  def add_king_castle_moves(possible_moves)
-    possible_moves << king_side_castle unless king_side_castle.nil?
-    possible_moves << queen_side_castle unless queen_side_castle.nil?
-    possible_moves
-  end
-
-  # Methods to check squares for pieces
-
   def occupied_by_any_piece?(square)
     occupied_by_same_color?(square) || occupied_by_opposite_color?(square)
   end
 
   def occupied_by_opposite_color?(square)
-    player = @current_player == @player1 ? @player2 : @player1
-    player.set.pieces.any? { |piece| piece.position == square }
+    opposite_player.set.any? { |piece| piece.position == square }
   end
 
   def occupied_by_same_color?(square)
     @current_player.set.pieces.any? { |piece| piece.position == square }
   end
-
-  def color_of_piece_in_square(square)
-    return :white if @player1.set.pieces.any? { |piece| piece.position == square }
-    return :black if @player2.set.pieces.any? { |piece| piece.position == square }
-
-    false
-  end
-
-  # Castling methods
 
   def king_side_castle?(move)
     if @current_player == @player1 && move[1] == [6, 0]
@@ -192,31 +160,5 @@ class Game
     elsif @current_player == @player2 && move[1] == [2, 7]
       true
     end
-  end
-
-  def king_side_castle
-    return [6, 0] if white_king_side_free? && @current_player == @player1
-    return [6, 7] if black_king_side_free? && @current_player == @player2
-  end
-
-  def queen_side_castle
-    return [2, 0] if white_queen_side_free? && @current_player == @player1
-    return [2, 7] if black_queen_side_free? && @current_player == @player2
-  end
-
-  def white_king_side_free?
-    !occupied_by_any_piece?([5, 0]) && !occupied_by_any_piece?([6, 0])
-  end
-
-  def black_king_side_free?
-    !occupied_by_any_piece?([5, 7]) && !occupied_by_any_piece?([6, 7])
-  end
-
-  def white_queen_side_free?
-    !occupied_by_any_piece?([1, 0]) && !occupied_by_any_piece?([2, 0]) && !occupied_by_any_piece?([3, 0])
-  end
-
-  def black_queen_side_free?
-    !occupied_by_any_piece?([1, 7]) && !occupied_by_any_piece?([2, 7]) && !occupied_by_any_piece?([3, 7])
   end
 end

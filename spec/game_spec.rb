@@ -3,6 +3,108 @@ require_relative '../lib/game'
 describe Game do
   subject(:test_game) { described_class.new }
 
+  describe '#select_game_mode' do
+    context 'when the user inputs 2' do
+      before do
+        user_input = '2'
+        allow(test_game).to receive(:gets).and_return(user_input)
+      end
+
+      xit 'calls #load_game' do
+      end
+    end
+  end
+
+  describe '#validate_game_mode_input' do
+    context 'when the user inputs 1 or 2' do
+      before do
+        user_input = '1'
+        allow(test_game).to receive(:gets).and_return(user_input)
+      end
+
+      it 'returns 1' do
+        result = 1
+        expect(test_game.validate_game_mode_input).to eq(result)
+      end
+    end
+
+    context 'when the user inputs something other than 1 or 2' do
+      before do
+        invalid_input = 'asdf'
+        valid_input = '2'
+        allow(test_game).to receive(:gets).and_return(invalid_input, valid_input)
+      end
+
+      it 'prints an error message' do
+        error_message = test_game.invalid_mode_input_message
+        expect($stdout).to receive(:puts).with(error_message).once
+        test_game.validate_game_mode_input
+      end
+    end
+  end
+
+  describe '#turn' do
+  end
+
+  describe '#review_move' do
+  end
+
+  describe '#solicit_move' do
+  end
+
+  describe '#soliit_start_square' do
+  end
+
+  describe '#check?' do
+    context 'when the game is initialized' do
+      it 'is nil' do
+        expect(test_game.check?).to be nil
+      end
+    end
+  end
+
+  describe '#find_all_moves' do
+  end
+
+  describe '#game_over?' do
+  end
+
+  describe '#capture' do
+  end
+
+  describe '#update_board' do
+    context 'when passed a move' do
+      it 'sends a signal to the player to update the board' do
+        start = [0, 1]
+        finish = [0, 3]
+        expect(test_game.current_player).to receive(:update_set).with(start, finish)
+        test_game.update_board(start, finish)
+      end
+    end
+  end
+
+  describe '#switch_player' do
+    context 'when called on a game in its initial state' do
+      before do
+        test_game.switch_player
+      end
+
+      it 'changes current_player to player2' do
+        player2 = test_game.player2
+        expect(test_game.current_player).to eq(player2)
+      end
+    end
+  end
+
+  describe '#opposite_player' do
+    context 'when initialized' do
+      it 'returns the black player' do
+        player2 = test_game.player2
+        expect(test_game.opposite_player).to eq(player2)
+      end
+    end
+  end
+
   describe '#ocupied_by_any_piece?' do
     context 'when given an unocupied square a4' do
       it 'returns false' do
@@ -26,22 +128,6 @@ describe Game do
     end
   end
 
-  describe '#occupied_by_same_color?' do
-    context 'when @current_player is white and the square has a white piece' do
-      it 'returns true' do
-        square = [0, 0]
-        expect(test_game.occupied_by_same_color?(square)).to be true
-      end
-    end
-
-    context 'when @current_player is white and the square has a black piece' do
-      it 'returns false' do
-        square = [7, 7]
-        expect(test_game.occupied_by_same_color?(square)).to be false
-      end
-    end
-  end
-
   describe '#occupied_by_opposite_color?' do
     context 'when white is @current_player and the square has a black piece' do
       it 'returns true' do
@@ -58,54 +144,58 @@ describe Game do
     end
   end
 
-  describe '#king_side_castle' do
-    context 'when player1 is the current player' do
-      before do
-        allow(test_game).to receive(:white_king_side_free?).and_return(true)
-      end
-
-      it 'returns [6, 0]' do
-        result = [6, 0]
-        expect(test_game.king_side_castle).to eq(result)
+  describe '#occupied_by_same_color?' do
+    context 'when @current_player is white and the square has a white piece' do
+      it 'returns true' do
+        square = [0, 0]
+        expect(test_game.occupied_by_same_color?(square)).to be true
       end
     end
 
-    context 'when player2 is the current player' do
+    context 'when @current_player is white and the square has a black piece' do
+      it 'returns false' do
+        square = [7, 7]
+        expect(test_game.occupied_by_same_color?(square)).to be false
+      end
+    end
+  end
+
+  describe '#king_side_castle?' do
+    context 'when player1 selects [6, 0] as a move' do
+      it 'returns true' do
+        move = [[4, 0], [6, 0]]
+        expect(test_game.king_side_castle?(move)).to be true
+      end
+    end
+
+    context 'when player2 selects [6, 7] as a move' do
       before do
-        player2 = test_game.instance_variable_get(:@player2)
-        test_game.instance_variable_set(:@current_player, player2)
-        allow(test_game).to receive(:black_king_side_free?).and_return(true)
+        test_game.switch_player
       end
 
-      it 'returns [6, 7]' do
-        result = [6, 7]
-        expect(test_game.king_side_castle).to eq(result)
+      it 'returns true' do
+        move = [[4, 7], [6, 7]]
+        expect(test_game.king_side_castle?(move)).to be true
       end
     end
   end
 
   describe '#queen_side_castle' do
     context 'when player1 is the current player' do
-      before do
-        allow(test_game).to receive(:white_queen_side_free?).and_return(true)
-      end
-
-      it 'returns [2, 0]' do
-        result = [2, 0]
-        expect(test_game.queen_side_castle).to eq(result)
+      it 'returns true' do
+        move = [[4, 0], [2, 0]]
+        expect(test_game.queen_side_castle?(move)).to be true
       end
     end
 
     context 'when player2 is the current player' do
       before do
-        player2 = test_game.instance_variable_get(:@player2)
-        test_game.instance_variable_set(:@current_player, player2)
-        allow(test_game).to receive(:black_queen_side_free?).and_return(true)
+        test_game.switch_player
       end
 
-      it 'returns [2, 7]' do
-        result = [2, 7]
-        expect(test_game.queen_side_castle).to eq(result)
+      it 'returns true' do
+        move = [[4, 7], [2, 7]]
+        expect(test_game.queen_side_castle?(move)).to be true
       end
     end
   end

@@ -1,13 +1,19 @@
-require_relative '../lib/move_validator'
+require_relative 'move_validator'
 
 class Pawn
   include MoveValidator
   attr_accessor :position, :color
+  attr_reader :icon
 
   def initialize(position, color)
     @initial = position
     @position = position
     @color = color
+    @icon = set_icon
+  end
+
+  def set_icon
+    @color == :white ? "\e[37m\u265F \e[0m" : "\e[30m\u265F \e[0m"
   end
 
   def left_diagonal

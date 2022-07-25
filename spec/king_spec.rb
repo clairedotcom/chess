@@ -1,10 +1,19 @@
 require_relative '../lib/king'
 
 describe King do
-  describe 'moves' do
-    context 'when given an initial position of [4, 0]' do
-      subject(:test_king) { described_class.new([4, 0], :white) }
+  subject(:test_king) { described_class.new([4, 0], :white) }
 
+  describe '#set_icon' do
+    context 'when initialized' do
+      it 'returns the correct icon string' do
+        expected_icon = "\e[37m\u265A \e[0m"
+        expect(test_king.icon).to eq(expected_icon)
+      end
+    end
+  end
+
+  describe '#moves' do
+    context 'when given an initial position of [4, 0]' do
       it 'generates a diagonal move one square away' do
         right_diagonal = [5, 1]
         result = test_king.moves

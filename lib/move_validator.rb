@@ -45,3 +45,10 @@ module MoveValidator
     result
   end
 end
+
+def color_of_piece_in_square(square)
+  if occupied_by_any_piece?(square)
+    piece = @game_state.select { |item| item.position == square }
+    piece[0].color
+  end
+end

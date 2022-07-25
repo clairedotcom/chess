@@ -1,13 +1,22 @@
 require_relative '../lib/rook'
 
 describe Rook do
-  subject(:rook_a1) { described_class.new([0, 0], :white) }
-  
+  subject(:test_rook) { described_class.new([0, 0], :white) }
+
+  describe '#set_icon' do
+    context 'when initialized' do
+      it 'returns the correct icon string' do
+        icon_string = "\e[37m\u265C \e[0m"
+        expect(test_rook.icon).to eq(icon_string)
+      end
+    end
+  end
+
   describe '#line1' do
     context 'when initialized at square a1' do
       it 'returns the correct array' do
         result = [[1, 0], [2, 0], [3, 0], [4, 0], [5, 0], [6, 0], [7, 0]]
-        expect(rook_a1.line1).to eq(result)
+        expect(test_rook.line1).to eq(result)
       end
     end
   end
@@ -16,7 +25,7 @@ describe Rook do
     context 'when initialized at square a1' do
       it 'returns the correct array' do
         result = [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]
-        expect(rook_a1.line2).to eq(result)
+        expect(test_rook.line2).to eq(result)
       end
     end
   end
@@ -25,7 +34,7 @@ describe Rook do
     context 'when initialized at square a1' do
       it 'returns an empty array' do
         result = []
-        expect(rook_a1.line3).to eq(result)
+        expect(test_rook.line3).to eq(result)
       end
     end
   end
@@ -34,7 +43,7 @@ describe Rook do
     context 'when initialized at square a1' do
       it 'returns an empty array' do
         result = []
-        expect(rook_a1.line4).to eq(result)
+        expect(test_rook.line4).to eq(result)
       end
     end
   end

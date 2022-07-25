@@ -20,15 +20,17 @@ module Dialogue
     puts 'To save the state of your game, please enter "save" at any time.'
   end
 
-  def announce_current_player
-    "#{@current_player.id.capitalize}, it's your turn."
+  def prompt_for_input
+    puts "#{@id.capitalize}, it's your turn. Enter the location of the piece you'd like to move (e.g. a4): "
+    gets.chomp
   end
 
   def start_square_dialogue
     "Enter the location of the piece you'd like to move (e.g. a4): "
   end
 
-  def finish_square_dialogue
-    'Which square would you like to move to? (e.g. a4): '
+  def prompt_for_finish_square
+    puts 'Which square would you like to move to? (e.g. a4): '
+    gets.chomp
   end
 end
