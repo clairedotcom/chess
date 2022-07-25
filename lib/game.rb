@@ -3,6 +3,7 @@ require_relative 'board'
 require_relative 'notation_translator'
 require_relative 'dialogue'
 require_relative 'game_serializer'
+require_relative 'set'
 
 class Game
   include NotationTranslator
@@ -33,7 +34,7 @@ class Game
   end
 
   def turn
-    @board.create_display(@player1.set, @player2.set)
+    @board.create_display(@player1.set.pieces, @player2.set.pieces)
 
     loop do
       puts announce_current_player
@@ -88,7 +89,7 @@ class Game
 
   def find_all_moves(player)
     all_moves = []
-    player.set.each do |piece|
+    player.set.pieces.each do |piece|
       all_moves << legal_moves(piece.moves, piece)
     end
     all_moves.flatten!(1)
@@ -161,16 +162,16 @@ class Game
 
   def occupied_by_opposite_color?(square)
     player = @current_player == @player1 ? @player2 : @player1
-    player.set.any? { |piece| piece.position == square }
+    player.set.pieces.any? { |piece| piece.position == square }
   end
 
   def occupied_by_same_color?(square)
-    @current_player.set.any? { |piece| piece.position == square }
+    @current_player.set.pieces.any? { |piece| piece.position == square }
   end
 
   def color_of_piece_in_square(square)
-    return :white if @player1.set.any? { |piece| piece.position == square }
-    return :black if @player2.set.any? { |piece| piece.position == square }
+    return :white if @player1.set.pieces.any? { |piece| piece.position == square }
+    return :black if @player2.set.pieces.any? { |piece| piece.position == square }
 
     false
   end
