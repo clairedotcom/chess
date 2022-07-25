@@ -1,14 +1,14 @@
-# require_relative 'king'
-# require_relative 'queen'
-# require_relative 'bishop'
-# require_relative 'knight'
-# require_relative 'rook'
-# require_relative 'pawn'
+require_relative 'king'
+require_relative 'queen'
+require_relative 'bishop'
+require_relative 'knight'
+require_relative 'rook'
+require_relative 'pawn'
 require_relative 'notation_translator'
 require_relative 'move_validator'
 require_relative 'dialogue'
 require_relative 'castling'
-require_relative 'set'
+# require_relative 'set'
 
 class Player
   attr_reader :id, :set, :loser
@@ -20,52 +20,52 @@ class Player
 
   def initialize(id)
     @id = id
-    @set = Set.new(id)
+    @set = generate_set
     @loser = false
   end
 
-  # def generate_set
-  #   case @id
-  #   when :white
-  #     generate_white_set
-  #   when :black
-  #     generate_black_set
-  #   end
-  # end
+  def generate_set
+    case @id
+    when :white
+      generate_white_set
+    when :black
+      generate_black_set
+    end
+  end
 
-  # def generate_white_set
-  #   set = []
-  #   set << generate_white_pawns
-  #   set << [Rook.new([0, 0], :white), Rook.new([7, 0], :white)]
-  #   set << [Knight.new([1, 0], :white), Knight.new([6, 0], :white)]
-  #   set << [Bishop.new([2, 0], :white), Bishop.new([5, 0], :white)]
-  #   set << [Queen.new([3, 0], :white)]
-  #   set << [King.new([4, 0], :white)]
-  #   set.flatten
-  # end
+  def generate_white_set
+    set = []
+    set << generate_white_pawns
+    set << [Rook.new([0, 0], :white), Rook.new([7, 0], :white)]
+    set << [Knight.new([1, 0], :white), Knight.new([6, 0], :white)]
+    set << [Bishop.new([2, 0], :white), Bishop.new([5, 0], :white)]
+    set << [Queen.new([3, 0], :white)]
+    set << [King.new([4, 0], :white)]
+    set.flatten
+  end
 
-  # def generate_black_set
-  #   set = []
-  #   set << generate_black_pawns
-  #   set << [Rook.new([0, 7], :black), Rook.new([7, 7], :black)]
-  #   set << [Knight.new([1, 7], :black), Knight.new([6, 7], :black)]
-  #   set << [Bishop.new([2, 7], :black), Bishop.new([5, 7], :black)]
-  #   set << [Queen.new([3, 7], :black)]
-  #   set << [King.new([4, 7], :black)]
-  #   set.flatten
-  # end
+  def generate_black_set
+    set = []
+    set << generate_black_pawns
+    set << [Rook.new([0, 7], :black), Rook.new([7, 7], :black)]
+    set << [Knight.new([1, 7], :black), Knight.new([6, 7], :black)]
+    set << [Bishop.new([2, 7], :black), Bishop.new([5, 7], :black)]
+    set << [Queen.new([3, 7], :black)]
+    set << [King.new([4, 7], :black)]
+    set.flatten
+  end
 
-  # def generate_white_pawns
-  #   pawns = []
-  #   (0).upto(7) { |x| pawns << Pawn.new([x, 1], :white) }
-  #   pawns
-  # end
+  def generate_white_pawns
+    pawns = []
+    (0).upto(7) { |x| pawns << Pawn.new([x, 1], :white) }
+    pawns
+  end
 
-  # def generate_black_pawns
-  #   pawns = []
-  #   (0).upto(7) { |x| pawns << Pawn.new([x, 6], :black) }
-  #   pawns
-  # end
+  def generate_black_pawns
+    pawns = []
+    (0).upto(7) { |x| pawns << Pawn.new([x, 6], :black) }
+    pawns
+  end
 
   def input_start_square
     loop do

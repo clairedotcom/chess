@@ -143,7 +143,7 @@ class Game
   end
 
   def occupied_by_same_color?(square)
-    @current_player.set.pieces.any? { |piece| piece.position == square }
+    @current_player.set.any? { |piece| piece.position == square }
   end
 
   def king_side_castle?(move)
