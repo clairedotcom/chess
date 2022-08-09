@@ -10,13 +10,39 @@ class Board
     attr_reader :state
 
     def initialize
-        @state = set_initial_positions
+        @state = Array.new(8) { Array.new(8, nil) }
+        @print_string = Array.new(8) { Array.new(8, " ") }
+        set_initial_positions
+    end
+
+    def update_board(origin, destination)
+        # move piece from @state[x][y] to @state[a][b]
+        # should be a move that has already been validated
+        # but, error check to make sure there is a piece in origin
+    end
+
+    def print_board
+        generate_board_string
+        @print_string.each do |row|
+            puts row.join("")
+        end
     end
 
     private
 
+    def generate_board_string
+        @state.each_with_index do |row, x|
+            row.each_with_index do |col, y|
+                if @state[x][y].nil?
+                    @print_string[x][y] = (x + y).even? ? "\e[44m  \e[0m" : "\e[46m  \e[0m"
+                else
+                    @print_string[x][y] = (x + y).even? ? black_background(@state[x][y].icon) : white_background(@state[x][y].icon)
+                end
+            end
+        end
+    end
+
     def set_initial_positions
-        @state = Array.new(8) { Array.new(8, nil) }
         place_white_pawns
         place_black_pawns
         place_white_back_row
@@ -28,7 +54,7 @@ class Board
     end
 
     def place_black_pawns
-        (0).upto(7) { |x| @state[6][x] Pawn.new([x, 6], :black) }
+        (0).upto(7) { |x| @state[6][x] = Pawn.new([x, 6], :black) }
     end
 
     def place_white_back_row
@@ -52,4 +78,12 @@ class Board
         @state[7][3] = Queen.new([3, 7], :black)
         @state[7][4] = King.new([4, 7], :black)
     end
+
+    def black_background(piece)
+        "\e[44m#{piece}\e[0m"
+      end
+    
+      def white_background(piece)
+        "\e[46m#{piece}\e[0m"
+      end
 end

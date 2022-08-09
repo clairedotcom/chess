@@ -1,4 +1,5 @@
 require_relative 'game'
+require_relative 'board'
 require_relative 'player'
 require_relative 'king'
 require_relative 'queen'
@@ -10,15 +11,17 @@ require_relative 'notation_translator'
 require_relative 'game_serializer'
 require 'yaml'
 
-game = Game.new
-game.intro_dialogue
-game.select_game_mode
+# game = Game.new
+# game.intro_dialogue
+# game.select_game_mode
 
-until game.game_over?
-  if game.save
-    game.save_game
-    break
-  end
+# until game.game_over?
+#   if game.save
+#     game.save_game
+#     break
+#   end
 
-  game.turn
-end
+#   game.turn
+# end
+board = Board.new
+board.print_board
