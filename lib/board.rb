@@ -23,9 +23,9 @@ class Board
 
     def print_board
         generate_board_string
-        @print_string.each do |row|
-            puts row.join("")
-        end
+        add_column_labels
+        add_row_labels
+        print_to_console
     end
 
     private
@@ -39,6 +39,26 @@ class Board
                     @print_string[x][y] = (x + y).even? ? black_background(@state[x][y].icon) : white_background(@state[x][y].icon)
                 end
             end
+        end
+    end
+
+    def add_column_labels
+        letter_labels = ['a ', 'b ','c ', 'd ', 'e ', 'f ', 'g ', 'h']
+        @print_string.unshift(letter_labels) # prepend to array
+        @print_string.push(letter_labels) # append to array
+    end
+
+    def add_row_labels
+        numbers = [1, 2, 3, 4, 5, 6, 7, 8, ' ']
+        @print_string.each_with_index do |row, i|
+            row.unshift(numbers.reverse[i])
+            row.push(numbers.reverse[i])
+        end
+    end
+
+    def print_to_console
+        @print_string.reverse.each do |row|
+            puts row.join("")
         end
     end
 
@@ -83,7 +103,7 @@ class Board
         "\e[44m#{piece}\e[0m"
       end
     
-      def white_background(piece)
-        "\e[46m#{piece}\e[0m"
-      end
+    def white_background(piece)
+       "\e[46m#{piece}\e[0m"
+     end
 end
