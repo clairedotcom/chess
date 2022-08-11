@@ -22,6 +22,7 @@ class Board
     end
 
     def print_board
+        reset_print_string
         generate_board_string
         add_column_labels
         add_row_labels
@@ -60,6 +61,10 @@ class Board
         @print_string.reverse.each do |row|
             puts row.join("")
         end
+    end
+
+    def reset_print_string
+        @print_string = Array.new(8) { Array.new(8, " ") }
     end
 
     def set_initial_positions

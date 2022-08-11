@@ -4,17 +4,14 @@ require_relative 'bishop'
 require_relative 'knight'
 require_relative 'rook'
 require_relative 'pawn'
-require_relative 'notation_translator'
-require_relative 'move_validator'
 require_relative 'dialogue'
 require_relative 'castling'
-# require_relative 'set'
+require_relative 'utilities'
 
 class Player
   attr_reader :id, :set, :loser
 
-  include NotationTranslator
-  include MoveValidator
+  include Utilities
   include Dialogue
   include Castling
 

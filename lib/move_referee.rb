@@ -1,7 +1,7 @@
-require_relative 'move_validator'
+require_relative 'utilities'
 
 class MoveReferee
-  include MoveValidator
+  include Utilities
 
   def initialize(game_state, piece, move)
     @game_state = game_state # array of all pieces currently on the board

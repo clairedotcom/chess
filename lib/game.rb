@@ -1,12 +1,13 @@
 require_relative 'player'
-require_relative 'notation_translator'
 require_relative 'dialogue'
 require_relative 'game_serializer'
 require_relative 'move_referee'
 require_relative 'display'
+require_relative 'board'
+require_relative 'utilities'
 
 class Game
-  include NotationTranslator
+  include Utilities
   include MoveValidator
   include Dialogue
   include GameSerializer
@@ -16,6 +17,7 @@ class Game
   def initialize
     @player1 = Player.new(:white)
     @player2 = Player.new(:black)
+    @board = Board.new
     @game_state = [@player1.set, @player2.set].flatten
     @current_player = @player1
     @save = false
@@ -38,7 +40,7 @@ class Game
 
   def turn
     loop do
-      Display.new(@game_state).print_display
+      @board.print_board
       review_move
       break if @save || game_over?
 
@@ -76,6 +78,9 @@ class Game
 
   def user_input_start_sqare
     user_input = @current_player.input_start_square
+    # puts 'Which square would you like to move to? (e.g. a4): '
+    # user_input = gets.chomp
+    # user_square = decode_coords(user_input)
     @save = true if user_input == :save
     user_input
   end
