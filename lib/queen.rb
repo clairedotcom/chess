@@ -1,4 +1,4 @@
-require_relative 'move_validator'
+require_relative 'utilities'
 require_relative 'bishop'
 require_relative 'rook'
 

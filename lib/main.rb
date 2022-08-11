@@ -7,7 +7,6 @@ require_relative 'bishop'
 require_relative 'knight'
 require_relative 'rook'
 require_relative 'pawn'
-require_relative 'notation_translator'
 require_relative 'game_serializer'
 require 'yaml'
 

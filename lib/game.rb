@@ -8,7 +8,6 @@ require_relative 'utilities'
 
 class Game
   include Utilities
-  include MoveValidator
   include Dialogue
   include GameSerializer
 
@@ -77,12 +76,14 @@ class Game
   end
 
   def user_input_start_sqare
-    user_input = @current_player.input_start_square
-    # puts 'Which square would you like to move to? (e.g. a4): '
-    # user_input = gets.chomp
-    # user_square = decode_coords(user_input)
-    @save = true if user_input == :save
-    user_input
+    # user_input = @current_player.input_start_square
+    loop do
+      user_input = @current_player.input_start_square
+      @save = true if user_input == :save
+      return user_input if !off_board?(user_input)
+
+      puts invalid_input_message
+    end
   end
 
   def user_input_finish_square

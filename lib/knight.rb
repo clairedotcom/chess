@@ -1,7 +1,7 @@
-require_relative 'move_validator'
+require_relative 'utilities'
 
 class Knight
-  include MoveValidator
+  include Utilities
   attr_accessor :position, :color
   attr_reader :icon
 
