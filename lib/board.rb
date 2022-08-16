@@ -50,10 +50,10 @@ class Board
     end
 
     def add_row_labels
-        numbers = [1, 2, 3, 4, 5, 6, 7, 8, ' ']
+        numbers = [' ', 1, 2, 3, 4, 5, 6, 7, 8]
         @print_string.each_with_index do |row, i|
-            row.unshift(numbers.reverse[i])
-            row.push(numbers.reverse[i])
+            row.unshift(numbers[i])
+            row.push(numbers[i])
         end
     end
 
