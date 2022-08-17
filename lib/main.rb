@@ -23,4 +23,4 @@ until game.game_over?
   game.turn
 end
 # board = Board.new
-# board.print_board
+# p board.get_square(4, 1)

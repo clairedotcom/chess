@@ -66,7 +66,7 @@ class Game
 
   def solicit_move
     loop do
-      move = [user_input_start_sqare, user_input_finish_square]
+      move = [user_input_start_square, user_input_finish_square]
       break if @save
 
       return move if validate_move_with_referee(move)
@@ -75,12 +75,12 @@ class Game
     end
   end
 
-  def user_input_start_sqare
+  def user_input_start_square
     # user_input = @current_player.input_start_square
     loop do
       user_input = @current_player.input_start_square
       @save = true if user_input == :save
-      return user_input if !off_board?(user_input)
+      return user_input if !off_board?(user_input) && same_color?(user_input)
 
       puts invalid_input_message
     end
@@ -150,6 +150,20 @@ class Game
 
   def occupied_by_same_color?(square)
     @current_player.set.any? { |piece| piece.position == square }
+  end
+
+  # version of occupied_by_same_color that uses @board
+  # expects square in format [x, y]
+  def same_color?(square)
+    x = square[0].to_i
+    y = square[1].to_i
+    if @board.get_square(x, y).nil?
+      return false
+    elsif @board.get_square(x, y).color == @current_player.id
+      return true
+    else
+      return false
+    end
   end
 
   def king_side_castle?(move)

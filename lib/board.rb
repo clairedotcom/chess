@@ -15,6 +15,10 @@ class Board
         set_initial_positions
     end
 
+    def get_square(x, y)
+        @state[y][x]
+    end
+
     def update_board(origin, destination)
         # move piece from @state[x][y] to @state[a][b]
         # should be a move that has already been validated
