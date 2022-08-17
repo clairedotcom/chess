@@ -15,6 +15,7 @@ class Board
         set_initial_positions
     end
 
+    # x and y are flipped because x as you're looking at the board is the index of the subarray
     def get_square(x, y)
         @state[y][x]
     end

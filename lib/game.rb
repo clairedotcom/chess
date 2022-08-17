@@ -75,8 +75,9 @@ class Game
     end
   end
 
+  # prompts user for start square until it's on the board and contains their piece
+  # returns a square in format [x, y]
   def user_input_start_square
-    # user_input = @current_player.input_start_square
     loop do
       user_input = @current_player.input_start_square
       @save = true if user_input == :save
@@ -86,10 +87,22 @@ class Game
     end
   end
 
+  # prompts user for destination square until it's on the board
+  # returns a square in format [x, y]
   def user_input_finish_square
-    user_input = @current_player.input_finish_square
-    @save = true if user_input == :save
-    user_input
+    loop do
+      user_input = @current_player.input_finish_square
+
+      @save = true if user_input == :save
+
+      return user_input if !off_board?(user_input)
+
+      puts invalid_input_message
+    end
+
+    # user_input = @current_player.input_finish_square
+    # @save = true if user_input == :save
+    # user_input
   end
 
   def validate_move_with_referee(move)
