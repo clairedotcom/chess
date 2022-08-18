@@ -65,32 +65,31 @@ class Player
   end
 
   def input_start_square
-    user_input = prompt_for_input
+    loop do  
+      user_input = prompt_for_input
 
-    if user_input == 'save'
-      return :save
-    else      
-      return decode_coords(user_input)
+      if user_input == 'save'
+        return :save
+      elsif valid_coords?(user_input)   
+        return decode_coords(user_input)
+      end
+
+      puts invalid_input_message
     end
   end
 
   def input_finish_square
-    user_input = prompt_for_finish_square
+    loop do
+      user_input = prompt_for_finish_square
 
-    if user_input == 'save'
-      return :save
-    elsif valid_coords?(user_input)
-      return decode_coords(user_input)
+      if user_input == 'save'
+        return :save
+      elsif valid_coords?(user_input)
+        return decode_coords(user_input)
+      end
+
+      puts invalid_input_message
     end
-    # loop do
-    #   user_input = prompt_for_finish_square
-
-    #   return :save if user_input == 'save'
-
-    #   return decode_coords(user_input) if valid_coords?(user_input)
-
-    #   puts invalid_input_message
-    # end
   end
 
   def same_color?(square)
