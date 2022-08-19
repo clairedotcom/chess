@@ -12,6 +12,7 @@ class Game
   include GameSerializer
 
   attr_accessor :save, :player1, :player2, :current_player
+  attr_reader :game_state, :board
 
   def initialize
     @player1 = Player.new(:white)
@@ -107,8 +108,13 @@ class Game
 
   def validate_move_with_referee(move)
     piece = @current_player.get_piece_at(move.first)
-    referee = MoveReferee.new(@game_state, piece, move)
+    referee = MoveReferee.new(format_board_state, piece, move)
     return true if referee.move_valid
+  end
+
+  # Takes board state, removes nil elements, and flattens
+  def format_board_state
+    @board.state.flatten.delete_if { |element| element.nil? }
   end
 
   def check?
@@ -122,7 +128,7 @@ class Game
     all_moves = []
 
     player.set.each do |piece|
-      referee = MoveReferee.new(@game_state, piece, [])
+      referee = MoveReferee.new(format_board_state, piece, [])
       all_moves << referee.legal_moves(piece.moves)
     end
 
@@ -141,8 +147,7 @@ class Game
   end
 
   def update_board(start, finish)
-    @current_player.update_set(start, finish) # unless king_side_castle?([start, finish]) || queen_side_castle?([start, finish])
-    @game_state = [@player1.set, @player2.set].flatten
+    @board.update_board(start, finish)
   end
 
   def switch_player

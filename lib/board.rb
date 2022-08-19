@@ -20,10 +20,10 @@ class Board
         @state[y][x]
     end
 
+    # takes origin and destination in form [x, y]
     def update_board(origin, destination)
-        # move piece from @state[x][y] to @state[a][b]
-        # should be a move that has already been validated
-        # but, error check to make sure there is a piece in origin
+        @state[destination.last][destination.first] = get_square(origin.first, origin.last)
+        @state[origin.last][origin.first] = nil
     end
 
     def print_board
