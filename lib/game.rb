@@ -56,7 +56,7 @@ class Game
       @current_player.king_side_castle_move
     elsif queen_side_castle?(move)
       @current_player.queen_side_castle_move
-    elsif check?
+    # elsif check?
       # puts 'You're in check! You must move to protect your King.
       # solicit_move
     else
@@ -100,25 +100,22 @@ class Game
 
       puts invalid_input_message
     end
-
-    # user_input = @current_player.input_finish_square
-    # @save = true if user_input == :save
-    # user_input
   end
 
+  # takes move in form [x, y], creates a referee object, and returns true if move is valid
   def validate_move_with_referee(move)
-    piece = @current_player.get_piece_at(move.first)
+    piece = @board.get_square(move[0][0], move[0][1])
     referee = MoveReferee.new(format_board_state, piece, move)
     return true if referee.move_valid
   end
 
-  # Takes board state, removes nil elements, and flattens
+  # Takes board state, removes nil elements, and flattens for use in other methods
   def format_board_state
     @board.state.flatten.delete_if { |element| element.nil? }
   end
 
   def check?
-    king_location = @current_player.find_king_location
+    king_location = @board.find_king_location(@current_player.id)
     all_moves = find_all_moves(opposite_player)
 
     return true if all_moves.include?(king_location)
@@ -127,12 +124,13 @@ class Game
   def find_all_moves(player)
     all_moves = []
 
-    player.set.each do |piece|
+    format_board_state.each do |piece|
       referee = MoveReferee.new(format_board_state, piece, [])
       all_moves << referee.legal_moves(piece.moves)
     end
 
     all_moves.flatten!(1)
+    p all_moves
     all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
     all_moves
   end
@@ -142,8 +140,7 @@ class Game
   end
 
   def capture(finish)
-    @player1.delete_piece(finish) if occupied_by_opposite_color?(finish) && @current_player == @player2
-    @player2.delete_piece(finish) if occupied_by_opposite_color?(finish) && @current_player == @player1
+    @board.delete_piece(finish) if occupied_by_opposite_color?(finish)
   end
 
   def update_board(start, finish)
@@ -163,11 +160,25 @@ class Game
   end
 
   def occupied_by_opposite_color?(square)
-    opposite_player.set.any? { |piece| piece.position == square }
+    piece = @board.get_square(square[0], square[1])
+    if piece.nil?
+      return false
+    elsif piece.color == opposite_player.id
+      return true
+    else
+      return false
+    end
   end
 
   def occupied_by_same_color?(square)
-    @current_player.set.any? { |piece| piece.position == square }
+    piece = @board.get_square(square[0], square[1])
+    if piece.nil?
+      return false
+    elsif piece.color == @current_player.id
+      return true
+    else
+      return false
+    end
   end
 
   # version of occupied_by_same_color that uses @board
