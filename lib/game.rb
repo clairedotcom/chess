@@ -18,7 +18,6 @@ class Game
     @player1 = Player.new(:white)
     @player2 = Player.new(:black)
     @board = Board.new
-    @game_state = [@player1.set, @player2.set].flatten
     @current_player = @player1
     @save = false
   end
