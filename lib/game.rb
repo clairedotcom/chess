@@ -2,7 +2,6 @@ require_relative 'player'
 require_relative 'dialogue'
 require_relative 'game_serializer'
 require_relative 'move_referee'
-require_relative 'display'
 require_relative 'board'
 require_relative 'utilities'
 
