@@ -1,11 +1,4 @@
-require_relative 'king'
-require_relative 'queen'
-require_relative 'bishop'
-require_relative 'knight'
-require_relative 'rook'
-require_relative 'pawn'
 require_relative 'dialogue'
-require_relative 'castling'
 require_relative 'utilities'
 
 class Player
@@ -13,7 +6,6 @@ class Player
 
   include Utilities
   include Dialogue
-  include Castling
 
   def initialize(id)
     @id = id
@@ -48,33 +40,31 @@ class Player
     end
   end
 
-  # promotion can be any rook, bishop, queen, knight
-  def promote_pawn(pawn)
-    square = pawn.position
-    color = pawn.color
-    delete_piece(square)
-    @set.pieces << select_promotion_piece.new(square, color)
+  private
+
+  # Checks that user input matches the correct pattern. Move must be
+  # entered as a letter a-h followed by a number 1-8
+  # Input is a String
+  # Returns true if input is valid
+  def valid_coords?(input)
+    letters = %w[a b c d e f g h]
+    numbers = %w[1 2 3 4 5 6 7 8]
+    return true if letters.include?(input[0]) && numbers.include?(input[1]) && input.length == 2
+
+    false
   end
 
-  def solicit_promotion_piece
-    options = %w[queen rook bishop knight]
-    puts 'Pawn promotion! Enter queen, rook, bishop, or knight'
+  # Converts between chess move notation (e.g. a4) to an array of
+  # the corresponding board coordinates in the form [x, y]
+  def decode_coords(input)
+    x = 0
+    letters = %w[a b c d e f g h]
 
-    loop do
-      user_input = gets.chomp
-
-      return user_input if options.include?(user_input)
-
-      puts 'Invalid input. Please try again.'
+    letters.each_with_index do |letter, index|
+      x = index if letter == input[0]
     end
-  end
 
-  def select_promotion_piece
-    case solicit_promotion_piece
-    when 'queen' then Queen
-    when 'knight' then Knight
-    when 'bishop' then Bishop
-    when 'rook' then Rook
-    end
+    y = input[-1].to_i - 1
+    [x, y]
   end
 end

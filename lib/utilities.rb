@@ -1,28 +1,8 @@
 module Utilities
-  def decode_coords(input)
-      x = 0
-      letters = %w[a b c d e f g h]
-  
-      letters.each_with_index do |letter, index|
-        x = index if letter == input[0]
-      end
-  
-      y = input[-1].to_i - 1
-      [x, y]
-  end
-
   def off_board?(position)
       return true if position.any? { |num| num.negative? || num > 7 }
   
       false
-  end
-    
-  def valid_coords?(input)
-    letters = %w[a b c d e f g h]
-    numbers = %w[1 2 3 4 5 6 7 8]
-    return true if letters.include?(input[0]) && numbers.include?(input[1]) && input.length == 2
-
-    false
   end
     
   def rook_bishop_move_iterator(piece)
