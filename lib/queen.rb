@@ -1,14 +1,13 @@
 require_relative 'utilities'
 require_relative 'bishop'
 require_relative 'rook'
+require_relative 'piece'
 
-class Queen
-  attr_accessor :position, :color
+class Queen < Piece
   attr_reader :icon
 
   def initialize(position, color)
-    @position = position
-    @color = color
+    super(position, color)
     @icon = set_icon
   end
 

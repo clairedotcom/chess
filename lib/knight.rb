@@ -1,13 +1,12 @@
 require_relative 'utilities'
+require_relative 'piece'
 
-class Knight
+class Knight < Piece
   include Utilities
-  attr_accessor :position, :color
   attr_reader :icon
 
   def initialize(position, color)
-    @position = position
-    @color = color
+    super(position, color)
     @icon = set_icon
   end
 
