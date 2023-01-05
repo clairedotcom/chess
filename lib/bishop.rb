@@ -14,6 +14,10 @@ class Bishop < Piece
     @color == :white ? "\e[37m\u265D \e[0m" : "\e[30m\u265D \e[0m"
   end
 
+  def move_set
+    [[1, 1], [-1, 1], [-1, -1], [1, -1]]
+  end
+
   def moves
     [line1, line2, line3, line4].flatten(1)
   end

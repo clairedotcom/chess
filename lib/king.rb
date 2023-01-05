@@ -14,6 +14,10 @@ class King < Piece
     @color == :white ? "\e[37m\u265A \e[0m" : "\e[30m\u265A \e[0m"
   end
 
+  def move_set
+    [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
+  end
+
   def moves
     possible_moves = []
     x = @position[0]

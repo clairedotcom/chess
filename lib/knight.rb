@@ -14,6 +14,10 @@ class Knight < Piece
     @color == :white ? "\e[37m\u265E \e[0m" : "\e[30m\u265E \e[0m"
   end
 
+  def move_set
+    [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]
+  end
+
   def moves
     possible_moves = []
     x = @position[0]

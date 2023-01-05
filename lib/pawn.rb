@@ -15,6 +15,10 @@ class Pawn < Piece
     @color == :white ? "\e[37m\u265F \e[0m" : "\e[30m\u265F \e[0m"
   end
 
+  def move_set
+    color == :white ? [[0, 1], [0, 2], [-1, 1], [1, 1]] : [[0, -1], [0, -2], [1, -1], [-1, -1]]
+  end
+
   def left_diagonal
     result = [@position[0] - 1, @position[1] + 1] if @color == :white
     result = [@position[0] + 1, @position[1] - 1] if @color == :black

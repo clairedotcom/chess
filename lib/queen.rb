@@ -15,6 +15,10 @@ class Queen < Piece
     @color == :white ? "\e[37m\u265B \e[0m" : "\e[30m\u265B \e[0m"
   end
 
+  def move_set
+    [[0, 1], [1, 1], [1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1]]
+  end
+
   def moves
     possible_moves = []
 
