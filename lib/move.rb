@@ -2,14 +2,15 @@
 # a start square, a finish square, and a type to describe the move. a
 # move is created by the player class and then later checked for validity
 # in the context of the game state
+# Allowable states: unchecked, invalid, basic, capture, castle, en passant
 
 class Move
   # Initial move state is unchecked
-  # @param start_square origin of move in form [x, y]
-  # @param finish_Square destination of move in form [x, y]
-  def initialize(start_square, finish_square)
-    @start_square = start_square
-    @finish_square = finish_square
+  # @param origin of move in form [x, y]
+  # @param dest destination of move in form [x, y]
+  def initialize(origin, dest)
+    @origin = origin
+    @dest = dest
     @type = :unchecked
   end
 
