@@ -1,28 +1,39 @@
 require_relative 'dialogue'
 require_relative 'utilities'
+require_relative 'move'
 
 class Player
-  attr_reader :id, :loser
+  attr_reader :id, :loser, :move
 
   include Utilities
   include Dialogue
 
+  # Id field tracks player color, either black or white
+  # Move field is for the current move the player has selected
+  # loser is set if the player has lost the game (king was captured)
   def initialize(id)
     @id = id
+    @move = false
     @loser = false
   end
 
+  # Prompts user for the origin square of the move they want to make.
+  # Loops until the user input is valid.
   def input_start_square
-    loop do  
+    loop do
       user_input = prompt_for_input
 
       if user_input == 'save'
-        return :save
-      elsif valid_coords?(user_input)   
-        return decode_coords(user_input)
+        @move = 'save'
+        return
+      elsif user_input == 'quit'
+        exit(true)
+      elsif valid_coords?(user_input)
+        @move = Move.new(decode_coords(user_input), nil)
+        return
+      else
+        puts invalid_input_message
       end
-
-      puts invalid_input_message
     end
   end
 
@@ -31,12 +42,16 @@ class Player
       user_input = prompt_for_finish_square
 
       if user_input == 'save'
-        return :save
+        @move = 'save'
+        return
+      elsif user_input == 'quit'
+        exit(true)
       elsif valid_coords?(user_input)
-        return decode_coords(user_input)
+        @move.dest = decode_coords(user_input)
+        return
+      else
+        puts invalid_input_message
       end
-
-      puts invalid_input_message
     end
   end
 
@@ -49,9 +64,7 @@ class Player
   def valid_coords?(input)
     letters = %w[a b c d e f g h]
     numbers = %w[1 2 3 4 5 6 7 8]
-    return true if letters.include?(input[0]) && numbers.include?(input[1]) && input.length == 2
-
-    false
+    return letters.include?(input[0]) && numbers.include?(input[1]) && input.length == 2
   end
 
   # Converts between chess move notation (e.g. a4) to an array of
