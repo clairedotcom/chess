@@ -5,6 +5,9 @@
 # Allowable states: unchecked, invalid, basic, capture, castle, en passant
 
 class Move
+  attr_accessor :origin, :dest
+  attr_reader :type
+
   # Initial move state is unchecked
   # @param origin of move in form [x, y]
   # @param dest destination of move in form [x, y]
