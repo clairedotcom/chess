@@ -50,17 +50,17 @@ class Game
     move = solicit_move
     return if @save
 
-    if king_side_castle?(move)
-      @current_player.king_side_castle_move
-    elsif queen_side_castle?(move)
-      @current_player.queen_side_castle_move
+    # if king_side_castle?(move)
+      # @current_player.king_side_castle_move
+    # elsif queen_side_castle?(move)
+      # @current_player.queen_side_castle_move
     # elsif check?
       # puts 'You're in check! You must move to protect your King.
       # solicit_move
-    else
-      capture(move.last)
+    # else
+      # capture(move.last)
       update_board(move.first, move.last)
-    end
+    # end
   end
 
   def solicit_move
@@ -71,16 +71,20 @@ class Game
         move = [@current_player.move.origin, @current_player.move.dest]
         break if @save
 
-        return move if validate_move(move)
+        # return move if
+        validate_move(@current_player.move)
+        return move if @current_player.move.valid
       end
 
       puts illegal_move_message
     end
   end
 
-  # takes move in form [x, y], creates a referee object, and returns true if move is valid
+  # Creates a move referee and returns true if move is valid
+  # @param move a Move object for the move the user selected
+  # @return true if it's a legal move, false if not
   def validate_move(move)
-    piece = @board.get_square(move[0][0], move[0][1])
+    piece = @board.get_square(move.origin[0], move.origin[1])
     referee = MoveReferee.new(format_board_state, piece, move)
     return true if referee.move_valid
   end

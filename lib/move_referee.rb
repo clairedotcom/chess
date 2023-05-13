@@ -6,16 +6,100 @@ class MoveReferee
   def initialize(game_state, piece, move)
     @game_state = game_state # array of all pieces currently on the board
     @piece = piece # piece object that the user has selected to move
-    @move = move # array in form [[x,y], [x,y]] of the move the user has selected
+    @move = move # move object the user has selected
   end
 
+  # top-level function
   def move_valid
-    possible_moves = @piece.moves
-    possible_moves.delete_if { |square| occupied_by_same_color?(square) }
+    # possible_moves = @piece.moves
+    # possible_moves.delete_if { |square| occupied_by_same_color?(square) }
 
-    return true if legal_moves(possible_moves).include?(@move.last)
+    # return true if legal_moves(possible_moves).include?(@move.last)
 
-    false
+    # false
+    case @piece
+    when Bishop
+      check_bishop
+    when King
+      check_king
+    when Knight
+      check_knight
+    when Pawn
+      check_pawn
+    when Queen
+      check_queen
+    when Rook
+      check_rook
+    else
+      false
+    end
+  end
+
+  def check_bishop
+    puts "Hey I'm a bishop"
+  end
+
+  def check_king
+    puts "Hey I'm a king"
+  end
+
+  def check_knight
+    puts "Hey I'm a knight"
+  end
+
+  def check_pawn
+    # two square move if the piece has not moved
+    # diagonal allowed if it's a capture
+    # otherwise single square in the forward direction allowed
+    if @piece.move_count == 0
+      #move origin, add first element in move set array, see if it equals destination
+      @piece.move_set.each do |step|
+        if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1]
+          #Check if move is diagonal and check if opposing piece is in diagonal
+          if step[0] != 0 && step[1] != 0
+            if occupied_by_opposite_color?(@move.dest)
+              @piece.move_count += 1
+              @piece.position = @move.dest
+              @move.valid = true
+              @move.type = :capture
+            end
+          else
+            @piece.move_count += 1
+            @piece.position = @move.dest
+            @move.valid = true
+            @move.type = :basic
+          end
+        end
+      end
+    else
+      # two square move not allowed
+      @piece.move_set.each do |step|
+        if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1] && step[1] != 2
+          #Check if move is diagonal and check if opposing piece is in diagonal
+          if step[0] != 0 && step[1] != 0
+            if occupied_by_opposite_color?(@move.dest)
+              @piece.move_count += 1
+              @piece.position = @move.dest
+              @move.valid = true
+              @move.type = :capture
+            end
+          else
+            @piece.move_count += 1
+            @piece.position = @move.dest
+            @move.valid = true
+            @move.type = :basic
+          end
+        end
+      end
+    end
+  end
+
+  def check_queen
+    puts "Hey I'm a queen"
+  end
+
+  def check_rook
+    puts "Hey I'm a rook"
   end
 
   def legal_moves(possible_moves)
@@ -24,15 +108,6 @@ class MoveReferee
     return rook_bishop_move_iterator(@piece) if @piece.is_a? Rook
     return rook_bishop_move_iterator(@piece) if @piece.is_a? Bishop
     return queen_move_iterator(@piece) if @piece.is_a? Queen
-    return add_diagonal_pawn_moves(possible_moves) if @piece.is_a? Pawn
-  end
-
-  def add_diagonal_pawn_moves(possible_moves)
-    possible_moves.delete_if { |square| occupied_by_opposite_color?(square) }
-    possible_moves.delete_at(0) if occupied_by_any_piece?(possible_moves[1])
-    possible_moves << @piece.left_diagonal if occupied_by_opposite_color?(@piece.left_diagonal)
-    possible_moves << @piece.right_diagonal if occupied_by_opposite_color?(@piece.right_diagonal)
-    possible_moves
   end
 
   def occupied_by_any_piece?(square)
