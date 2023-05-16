@@ -39,7 +39,17 @@ class MoveReferee
   end
 
   def check_knight
-    puts "Hey I'm a knight"
+    @piece.move_set.each do |step|
+      if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1]
+        if occupied_by_opposite_color?(@move.dest)
+          update_piece
+          @move.type = :capture
+        else
+          update_piece
+          @move.type = :basic
+        end
+      end
+    end
   end
 
   def check_pawn
@@ -53,11 +63,11 @@ class MoveReferee
           #Check if move is diagonal and check if opposing piece is in diagonal
           if step[0] != 0 && step[1] != 0
             if occupied_by_opposite_color?(@move.dest)
-              update_pawn
+              update_piece
               @move.type = :capture
             end
           else
-            update_pawn
+            update_piece
             @move.type = :basic
           end
         end
@@ -69,11 +79,11 @@ class MoveReferee
           #Check if move is diagonal and check if opposing piece is in diagonal
           if step[0] != 0 && step[1] != 0
             if occupied_by_opposite_color?(@move.dest)
-              update_pawn
+              update_piece
               @move.type = :capture
             end
           else
-            update_pawn
+            update_piece
             @move.type = :basic
           end
         end
@@ -81,9 +91,9 @@ class MoveReferee
     end
   end
 
-  # Helper method to reuse code in check_pawn. Incremenets move count,
+  # Helper method to reuse code in piece checking methods. Incremenets move count,
   # sets move valid tp true, and updates the pawn's position.
-  def update_pawn
+  def update_piece
     @piece.move_count += 1
     @piece.position = @move.dest
     @move.valid = true
@@ -99,7 +109,6 @@ class MoveReferee
 
   def legal_moves(possible_moves)
     return add_king_castle_moves(possible_moves) if @piece.is_a? King
-    return possible_moves if @piece.is_a? Knight
     return rook_bishop_move_iterator(@piece) if @piece.is_a? Rook
     return rook_bishop_move_iterator(@piece) if @piece.is_a? Bishop
     return queen_move_iterator(@piece) if @piece.is_a? Queen
