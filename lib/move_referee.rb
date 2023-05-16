@@ -9,14 +9,9 @@ class MoveReferee
     @move = move # move object the user has selected
   end
 
-  # top-level function
+  # top-level function delegates to other functions that check each type
+  # of piece
   def move_valid
-    # possible_moves = @piece.moves
-    # possible_moves.delete_if { |square| occupied_by_same_color?(square) }
-
-    # return true if legal_moves(possible_moves).include?(@move.last)
-
-    # false
     case @piece
     when Bishop
       check_bishop
@@ -58,15 +53,11 @@ class MoveReferee
           #Check if move is diagonal and check if opposing piece is in diagonal
           if step[0] != 0 && step[1] != 0
             if occupied_by_opposite_color?(@move.dest)
-              @piece.move_count += 1
-              @piece.position = @move.dest
-              @move.valid = true
+              update_pawn
               @move.type = :capture
             end
           else
-            @piece.move_count += 1
-            @piece.position = @move.dest
-            @move.valid = true
+            update_pawn
             @move.type = :basic
           end
         end
@@ -78,20 +69,24 @@ class MoveReferee
           #Check if move is diagonal and check if opposing piece is in diagonal
           if step[0] != 0 && step[1] != 0
             if occupied_by_opposite_color?(@move.dest)
-              @piece.move_count += 1
-              @piece.position = @move.dest
-              @move.valid = true
+              update_pawn
               @move.type = :capture
             end
           else
-            @piece.move_count += 1
-            @piece.position = @move.dest
-            @move.valid = true
+            update_pawn
             @move.type = :basic
           end
         end
       end
     end
+  end
+
+  # Helper method to reuse code in check_pawn. Incremenets move count,
+  # sets move valid tp true, and updates the pawn's position.
+  def update_pawn
+    @piece.move_count += 1
+    @piece.position = @move.dest
+    @move.valid = true
   end
 
   def check_queen
