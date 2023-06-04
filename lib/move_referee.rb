@@ -60,34 +60,31 @@ class MoveReferee
       #move origin, add first element in move set array, see if it equals destination
       @piece.move_set.each do |step|
         if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1]
-          #Check if move is diagonal and check if opposing piece is in diagonal
-          if step[0] != 0 && step[1] != 0
-            if occupied_by_opposite_color?(@move.dest)
-              update_piece
-              @move.type = :capture
-            end
-          else
-            update_piece
-            @move.type = :basic
-          end
+          set_pawn_move_type(step)
         end
       end
     else
       # two square move not allowed
       @piece.move_set.each do |step|
         if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1] && step[1] != 2
-          #Check if move is diagonal and check if opposing piece is in diagonal
-          if step[0] != 0 && step[1] != 0
-            if occupied_by_opposite_color?(@move.dest)
-              update_piece
-              @move.type = :capture
-            end
-          else
-            update_piece
-            @move.type = :basic
-          end
+          set_pawn_move_type(step)
         end
       end
+    end
+  end
+
+  # Helper method used in check pawn
+  # Checks if a move is diagonal and if there's a piece in the diagonal space
+  # If it's not a diagonal move, sets the move type as basic
+  def set_pawn_move_type(step)
+    if step[0] != 0 && step[1] != 0
+      if occupied_by_opposite_color?(@move.dest)
+        update_piece
+        @move.type = :capture
+      end
+    else
+      update_piece
+      @move.type = :basic
     end
   end
 
