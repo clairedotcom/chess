@@ -1,33 +1,21 @@
 require_relative '../lib/knight'
 
 describe Knight do
-  subject(:test_knight) { described_class.new([1, 0], :white) }
+  subject(:white_knight) { described_class.new([1, 0], :white) }
+  subject(:black_knight) { described_class.new([6, 7], :black) }
 
   describe '#set_icon' do
-    context 'when initialized' do
+    context 'when a white knight initialized' do
       it 'returns the correct icon string' do
         expected_icon = "\e[37m\u265E \e[0m"
-        expect(test_knight.icon).to eq(expected_icon)
-      end
-    end
-  end
-
-  describe '#moves' do
-    context 'when the knight is in its initial position' do
-      it 'returns the correct possible moves' do
-        result = [[2, 2], [3, 1], [0, 2]]
-        expect(test_knight.moves).to eq(result)
+        expect(white_knight.icon).to eq(expected_icon)
       end
     end
 
-    context 'when the knight is in the middle of the board' do
-      before do
-        test_knight.position = [4, 4]
-      end
-
-      it 'returns 8 possible moves' do
-        result = [[5, 6], [6, 5], [6, 3], [5, 2], [3, 2], [2, 3], [2, 5], [3, 6]]
-        expect(test_knight.moves).to eq(result)
+    context 'when a black knight initialized' do
+      it 'returns the correct icon string' do
+        expected_icon = "\e[30m\u265E \e[0m"
+        expect(black_knight.icon).to eq(expected_icon)
       end
     end
   end

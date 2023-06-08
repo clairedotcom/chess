@@ -17,21 +17,4 @@ class Knight < Piece
   def move_set
     [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]]
   end
-
-  def moves
-    possible_moves = []
-    x = @position[0]
-    y = @position[1]
-
-    possible_moves << [x + 1, y + 2]
-    possible_moves << [x + 2, y + 1]
-    possible_moves << [x + 2, y - 1]
-    possible_moves << [x + 1, y - 2]
-    possible_moves << [x - 1, y - 2]
-    possible_moves << [x - 2, y - 1]
-    possible_moves << [x - 2, y + 1]
-    possible_moves << [x - 1, y + 2]
-
-    possible_moves.delete_if { |move| off_board?(move) }
-  end
 end
