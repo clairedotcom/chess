@@ -1,4 +1,5 @@
 require_relative 'utilities'
+require_relative 'rook'
 
 class MoveReferee
   include Utilities
@@ -101,12 +102,25 @@ class MoveReferee
   end
 
   def check_rook
-    puts "Hey I'm a rook"
+    @piece.move_set.each do |direction|
+      temp_position = @piece.position.clone
+      while temp_position[0] <= 7 && temp_position[1] <= 7 do
+        temp_position[0] += direction[0]
+        temp_position[1] += direction[1]
+        if occupied_by_any_piece?(temp_position)
+          break
+        elsif temp_position == @move.dest
+          update_piece
+          @move.type = :basic
+          return
+        end
+      end
+    end
   end
 
   def legal_moves(possible_moves)
     return add_king_castle_moves(possible_moves) if @piece.is_a? King
-    return rook_bishop_move_iterator(@piece) if @piece.is_a? Rook
+    # return rook_bishop_move_iterator(@piece) if @piece.is_a? Rook
     return rook_bishop_move_iterator(@piece) if @piece.is_a? Bishop
     return queen_move_iterator(@piece) if @piece.is_a? Queen
   end
