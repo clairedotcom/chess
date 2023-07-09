@@ -104,10 +104,10 @@ class MoveReferee
   def check_rook
     @piece.move_set.each do |direction|
       temp_position = @piece.position.clone
-      while temp_position[0] <= 7 && temp_position[1] <= 7 do
+      while [0,7].include?(temp_position[0]) && [0,7].include?(temp_position[1]) do
         temp_position[0] += direction[0]
         temp_position[1] += direction[1]
-        if occupied_by_any_piece?(temp_position)
+        if occupied_by_any_piece?(temp_position) && temp_position != @move.dest
           break
         elsif temp_position == @move.dest
           update_piece
