@@ -4,6 +4,34 @@ require_relative '../lib/game.rb'
 require_relative '../lib/move.rb'
 
 describe MoveReferee do
+  describe 'check_knight' do
+    context 'when a knight is moved illegally in a straight line' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = Game.new.format_board_state
+        piece = board.get_square(6, 0)
+        knightmove = Move.new([6,0], [6,3])
+        referee = MoveReferee.new(game_state, piece, knightmove)
+        referee.move_valid
+        expect(knightmove.valid).to eq false
+      end
+    end
+
+    context 'when a knight is moved legally' do
+      it 'move.valid is set to true' do
+        board = Board.new
+        game = Game.new
+        game_state = Game.new.format_board_state
+        piece = board.get_square(6, 0)
+        knightmove = Move.new([6,0], [7,2])
+        referee = MoveReferee.new(game_state, piece, knightmove)
+        referee.move_valid
+        expect(knightmove.valid).to eq true
+      end
+    end
+  end
+  
   describe 'check_rook' do
     context 'when a rook is moved illegally from h1 to h3' do
     #move is illegal because there's a pwan in h2
