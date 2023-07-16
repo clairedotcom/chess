@@ -32,7 +32,20 @@ class MoveReferee
   end
 
   def check_bishop
-    puts "Hey I'm a bishop"
+    @piece.move_set.each do |direction|
+      temp_position = @piece.position.clone
+      while (0..7).include?(temp_position[0]) && (0..7).include?(temp_position[1]) do
+        temp_position[0] += direction[0]
+        temp_position[1] += direction[1]
+        if occupied_by_any_piece?(temp_position) && temp_position != @move.dest
+          break
+        elsif temp_position == @move.dest
+          update_piece
+          @move.type = :basic
+          return
+        end
+      end
+    end
   end
 
   def check_king
@@ -98,7 +111,20 @@ class MoveReferee
   end
 
   def check_queen
-    puts "Hey I'm a queen"
+    @piece.move_set.each do |direction|
+      temp_position = @piece.position.clone
+      while (0..7).include?(temp_position[0]) && (0..7).include?(temp_position[1]) do
+        temp_position[0] += direction[0]
+        temp_position[1] += direction[1]
+        if occupied_by_any_piece?(temp_position) && temp_position != @move.dest
+          break
+        elsif temp_position == @move.dest
+          update_piece
+          @move.type = :basic
+          return
+        end
+      end
+    end
   end
 
   def check_rook
@@ -120,9 +146,6 @@ class MoveReferee
 
   def legal_moves(possible_moves)
     return add_king_castle_moves(possible_moves) if @piece.is_a? King
-    # return rook_bishop_move_iterator(@piece) if @piece.is_a? Rook
-    return rook_bishop_move_iterator(@piece) if @piece.is_a? Bishop
-    return queen_move_iterator(@piece) if @piece.is_a? Queen
   end
 
   def occupied_by_any_piece?(square)

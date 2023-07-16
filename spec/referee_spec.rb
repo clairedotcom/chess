@@ -142,6 +142,40 @@ describe MoveReferee do
     end
   end
   
+  describe 'check_queen' do
+    context 'when a queen is moved illegally with a piece in the way' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        piece = board.get_square(3, 0)
+        queenmove = Move.new([3,0], [3,5])
+        referee = MoveReferee.new(game_state, piece, queenmove)
+        referee.move_valid
+        expect(queenmove.valid).to eq false
+      end
+    end
+
+    context 'when a queen is moved legally in a diagonal direction' do
+      it 'move.valid is set to true' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        pawn = board.get_square(2, 1)
+        pawnmove = Move.new([2,1], [2,3])
+        pawnreferee = MoveReferee.new(game_state, pawn, pawnmove)
+        pawnreferee.move_valid
+        board.update_board(pawnmove.origin, pawnmove.dest)
+        game_state = board.state.flatten.delete_if { |element| element.nil? }
+        queen = board.get_square(3, 0)
+        queenmove = Move.new([3,0], [0,3])
+        referee = MoveReferee.new(game_state, queen, queenmove)
+        referee.move_valid
+        expect(queenmove.valid).to eq true
+      end
+    end
+  end
+
   describe 'check_rook' do
     context 'when a rook is moved illegally from h1 to h3' do
     #move is illegal because there's a pwan in h2
