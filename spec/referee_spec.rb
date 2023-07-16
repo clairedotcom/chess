@@ -4,12 +4,63 @@ require_relative '../lib/game.rb'
 require_relative '../lib/move.rb'
 
 describe MoveReferee do
+  describe 'check_bishop' do
+    context 'when a bishop is moved illegally with pieces in the way' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        piece = board.get_square(5, 0)
+        bishopmove = Move.new([5,0], [7,2])
+        referee = MoveReferee.new(game_state, piece, bishopmove)
+        referee.move_valid
+        expect(bishopmove.valid).to eq false
+      end
+    end
+
+    context 'when a bishop is moved illegally in a straight line' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        pawn = board.get_square(5, 1)
+        pawnmove = Move.new([5,1], [5,3])
+        pawnreferee = MoveReferee.new(game_state, pawn, pawnmove)
+        board.update_board(pawnmove.origin, pawnmove.dest)
+        bishop = board.get_square(5, 0)
+        bishopmove = Move.new([5,0], [5,2])
+        referee = MoveReferee.new(game_state, bishop, bishopmove)
+        referee.move_valid
+        expect(bishopmove.valid).to eq false
+      end
+    end
+
+    context 'when a bishop is moved legally in a diagonal line' do
+      it 'move.valid is set to true' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        pawn = board.get_square(6, 1)
+        pawnmove = Move.new([6,1], [6,3])
+        pawnreferee = MoveReferee.new(game_state, pawn, pawnmove)
+        pawnreferee.move_valid
+        board.update_board(pawnmove.origin, pawnmove.dest)
+        game_state = board.state.flatten.delete_if { |element| element.nil? }
+        bishop = board.get_square(5, 0)
+        bishopmove = Move.new([5,0], [7,2])
+        referee = MoveReferee.new(game_state, bishop, bishopmove)
+        referee.move_valid
+        expect(bishopmove.valid).to eq true
+      end
+    end
+  end
+
   describe 'check_knight' do
     context 'when a knight is moved illegally in a straight line' do
       it 'move.valid remains false' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(6, 0)
         knightmove = Move.new([6,0], [6,3])
         referee = MoveReferee.new(game_state, piece, knightmove)
@@ -22,7 +73,7 @@ describe MoveReferee do
       it 'move.valid is set to true' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(6, 0)
         knightmove = Move.new([6,0], [7,2])
         referee = MoveReferee.new(game_state, piece, knightmove)
@@ -37,7 +88,7 @@ describe MoveReferee do
       it 'move.valid remains false' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(5, 1)
         pawnmove = Move.new([5,1], [4,2])
         referee = MoveReferee.new(game_state, piece, pawnmove)
@@ -50,7 +101,7 @@ describe MoveReferee do
       it 'move.valid is set to true' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(5, 1)
         pawnmove = Move.new([5,1], [5,2])
         referee = MoveReferee.new(game_state, piece, pawnmove)
@@ -63,7 +114,7 @@ describe MoveReferee do
       it 'move.valid is set to true' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(5, 1)
         pawnmove = Move.new([5,1], [5,3])
         referee = MoveReferee.new(game_state, piece, pawnmove)
@@ -76,7 +127,7 @@ describe MoveReferee do
       it 'move.valid remains false' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(5, 1)
         firstpawnmove = Move.new([5,1], [5,3])
         secondpawnmove = Move.new([5,3], [5,5])
@@ -97,7 +148,7 @@ describe MoveReferee do
       it 'move.valid remains false' do
         board = Board.new
         game = Game.new
-        game_state = Game.new.format_board_state
+        game_state = game.format_board_state
         piece = board.get_square(7, 0)
         whiterookmove = Move.new([7,0], [7,2])
         referee = MoveReferee.new(game_state, piece, whiterookmove)
@@ -111,7 +162,7 @@ describe MoveReferee do
         it 'move.valid remains false' do
           board = Board.new
           game = Game.new
-          game_state = Game.new.format_board_state
+          game_state = game.format_board_state
           piece = board.get_square(7, 0)
           whiterookmove = Move.new([7,0], [5,2])
           referee = MoveReferee.new(game_state, piece, whiterookmove)
