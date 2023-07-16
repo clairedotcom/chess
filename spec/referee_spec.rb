@@ -31,6 +31,65 @@ describe MoveReferee do
       end
     end
   end
+
+  describe 'check_pawn' do
+    context 'when a pawn is moved illegally in a diagonal direction' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = Game.new.format_board_state
+        piece = board.get_square(5, 1)
+        pawnmove = Move.new([5,1], [4,2])
+        referee = MoveReferee.new(game_state, piece, pawnmove)
+        referee.move_valid
+        expect(pawnmove.valid).to eq false
+      end
+    end
+
+    context 'when a pawn is moved legally in a forward direction by one square' do
+      it 'move.valid is set to true' do
+        board = Board.new
+        game = Game.new
+        game_state = Game.new.format_board_state
+        piece = board.get_square(5, 1)
+        pawnmove = Move.new([5,1], [5,2])
+        referee = MoveReferee.new(game_state, piece, pawnmove)
+        referee.move_valid
+        expect(pawnmove.valid).to eq true
+      end
+    end
+
+    context 'when a pawn is moved legally in a forward direction by two squares' do
+      it 'move.valid is set to true' do
+        board = Board.new
+        game = Game.new
+        game_state = Game.new.format_board_state
+        piece = board.get_square(5, 1)
+        pawnmove = Move.new([5,1], [5,3])
+        referee = MoveReferee.new(game_state, piece, pawnmove)
+        referee.move_valid
+        expect(pawnmove.valid).to eq true
+      end
+    end
+
+    context 'when a pawn is moved illegally two squares after already moving' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = Game.new.format_board_state
+        piece = board.get_square(5, 1)
+        firstpawnmove = Move.new([5,1], [5,3])
+        secondpawnmove = Move.new([5,3], [5,5])
+        firstreferee = MoveReferee.new(game_state, piece, firstpawnmove)
+        firstreferee.move_valid
+        secondreferee = MoveReferee.new(game_state, piece, secondpawnmove)
+        secondreferee.move_valid
+        expect(firstpawnmove.valid).to eq true
+        board.update_board(firstpawnmove.origin, firstpawnmove.dest)
+        expect(secondpawnmove.valid).to eq false
+      end
+    end
+  end
   
   describe 'check_rook' do
     context 'when a rook is moved illegally from h1 to h3' do
