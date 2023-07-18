@@ -17,44 +17,4 @@ class Rook < Piece
   def move_set
     [[0, 1], [1, 0], [0, -1], [-1, 0]]
   end
-
-  def moves
-    [line1, line2, line3, line4].flatten(1)
-  end
-
-  def line1
-    line = []
-    x = @position[0]
-    y = @position[1]
-
-    (1).upto(7) { |num| line << [x + num, y] }
-    line.delete_if { |move| off_board?(move) }
-  end
-
-  def line2
-    line = []
-    x = @position[0]
-    y = @position[1]
-
-    (1).upto(7) { |num| line << [x, y + num] }
-    line.delete_if { |move| off_board?(move) }
-  end
-
-  def line3
-    line = []
-    x = @position[0]
-    y = @position[1]
-
-    (1).upto(7) { |num| line << [x - num, y] }
-    line.delete_if { |move| off_board?(move) }
-  end
-
-  def line4
-    line = []
-    x = @position[0]
-    y = @position[1]
-
-    (1).upto(7) { |num| line << [x, y - num] }
-    line.delete_if { |move| off_board?(move) }
-  end
 end

@@ -11,40 +11,4 @@ describe Bishop do
       end
     end
   end
-
-  describe '#line1' do
-    context 'when the bishop is at an initial position of c1' do
-      it 'returns the correct array of moves' do
-        result = [[3, 1], [4, 2], [5, 3], [6, 4], [7, 5]]
-        expect(test_bishop.line1).to eq(result)
-      end
-    end
-  end
-
-  describe '#line2' do
-    context 'when the bishop is at c1' do
-      it 'returns the correct array of moves' do
-        result = [[1, 1], [0, 2]]
-        expect(test_bishop.line2).to eq(result)
-      end
-    end
-  end
-
-  describe '#line3' do
-    context 'when the bishop is at c1' do
-      it 'returns the correct array of moves' do
-        result = []
-        expect(test_bishop.line3).to eq(result)
-      end
-    end
-  end
-
-  describe '#line4' do
-    context 'when the bishop is at c1' do
-      it 'returns the correct array of moves' do
-        result = []
-        expect(test_bishop.line4).to eq(result)
-      end
-    end
-  end
 end
