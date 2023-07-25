@@ -49,7 +49,19 @@ class MoveReferee
   end
 
   def check_king
-    puts "Hey I'm a king"
+    @piece.move_set.each do |step|
+      if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1]
+        if occupied_by_opposite_color?(@move.dest)
+          update_piece
+          @move.type = :capture
+        elsif occupied_by_same_color?(@move.dest)
+          break
+        else
+          update_piece
+          @move.type = :basic
+        end
+      end
+    end
   end
 
   def check_knight

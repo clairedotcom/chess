@@ -55,6 +55,41 @@ describe MoveReferee do
     end
   end
 
+  describe 'check_king' do
+    context 'when a king is moved illegally with its own piece in the way' do
+      it 'move.valid remains false' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        piece = board.get_square(4, 0)
+        kingmove = Move.new([4,0], [5,0])
+        referee = MoveReferee.new(game_state, piece, kingmove)
+        referee.move_valid
+        expect(kingmove.valid).to eq false
+      end
+    end
+
+    context 'when a king is moved legally' do
+      it 'move.valid is set to true' do
+        board = Board.new
+        game = Game.new
+        game_state = game.format_board_state
+        pawn = board.get_square(5, 1)
+        pawnmove = Move.new([5,1], [5,3])
+        pawnreferee = MoveReferee.new(game_state, pawn, pawnmove)
+        pawnreferee.move_valid
+        board.update_board(pawnmove.origin, pawnmove.dest)
+        game_state = board.state.flatten.delete_if { |element| element.nil? }
+        piece = board.get_square(4, 0)
+        kingmove = Move.new([4,0], [5,0])
+        referee = MoveReferee.new(game_state, piece, kingmove)
+        referee.move_valid
+        expect(kingmove.valid).to eq false
+      end
+    end
+  end
+
+
   describe 'check_knight' do
     context 'when a knight is moved illegally in a straight line' do
       it 'move.valid remains false' do
