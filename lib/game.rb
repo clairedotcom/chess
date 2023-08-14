@@ -29,8 +29,9 @@ class Game
 
   def validate_game_mode_input
     loop do
-      user_input = gets.chomp.to_i
-      return user_input if [1, 2].include?(user_input)
+      user_input = gets.chomp
+      exit(true) if user_input == 'quit'
+      return user_input.to_i if [1, 2].include?(user_input.to_i)
 
       puts invalid_mode_input_message
     end
@@ -86,7 +87,9 @@ class Game
   def validate_move(move)
     piece = @board.get_square(move.origin[0], move.origin[1])
     referee = MoveReferee.new(format_board_state, piece, move)
-    return true if referee.move_valid
+    referee.move_valid
+    return move.valid
+    # return true if move.valid #referee.move_valid
   end
 
   # Takes board state, removes nil elements, and flattens for use in other methods
