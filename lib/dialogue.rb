@@ -16,8 +16,9 @@ module Dialogue
   end
 
   def intro_dialogue
-    puts 'Welcome to chess!'
-    puts 'To save the state of your game, please enter "save" at any time.'
+    puts header
+    puts 'Enter save to save the state of your game.'
+    puts 'Enter quit to exit.'
   end
 
   def prompt_for_input
@@ -32,5 +33,22 @@ module Dialogue
   def prompt_for_finish_square
     puts 'Which square would you like to move to? (e.g. a4): '
     gets.chomp
+  end
+
+  private
+
+  def header
+  <<-HEADER
+
+     00000     00    00    00000000     0000000     0000000
+   00000000    00    00    00000000    00000000    00000000
+  0000         00    00    000         000         000
+  000          00000000    00000000    00000000    00000000
+  000          00000000    00000000    00000000    00000000
+  0000         00    00    000              000         000
+   00000000    00    00    00000000    00000000    00000000
+     00000     00    00    00000000    0000000     0000000 
+
+   HEADER
   end
 end
