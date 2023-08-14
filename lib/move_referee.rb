@@ -1,8 +1,6 @@
-require_relative 'utilities'
 require_relative 'rook'
 
 class MoveReferee
-  include Utilities
 
   def initialize(game_state, piece, move)
     @game_state = game_state # array of all pieces currently on the board
@@ -156,9 +154,9 @@ class MoveReferee
     end
   end
 
-  def legal_moves(possible_moves)
-    return add_king_castle_moves(possible_moves) if @piece.is_a? King
-  end
+  # def legal_moves(possible_moves)
+  #   return add_king_castle_moves(possible_moves) if @piece.is_a? King
+  # end
 
   def occupied_by_any_piece?(square)
     @game_state.any? { |piece| piece.position == square }

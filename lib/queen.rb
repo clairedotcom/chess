@@ -1,4 +1,3 @@
-require_relative 'utilities'
 require_relative 'piece'
 
 class Queen < Piece

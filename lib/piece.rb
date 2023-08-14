@@ -3,7 +3,7 @@
 
 class Piece
   attr_reader :color
-  attr_accessor :position, :move_count
+  attr_accessor :move_count, :position
 
   def initialize(position, color)
     @position = position

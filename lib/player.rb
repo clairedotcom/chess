@@ -1,11 +1,9 @@
 require_relative 'dialogue'
-require_relative 'utilities'
 require_relative 'move'
 
 class Player
   attr_reader :id, :loser, :move
 
-  include Utilities
   include Dialogue
 
   # Id field tracks player color, either black or white

@@ -1,8 +1,6 @@
-require_relative 'utilities'
 require_relative 'piece'
 
 class Rook < Piece
-  include Utilities
   attr_reader :icon
 
   def initialize(position, color)

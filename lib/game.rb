@@ -3,10 +3,8 @@ require_relative 'dialogue'
 require_relative 'game_serializer'
 require_relative 'move_referee'
 require_relative 'board'
-require_relative 'utilities'
 
 class Game
-  include Utilities
   include Dialogue
   include GameSerializer
 
@@ -89,33 +87,11 @@ class Game
     referee = MoveReferee.new(format_board_state, piece, move)
     referee.move_valid
     return move.valid
-    # return true if move.valid #referee.move_valid
   end
 
   # Takes board state, removes nil elements, and flattens for use in other methods
   def format_board_state
     @board.state.flatten.delete_if { |element| element.nil? }
-  end
-
-  def check?
-    king_location = @board.find_king_location(@current_player.id)
-    all_moves = find_all_moves(opposite_player)
-
-    return true if all_moves.include?(king_location)
-  end
-
-  def find_all_moves(player)
-    all_moves = []
-
-    format_board_state.each do |piece|
-      referee = MoveReferee.new(format_board_state, piece, [])
-      all_moves << referee.legal_moves(piece.moves)
-    end
-
-    all_moves.flatten!(1)
-    p all_moves
-    all_moves.delete_if { |square| player.id == color_of_piece_in_square(square) }
-    all_moves
   end
 
   def game_over?
