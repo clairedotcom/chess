@@ -87,6 +87,24 @@ describe MoveReferee do
         expect(kingmove.valid).to eq false
       end
     end
+
+    context 'when a white king side castle move is selected' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([5, 0])
+        board.delete_piece([6, 0])
+        game_state = game.format_board_state
+        king = board.get_square(4, 0)
+        rook = board.get_square(7, 0)
+        castlemove = Move.new([4, 0], [6, 0])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq true
+        expect(king.position).to eq [6, 0]
+        expect(rook.position).to eq [5, 0]
+      end
+    end
   end
 
 

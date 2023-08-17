@@ -17,13 +17,6 @@ module Castling
     end
   end
     
-  def make_white_kingside_move
-    @set.each do |piece|
-      piece.position = [5, 0] if piece.position == [7, 0]
-      piece.position = [6, 0] if piece.position == [4, 0]
-    end
-  end
-    
   def make_white_queenside_move
     @set.each do |piece|
       piece.position = [3, 0] if piece.position == [0, 0]
