@@ -1,4 +1,4 @@
-require_relative 'rook'
+#require_relative 'rook'
 
 class MoveReferee
 

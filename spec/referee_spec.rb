@@ -317,8 +317,8 @@ describe MoveReferee do
     context 'when a rook is moved legally from h1 to h3' do
       it 'move.valid is set from false to true' do
         board = Board.new
-        board.update_board([7, 1], [7, 3])
-        board.get_square(7, 3).position = [7, 3]
+        pawn = board.get_square(7,1)
+        pawn.position = [7,3]
         game_state = board.state.flatten.delete_if { |element| element.nil? }
         piece = board.get_square(7, 0)
         whiterookmove = Move.new([7, 0], [7, 2])
