@@ -132,11 +132,17 @@ class MoveReferee
       @piece.position = @move.dest
       rook[0].position = [5,0] #select returns an array containing the rook
     elsif black_king_side
-      ##
+      rook = @game_state.select { |piece| piece.position == [7,7] }
+      @piece.position = @move.dest
+      rook[0].position = [5,7] #select returns an array containing the rook
     elsif white_queen_side
-      ##
+      rook = @game_state.select { |piece| piece.position == [0,0] }
+      @piece.position = @move.dest
+      rook[0].position = [3,0]
     elsif black_queen_side
-      ##
+      rook = @game_state.select { |piece| piece.position == [0,7] }
+      @piece.position = @move.dest
+      rook[0].position = [3,7]
     end
     @piece.move_count += 1
     @move.valid = true
@@ -190,21 +196,15 @@ class MoveReferee
 
   # Castling
   def is_castle_move?
-    #(@piece.move_count == 0) && 
-    castling_pieces && white_king_side
-    #&& (white_queen_side || white_king_side || black_queen_side || black_king_side)
+    (@piece.move_count == 0) && castling_pieces && (white_king_side || black_king_side || white_queen_side || black_queen_side)
   end
 
   def white_king_side
     white_king_side_free?
-    #return [6, 0] if white_king_side_free? && @piece.color == :white
-    #return [6, 7] if black_king_side_free? && @piece.color == :black
   end
 
   def white_queen_side
     white_queen_side_free?
-    #return [2, 0] if white_queen_side_free? && @piece.color == :white
-    #return [2, 7] if black_queen_side_free? && @piece.color == :black
   end
 
   def black_king_side

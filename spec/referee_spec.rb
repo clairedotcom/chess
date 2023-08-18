@@ -105,6 +105,62 @@ describe MoveReferee do
         expect(rook.position).to eq [5, 0]
       end
     end
+
+    context 'when a black king side castle move is selected' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([5, 7])
+        board.delete_piece([6, 7])
+        game_state = game.format_board_state
+        king = board.get_square(4, 7)
+        rook = board.get_square(7, 7)
+        castlemove = Move.new([4, 7], [6, 7])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq true
+        expect(king.position).to eq [6, 7]
+        expect(rook.position).to eq [5, 7]
+      end
+    end
+
+    context 'when a white queen side castle move is selected' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([1, 0])
+        board.delete_piece([2, 0])
+        board.delete_piece([3, 0])
+        game_state = game.format_board_state
+        king = board.get_square(4, 0)
+        rook = board.get_square(0, 0)
+        castlemove = Move.new([4, 0], [2, 0])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq true
+        expect(king.position).to eq [2, 0]
+        expect(rook.position).to eq [3, 0]
+      end
+    end
+
+    context 'when a black queen side castle move is selected' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([1, 7])
+        board.delete_piece([2, 7])
+        board.delete_piece([3, 7])
+        game_state = game.format_board_state
+        king = board.get_square(4, 7)
+        rook = board.get_square(0, 7)
+        castlemove = Move.new([4, 7], [2, 7])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq true
+        expect(king.position).to eq [2, 7]
+        expect(rook.position).to eq [3, 7]
+      end
+    end
   end
 
 
