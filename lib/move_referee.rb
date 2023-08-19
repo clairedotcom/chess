@@ -29,7 +29,7 @@ class MoveReferee
     end
   end
 
-  #private
+  private
 
   def check_bishop
     @piece.move_set.each do |direction|
@@ -200,19 +200,27 @@ class MoveReferee
   end
 
   def white_king_side
-    white_king_side_free?
+    rook = @game_state.select { |piece| piece.position == [7,0] }
+    rook_move_count = rook[0]&.move_count
+    white_king_side_free? && (rook_move_count == 0)
   end
 
   def white_queen_side
-    white_queen_side_free?
+    rook = @game_state.select { |piece| piece.position == [0,0] }
+    rook_move_count = rook[0]&.move_count
+    white_queen_side_free? && (rook_move_count == 0)
   end
 
   def black_king_side
-    black_king_side_free?
+    rook = @game_state.select { |piece| piece.position == [7,7] }
+    rook_move_count = rook[0]&.move_count
+    black_king_side_free? && (rook_move_count == 0)
   end
 
   def black_queen_side
-    black_queen_side_free?
+    rook = @game_state.select { |piece| piece.position == [0,7] }
+    rook_move_count = rook[0]&.move_count
+    black_queen_side_free? && (rook_move_count == 0)
   end
 
   def white_king_side_free?
@@ -233,5 +241,26 @@ class MoveReferee
 
   def castling_pieces
     (@piece.is_a? King) || (@piece.is_a? Rook)
+  end
+
+  #check
+
+  def king_in_check?
+    #get king location    
+    #get all legal moves for opposing piece
+    #if king location is in the list of legal moves,
+      #check if the proposed move will remedy check
+      #set move valid to false
+      #print message about moving to protect king
+  end
+
+  def possible_moves
+    #iterate through all pieces and calculate all of their valid moves
+  end
+
+  def get_king_location
+    @game_state.each do |piece|
+      return piece.position if piece.is_a? King && piece.color == @piece.color
+    end
   end
 end

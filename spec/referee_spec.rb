@@ -106,6 +106,39 @@ describe MoveReferee do
       end
     end
 
+    context 'when a white king side castle move is selected and the rook has moved' do
+      it 'move.valid remains false' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([5, 0])
+        board.delete_piece([6, 0])
+        game_state = game.format_board_state
+        king = board.get_square(4, 0)
+        rook = board.get_square(7, 0)
+        rook.move_count = 1
+        castlemove = Move.new([4, 0], [6, 0])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq false
+      end
+    end
+
+    context 'when a white king side castle move is selected and there is no rook' do
+      it 'move.valid remains false' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([5, 0])
+        board.delete_piece([6, 0])
+        board.delete_piece([7, 0])
+        game_state = game.format_board_state
+        king = board.get_square(4, 0)
+        castlemove = Move.new([4, 0], [6, 0])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq false
+      end
+    end
+
     context 'when a black king side castle move is selected' do
       it 'move.valid is set to true' do
         game = Game.new
@@ -121,6 +154,23 @@ describe MoveReferee do
         expect(castlemove.valid).to eq true
         expect(king.position).to eq [6, 7]
         expect(rook.position).to eq [5, 7]
+      end
+    end
+
+    context 'when a black king side castle move is selected and the rook has moved' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([5, 7])
+        board.delete_piece([6, 7])
+        game_state = game.format_board_state
+        king = board.get_square(4, 7)
+        rook = board.get_square(7, 7)
+        rook.move_count = 1
+        castlemove = Move.new([4, 7], [6, 7])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq false
       end
     end
 
@@ -143,6 +193,24 @@ describe MoveReferee do
       end
     end
 
+    context 'when a white queen side castle move is selected and the rook has moved' do
+      it 'move.valid remains false' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([1, 0])
+        board.delete_piece([2, 0])
+        board.delete_piece([3, 0])
+        game_state = game.format_board_state
+        king = board.get_square(4, 0)
+        rook = board.get_square(0, 0)
+        rook.move_count = 1
+        castlemove = Move.new([4, 0], [2, 0])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq false
+      end
+    end
+
     context 'when a black queen side castle move is selected' do
       it 'move.valid is set to true' do
         game = Game.new
@@ -159,6 +227,24 @@ describe MoveReferee do
         expect(castlemove.valid).to eq true
         expect(king.position).to eq [2, 7]
         expect(rook.position).to eq [3, 7]
+      end
+    end
+
+    context 'when a black queen side castle move is selected and the rook has moved' do
+      it 'move.valid remains false' do
+        game = Game.new
+        board = game.board
+        board.delete_piece([1, 7])
+        board.delete_piece([2, 7])
+        board.delete_piece([3, 7])
+        game_state = game.format_board_state
+        king = board.get_square(4, 7)
+        rook = board.get_square(0, 7)
+        rook.move_count = 1
+        castlemove = Move.new([4, 7], [2, 7])
+        referee = MoveReferee.new(game_state, king, castlemove)
+        referee.move_valid
+        expect(castlemove.valid).to eq false
       end
     end
   end
