@@ -369,7 +369,128 @@ describe MoveReferee do
         enpassantreferee = MoveReferee.new(game_state, whitepawn, enpassantmove)
         enpassantreferee.move_valid
         board.update_board(1,2)
-        board.print_board
+        expect(enpassantmove.valid).to eq true
+      end
+    end
+
+    context 'when a white pawn performs an illegal en passant move on a pawn that made two one square moves' do
+      it 'move.valid remains false' do
+        game = Game.new
+        board = game.board
+        game_state = game.format_board_state
+        # Move pawn e2 e4
+        whitepawn = board.get_square(4, 1)
+        whitepawnmove1 = Move.new([4, 1], [4, 3])
+        firstreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove1)
+        firstreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn d7 d6
+        blackpawn = board.get_square(3, 6)
+        blackpawnmove1 = Move.new([3, 6], [3, 5])
+        secondreferee = MoveReferee.new(game_state, blackpawn, blackpawnmove1)
+        secondreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn e4 e5
+        whitepawnmove2 = Move.new([4, 3], [4, 4])
+        thirdreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove2)
+        thirdreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn d6 d5
+        blackpawn2 = board.get_square(3, 5)
+        blackpawnmove2 = Move.new([3, 5], [3, 4])
+        fourthreferee = MoveReferee.new(game_state, blackpawn2, blackpawnmove2)
+        fourthreferee.move_valid
+        board.update_board(1,2)
+        # Finally, make en passant move!
+        enpassantmove = Move.new([4, 4], [3, 5])
+        enpassantreferee = MoveReferee.new(game_state, whitepawn, enpassantmove)
+        enpassantreferee.move_valid
+        board.update_board(1,2)
+        expect(enpassantmove.valid).to eq false
+      end
+    end
+
+    context 'when a black pawn performs a legal en passant move' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        game_state = game.format_board_state
+        # Move pawn g2 g4
+        whitepawn2 = board.get_square(6, 1)
+        whitepawnmove3 = Move.new([6, 1], [6, 3])
+        fifthreferee = MoveReferee.new(game_state, whitepawn2, whitepawnmove3)
+        fifthreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn f7 f5
+        blackpawn = board.get_square(5, 6)
+        blackpawnmove1 = Move.new([5, 6], [5, 4])
+        secondreferee = MoveReferee.new(game_state, blackpawn, blackpawnmove1)
+        secondreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn e2 e4
+        whitepawn = board.get_square(4, 1)
+        whitepawnmove1 = Move.new([4, 1], [4, 3])
+        firstreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove1)
+        firstreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn f5 f4
+        blackpawnmove2 = Move.new([5, 4], [5, 3])
+        fourthreferee = MoveReferee.new(game_state, blackpawn, blackpawnmove2)
+        fourthreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn e4 e5
+        whitepawnmove2 = Move.new([4, 3], [4, 4])
+        thirdreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove2)
+        thirdreferee.move_valid
+        board.update_board(1,2)
+        # Make en passant move
+        enpassantmove = Move.new([5, 3], [6, 2])
+        enpassantreferee = MoveReferee.new(game_state, blackpawn, enpassantmove)
+        enpassantreferee.move_valid
+        board.update_board(1, 2)
+        expect(enpassantmove.valid).to eq false
+      end
+    end
+
+    context 'when a black pawn performs an illegal en passant move on a pawn that did not move last turn' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        game_state = game.format_board_state
+        # Move pawn e2 e4
+        whitepawn = board.get_square(4, 1)
+        whitepawnmove1 = Move.new([4, 1], [4, 3])
+        firstreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove1)
+        firstreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn f7 f5
+        blackpawn = board.get_square(5, 6)
+        blackpawnmove1 = Move.new([5, 6], [5, 4])
+        secondreferee = MoveReferee.new(game_state, blackpawn, blackpawnmove1)
+        secondreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn e4 e5
+        whitepawnmove2 = Move.new([4, 3], [4, 4])
+        thirdreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove2)
+        thirdreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn f5 f4
+        #blackpawn2 = board.get_square(5, 4)
+        blackpawnmove2 = Move.new([5, 4], [5, 3])
+        fourthreferee = MoveReferee.new(game_state, blackpawn, blackpawnmove2)
+        fourthreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn g2 g4
+        whitepawn2 = board.get_square(6, 1)
+        whitepawnmove3 = Move.new([6, 1], [6, 3])
+        fifthreferee = MoveReferee.new(game_state, whitepawn2, whitepawnmove3)
+        fifthreferee.move_valid
+        board.update_board(1,2)
+        # Make en passant move
+        enpassantmove = Move.new([5, 3], [6, 2])
+        enpassantreferee = MoveReferee.new(game_state, blackpawn, enpassantmove)
+        enpassantreferee.move_valid
+        board.update_board(1, 2)
         expect(enpassantmove.valid).to eq true
       end
     end

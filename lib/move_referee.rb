@@ -163,8 +163,8 @@ class MoveReferee
       enemy_pawn_square = [@move.dest[0], @move.dest[1] + 1]
       enemy_pawn = get_piece_at(enemy_pawn_square)
       if enemy_pawn.last_turn_moved == true
-        update_piece
         @move.type = :en_passant
+        update_piece
       end
     end
   end
