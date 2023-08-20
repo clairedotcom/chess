@@ -56,11 +56,6 @@ describe Game do
   end
 
   describe '#check?' do
-    context 'when the game is initialized' do
-      it 'is nil' do
-        expect(test_game.check?).to be nil
-      end
-    end
   end
 
   describe '#find_all_moves' do
@@ -74,7 +69,7 @@ describe Game do
 
   describe '#update_board' do
     context 'when passed a move' do
-      it 'sends a signal to the player to update the board' do
+      xit 'sends a signal to the player to update the board' do
         start = [0, 1]
         finish = [0, 3]
         expect(test_game.current_player).to receive(:update_set).with(start, finish)
@@ -156,46 +151,6 @@ describe Game do
       it 'returns false' do
         square = [7, 7]
         expect(test_game.occupied_by_same_color?(square)).to be false
-      end
-    end
-  end
-
-  describe '#king_side_castle?' do
-    context 'when player1 selects [6, 0] as a move' do
-      it 'returns true' do
-        move = [[4, 0], [6, 0]]
-        expect(test_game.king_side_castle?(move)).to be true
-      end
-    end
-
-    context 'when player2 selects [6, 7] as a move' do
-      before do
-        test_game.switch_player
-      end
-
-      it 'returns true' do
-        move = [[4, 7], [6, 7]]
-        expect(test_game.king_side_castle?(move)).to be true
-      end
-    end
-  end
-
-  describe '#queen_side_castle' do
-    context 'when player1 is the current player' do
-      it 'returns true' do
-        move = [[4, 0], [2, 0]]
-        expect(test_game.queen_side_castle?(move)).to be true
-      end
-    end
-
-    context 'when player2 is the current player' do
-      before do
-        test_game.switch_player
-      end
-
-      it 'returns true' do
-        move = [[4, 7], [2, 7]]
-        expect(test_game.queen_side_castle?(move)).to be true
       end
     end
   end

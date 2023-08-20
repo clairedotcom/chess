@@ -151,20 +151,4 @@ class Game
       return false
     end
   end
-
-  def king_side_castle?(move)
-    if @current_player == @player1 && move[1] == [6, 0]
-      true
-    elsif @current_player == @player2 && move[1] == [6, 7]
-      true
-    end
-  end
-
-  def queen_side_castle?(move)
-    if @current_player == @player1 && move[1] == [2, 0]
-      true
-    elsif @current_player == @player2 && move[1] == [2, 7]
-      true
-    end
-  end
 end
