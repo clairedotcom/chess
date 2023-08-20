@@ -9,7 +9,7 @@ class Game
   include GameSerializer
 
   attr_accessor :save, :player1, :player2, :current_player
-  attr_reader :game_state, :board
+  attr_reader :game_state, :board, :turn_count
 
   def initialize
     @player1 = Player.new(:white)
@@ -17,6 +17,7 @@ class Game
     @board = Board.new
     @current_player = @player1
     @save = false
+    @turn_count = 0
   end
 
   def select_game_mode
@@ -40,26 +41,15 @@ class Game
       @board.print_board
       review_move
       break if @save || game_over?
-
       switch_player
+      @turn_count += 1
     end
   end
 
   def review_move
     move = solicit_move
     return if @save
-
-    # if king_side_castle?(move)
-      # @current_player.king_side_castle_move
-    # elsif queen_side_castle?(move)
-      # @current_player.queen_side_castle_move
-    # elsif check?
-      # puts 'You're in check! You must move to protect your King.
-      # solicit_move
-    # else
-      # capture(move.last)
-      update_board(move.first, move.last)
-    # end
+    update_board(move.first, move.last)
   end
 
   def solicit_move
@@ -69,12 +59,9 @@ class Game
         @current_player.input_finish_square
         move = [@current_player.move.origin, @current_player.move.dest]
         break if @save
-
-        # return move if
         validate_move(@current_player.move)
         return move if @current_player.move.valid
       end
-
       puts illegal_move_message
     end
   end
@@ -86,7 +73,18 @@ class Game
     piece = @board.get_square(move.origin[0], move.origin[1])
     referee = MoveReferee.new(format_board_state, piece, move)
     referee.move_valid
+    if move.type == :en_passant
+      board.delete_piece(captured_en_passant_pawn(move, piece))
+    end
     return move.valid
+  end
+
+  def captured_en_passant_pawn(move, piece)
+    if piece.color == :white
+      return [move.dest[0], move.dest[1] - 1]
+    elsif piece.color == :black
+      return [move.dest[0], move.dest[1] + 1]
+    end
   end
 
   # Takes board state, removes nil elements, and flattens for use in other methods

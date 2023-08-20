@@ -335,6 +335,44 @@ describe MoveReferee do
         expect(secondpawnmove.valid).to eq false
       end
     end
+
+    context 'when a white pawn performs a legal en passant move' do
+      it 'move.valid is set to true' do
+        game = Game.new
+        board = game.board
+        game_state = game.format_board_state
+        # Move pawn e2 e4
+        whitepawn = board.get_square(4, 1)
+        whitepawnmove1 = Move.new([4, 1], [4, 3])
+        firstreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove1)
+        firstreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn f7 f5
+        blackpawn = board.get_square(5, 6)
+        blackpawnmove1 = Move.new([5, 6], [5, 4])
+        secondreferee = MoveReferee.new(game_state, blackpawn, blackpawnmove1)
+        secondreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn e4 e5
+        whitepawnmove2 = Move.new([4, 3], [4, 4])
+        thirdreferee = MoveReferee.new(game_state, whitepawn, whitepawnmove2)
+        thirdreferee.move_valid
+        board.update_board(1,2)
+        # Move pawn d7 d5
+        blackpawn2 = board.get_square(3, 6)
+        blackpawnmove2 = Move.new([3, 6], [3, 4])
+        fourthreferee = MoveReferee.new(game_state, blackpawn2, blackpawnmove2)
+        fourthreferee.move_valid
+        board.update_board(1,2)
+        # Finally, make en passant move!
+        enpassantmove = Move.new([4, 4], [3, 5])
+        enpassantreferee = MoveReferee.new(game_state, whitepawn, enpassantmove)
+        enpassantreferee.move_valid
+        board.update_board(1,2)
+        board.print_board
+        expect(enpassantmove.valid).to eq true
+      end
+    end
   end
   
   describe 'check_queen' do
@@ -353,8 +391,8 @@ describe MoveReferee do
 
     context 'when a queen is moved legally in a diagonal direction' do
       it 'move.valid is set to true' do
-        board = Board.new
         game = Game.new
+        board = game.board
         game_state = game.format_board_state
         pawn = board.get_square(2, 1)
         pawnmove = Move.new([2,1], [2,3])
@@ -373,10 +411,10 @@ describe MoveReferee do
 
   describe 'check_rook' do
     context 'when a rook is moved illegally from h1 to h3' do
-    #move is illegal because there's a pwan in h2
+    #move is illegal because there's a pawn in h2
       it 'move.valid remains false' do
-        board = Board.new
         game = Game.new
+        board = game.board
         game_state = game.format_board_state
         piece = board.get_square(7, 0)
         whiterookmove = Move.new([7,0], [7,2])
@@ -389,8 +427,8 @@ describe MoveReferee do
     context 'when a rook is moved illegally from h1 to f3' do
       #move is illegal because rook does not move diagonally
         it 'move.valid remains false' do
-          board = Board.new
           game = Game.new
+          board = game.board
           game_state = game.format_board_state
           piece = board.get_square(7, 0)
           whiterookmove = Move.new([7,0], [5,2])
@@ -411,6 +449,58 @@ describe MoveReferee do
         referee = MoveReferee.new(game_state, piece, whiterookmove)
         referee.move_valid
         expect(whiterookmove.valid).to eq true
+      end
+    end
+  end
+
+  describe 'get_king_location' do
+    context 'when a white king is in its initial position' do
+      it 'returns [4,0]' do
+        game = Game.new
+        board = game.board
+        game_state = game.format_board_state
+        piece = board.get_square(7, 0)
+        whiterookmove = Move.new([7,0], [5,2])
+        referee = MoveReferee.new(game_state, piece, whiterookmove)
+        expect(referee.get_king_location).to eq [4,0]
+      end
+    end
+
+    context 'when a white king has moved to [4, 2]' do
+      it 'returns [4, 2]' do
+        game = Game.new
+        board = game.board
+        piece = board.get_square(4, 0)
+        piece.position = [4,2]
+        game_state = game.format_board_state
+        whiterookmove = Move.new([7,0], [5,2])
+        referee = MoveReferee.new(game_state, piece, whiterookmove)
+        expect(referee.get_king_location).to eq [4,2]
+      end
+    end
+
+    context 'when a black king is in its initial position' do
+      it 'returns [4, 7]' do
+        game = Game.new
+        board = game.board
+        game_state = game.format_board_state
+        piece = board.get_square(7, 7)
+        rookmove = Move.new([7,7], [7,5])
+        referee = MoveReferee.new(game_state, piece, rookmove)
+        expect(referee.get_king_location).to eq [4,7]
+      end
+    end
+
+    context 'when a black king has moved to [4, 5]' do
+      it 'returns [4, 5]' do
+        game = Game.new
+        board = game.board
+        piece = board.get_square(4, 7)
+        piece.position = [4,5]
+        game_state = game.format_board_state
+        rookmove = Move.new([7,7], [7,5])
+        referee = MoveReferee.new(game_state, piece, rookmove)
+        expect(referee.get_king_location).to eq [4,5]
       end
     end
   end

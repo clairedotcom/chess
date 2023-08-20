@@ -1,5 +1,3 @@
-#require_relative 'rook'
-
 class MoveReferee
 
   def initialize(game_state, piece, move)
@@ -28,6 +26,36 @@ class MoveReferee
       false
     end
   end
+
+    #check
+
+    def king_in_check?
+      #get king location    
+      #get all legal moves for opposing piece
+      #if king location is in the list of legal moves,
+        #check if the proposed move will remedy check
+        #set move valid to false
+        #print message about moving to protect king
+    end
+  
+    def possible_opposing_moves
+      all_moves = []
+      #iterate through all pieces and calculate all of their valid moves
+      @game_state.each do |piece|
+        if piece.color != @piece.color
+
+        end
+      end
+
+    end
+  
+    def get_king_location
+      @game_state.each do |piece|
+        if (piece.is_a? King) && (piece.color == @piece.color)
+          return piece.position
+        end
+      end
+    end
 
   private
 
@@ -91,6 +119,7 @@ class MoveReferee
       @piece.move_set.each do |step|
         if @move.origin[0] + step[0] == @move.dest[0] && @move.origin[1] + step[1] == @move.dest[1]
           set_pawn_move_type(step)
+          @piece.last_turn_moved = true
         end
       end
     else
@@ -111,6 +140,8 @@ class MoveReferee
       if occupied_by_opposite_color?(@move.dest)
         update_piece
         @move.type = :capture
+      elsif occupied_by_any_piece?(@move.dest) == false #check for en passant
+        check_en_passant_square
       end
     else
       update_piece
@@ -118,12 +149,52 @@ class MoveReferee
     end
   end
 
+  # Helper method for en passant
+  # For this method to be called, piece is a pawn
+  def check_en_passant_square
+    if @piece.color == :white
+      enemy_pawn_square = [@move.dest[0], @move.dest[1] - 1]
+      enemy_pawn = get_piece_at(enemy_pawn_square)
+      if enemy_pawn.last_turn_moved == true
+        @move.type = :en_passant
+        update_piece
+      end
+    elsif @piece.color == :black
+      enemy_pawn_square = [@move.dest[0], @move.dest[1] + 1]
+      enemy_pawn = get_piece_at(enemy_pawn_square)
+      if enemy_pawn.last_turn_moved == true
+        update_piece
+        @move.type = :en_passant
+      end
+    end
+  end
+
+  # Returns piece at location [x,y] in game state
+  def get_piece_at(square)
+    @game_state.each do |piece|
+      if piece.position == square
+        return piece
+      end
+    end
+  end
+
   # Helper method to reuse code in piece checking methods. Incremenets move count,
   # sets move valid tp true, and updates the pawn's position.
   def update_piece
+    reset_pawn_last_moved
     @piece.move_count += 1
     @piece.position = @move.dest
     @move.valid = true
+  end
+
+  # used for en passant. After each turn, set any pawns that were moved the previous
+  # move to false.
+  def reset_pawn_last_moved
+    @game_state.each do |piece|
+      if (piece.is_a? Pawn) && (piece.last_turn_moved == true)
+        piece.last_turn_moved = false
+      end
+    end
   end
 
   def update_castled_king
@@ -241,26 +312,5 @@ class MoveReferee
 
   def castling_pieces
     (@piece.is_a? King) || (@piece.is_a? Rook)
-  end
-
-  #check
-
-  def king_in_check?
-    #get king location    
-    #get all legal moves for opposing piece
-    #if king location is in the list of legal moves,
-      #check if the proposed move will remedy check
-      #set move valid to false
-      #print message about moving to protect king
-  end
-
-  def possible_moves
-    #iterate through all pieces and calculate all of their valid moves
-  end
-
-  def get_king_location
-    @game_state.each do |piece|
-      return piece.position if piece.is_a? King && piece.color == @piece.color
-    end
   end
 end
