@@ -1,12 +1,11 @@
 require_relative 'piece'
 
 class Knight < Piece
-  attr_reader :icon, :possible_moves
+  attr_reader :icon
 
   def initialize(position, color)
     super(position, color)
     @icon = set_icon
-    @possible_moves = get_possible_moves
   end
 
   def set_icon

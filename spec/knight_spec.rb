@@ -25,7 +25,7 @@ describe Knight do
       it 'returns an array with the correct squares' do
         knight = Knight.new([6, 0], :white)
         correct_squares = [[7, 2], [5, 2], [4, 1]]
-        expect(knight.possible_moves).to match_array(correct_squares)
+        expect(knight.get_possible_moves).to match_array(correct_squares)
       end
     end
 
@@ -33,7 +33,7 @@ describe Knight do
       it 'returns an array with the correct squares' do
         knight = Knight.new([1, 0], :white)
         correct_squares = [[0, 2], [2, 2], [3, 1]]
-        expect(knight.possible_moves).to match_array(correct_squares)
+        expect(knight.get_possible_moves).to match_array(correct_squares)
       end
     end
 
@@ -41,7 +41,7 @@ describe Knight do
       it 'returns an array with the correct squares' do
         knight = Knight.new([1, 7], :black)
         correct_squares = [[0, 5], [2, 5], [3, 6]]
-        expect(knight.possible_moves).to match_array(correct_squares)
+        expect(knight.get_possible_moves).to match_array(correct_squares)
       end
     end
 
@@ -49,7 +49,7 @@ describe Knight do
       it 'returns an array with the correct squares' do
         knight = Knight.new([6, 7], :black)
         correct_squares = [[7, 5], [5, 5], [4, 6]]
-        expect(knight.possible_moves).to match_array(correct_squares)
+        expect(knight.get_possible_moves).to match_array(correct_squares)
       end
     end
   end
