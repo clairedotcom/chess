@@ -41,9 +41,5 @@ describe Rook do
         expect(rook.get_possible_moves).to match_array(correct_squares)
       end
     end
-    context 'when the white knigt at a1 has made a move' do
-      xit 'returns the correct array of squares' do
-      end
-    end
   end
 end

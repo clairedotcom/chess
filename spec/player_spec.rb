@@ -12,9 +12,11 @@ describe Player do
         allow($stdout).to receive(:puts)
       end
 
-      it 'returns [0, 1]' do
-        result = [0, 1]
-        expect(test_white_player.input_start_square).to eq(result)
+      it 'returns a Move object with an origin of [0, 1]' do
+        result = Move.new([0, 1], nil)
+        test_white_player.input_start_square
+        expect(test_white_player.move.origin).to eq(result.origin)
+        expect(test_white_player.move.dest).to eq(result.dest)
       end
     end
 
@@ -41,8 +43,9 @@ describe Player do
       end
 
       it 'returns :save' do
-        output = :save
-        expect(test_white_player.input_start_square).to eq(output)
+        expected_move = 'save'
+        test_white_player.input_start_square
+        expect(test_white_player.move).to eq(expected_move)
       end
     end
   end
@@ -55,7 +58,11 @@ describe Player do
       end
 
       it 'returns [4, 5]' do
-        expect(test_white_player.input_finish_square).to eq([4, 5])
+        result = Move.new([0, 1], nil)
+        result.dest = [4, 5]
+        test_white_player.move = result
+        test_white_player.input_finish_square
+        expect(test_white_player.move.dest).to eq([4, 5])
       end
     end
 
@@ -67,10 +74,11 @@ describe Player do
       end
 
       it 'prints an error message' do
+        test_white_player.move = Move.new([0, 1], nil)
         error_message = test_white_player.invalid_input_message
         prompt_message = 'Which square would you like to move to? (e.g. a4): '
-        expect($stdout).to receive(:puts).with(error_message).once
         expect($stdout).to receive(:puts).with(prompt_message).twice
+        expect($stdout).to receive(:puts).with(error_message).once
         test_white_player.input_finish_square
       end
     end
