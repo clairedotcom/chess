@@ -2,7 +2,8 @@ require_relative 'dialogue'
 require_relative 'move'
 
 class Player
-  attr_reader :id, :loser, :move
+  attr_accessor :move
+  attr_reader :id, :loser
 
   include Dialogue
 

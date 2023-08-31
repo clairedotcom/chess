@@ -10,7 +10,8 @@ describe Game do
         allow(test_game).to receive(:gets).and_return(user_input)
       end
 
-      xit 'calls #load_game' do
+      it 'calls #load_game' do
+        expect(test_game).to respond_to(:load_game)
       end
     end
   end
@@ -69,10 +70,10 @@ describe Game do
 
   describe '#update_board' do
     context 'when passed a move' do
-      xit 'sends a signal to the player to update the board' do
+      it 'sends a signal to the player to update the board' do
         start = [0, 1]
         finish = [0, 3]
-        expect(test_game.current_player).to receive(:update_set).with(start, finish)
+        expect(test_game.board).to receive(:update_board).with(start, finish)
         test_game.update_board(start, finish)
       end
     end
