@@ -35,7 +35,9 @@ module GameSerializer
 
   def load_file_contents
     filename = solicit_user_selection
-    contents = YAML.load_file("game_archive/#{filename}")
+    contents = YAML.load_file("game_archive/#{filename}", aliases: true,
+                              permitted_classes: [Player, Game, Board, Symbol, Move, Rook,
+                                                  Knight, Pawn, King, Queen, Bishop])
     @player1 = contents['player1']
     @player2 = contents['player2']
     @board = contents['board']
