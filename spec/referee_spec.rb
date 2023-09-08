@@ -4,6 +4,28 @@ require_relative '../lib/game.rb'
 require_relative '../lib/move.rb'
 
 describe MoveReferee do
+  describe '#get_all_possible_moves' do
+    context 'when there are two kings and one black knight one the board' do
+      it 'returns the correct array of pieces' do
+        board = Array.new(8) { Array.new(8, nil) }
+        whiteking = King.new([1, 4], :white)
+        blackking = King.new([4, 7], :black)
+        blackknight = Knight.new([5, 4], :black)
+        board[1][4] = whiteking
+        board[4][7] = blackking
+        board[5][4] = blackknight
+        game_state = board.flatten.delete_if { |element| element.nil? }
+        opposing_moves = [[3, 7], [3, 6], [4, 6], [5, 6], [5, 7],
+                          [3, 5], [4, 6], [6, 6], [7, 5], [7, 3], [6, 2], [4, 2], [3, 3]]
+        referee = MoveReferee.new(game_state, whiteking, nil)
+        king_location = whiteking.position
+        expect(referee.possible_opposing_moves).to match_array(opposing_moves)
+        expect(king_location).to eq(referee.get_king_location)
+      end
+    end
+  end
+
+
   describe 'check_bishop' do
     context 'when a bishop is moved illegally with pieces in the way' do
       it 'move.valid remains false' do

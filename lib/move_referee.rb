@@ -43,10 +43,10 @@ class MoveReferee
       #iterate through all pieces and calculate all of their valid moves
       @game_state.each do |piece|
         if piece.color != @piece.color
-
+          all_moves << piece.get_possible_moves
         end
       end
-
+      return all_moves.flatten(1)
     end
   
     def get_king_location
@@ -97,7 +97,7 @@ class MoveReferee
   end
 
   def check_knight
-    @piece.possible_moves.each do |move|
+    @piece.get_possible_moves.each do |move|
       if @move.dest == move 
         if occupied_by_opposite_color?(@move.dest)
           update_piece

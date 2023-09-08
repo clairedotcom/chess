@@ -45,17 +45,6 @@ class Board
     print_to_console
   end
 
-  # finds king of given color and returns its position. if no king, return false
-  def find_king_location(color)
-    @state.flatten.each do |element|
-        if element.is_a?(King) && element.color == color
-            return element.position
-        else
-            return false
-        end
-    end
-  end
-
   # takes board position in form [x, y]
   def delete_piece(position)
     @state[position.last][position.first] = nil
